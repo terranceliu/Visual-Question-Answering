@@ -6,46 +6,92 @@ from torch.autograd import Variable
 from IPython.core.debugger import Pdb
 from scheduler import CustomReduceLROnPlateau
 import json
+import numpy as np
+import copy
+import torch.optim as optim
 
-
-def train(model, dataloader, criterion, optimizer, use_gpu=False):
+def train(model, dataloader, criterion, optimizer, use_gpu=False, local_ep=1):
     model.train()  # Set model to training mode
-    running_loss = 0.0
-    running_corrects = 0
-    example_count = 0
-    step = 0
-    # Pdb().set_trace()
-    # Iterate over data.
-    for questions, images, image_ids, answers, ques_ids in dataloader:
-        # print('questions size: ', questions.size())
-        if use_gpu:
-            questions, images, image_ids, answers = questions.cuda(), images.cuda(), image_ids.cuda(), answers.cuda()
-        questions, images, answers = Variable(questions).transpose(0, 1), Variable(images), Variable(answers)
+    for epoch in range(local_ep):
+        running_loss = 0.0
+        running_corrects = 0
+        example_count = 0
+        step = 0
 
-        # zero grad
-        optimizer.zero_grad()
-        ans_scores = model(images, questions, image_ids)
-        _, preds = torch.max(ans_scores, 1)
-        loss = criterion(ans_scores, answers)
+        # Iterate over data.
+        for questions, images, image_ids, answers, ques_ids in dataloader:
+            # print('questions size: ', questions.size())
+            if use_gpu:
+                questions, images, image_ids, answers = questions.cuda(), images.cuda(), image_ids.cuda(), answers.cuda()
+            questions, images, answers = Variable(questions).transpose(0, 1), Variable(images), Variable(answers)
 
-        # backward + optimize
-        loss.backward()
-        optimizer.step()
+            # zero grad
+            optimizer.zero_grad()
+            ans_scores = model(images, questions, image_ids)
+            _, preds = torch.max(ans_scores, 1)
+            loss = criterion(ans_scores, answers)
 
-        # statistics
-        running_loss += loss.data[0]
-        running_corrects += torch.sum((preds == answers).data)
-        example_count += answers.size(0)
-        step += 1
-        if step % 5000 == 0:
-            print('running loss: {}, running_corrects: {}, example_count: {}, acc: {}'.format(
-                running_loss / example_count, running_corrects, example_count, (float(running_corrects) / example_count) * 100))
-        # if step * batch_size == 40000:
-        #     break
-    loss = running_loss / example_count
-    acc = (running_corrects / len(dataloader.dataset)) * 100
-    print('Train Loss: {:.4f} Acc: {:2.3f} ({}/{})'.format(loss,
-                                                           acc, running_corrects, example_count))
+            # backward + optimize
+            loss.backward()
+            optimizer.step()
+
+            # statistics
+            running_loss += loss.item()
+            running_corrects += torch.sum((preds == answers).data)
+            example_count += answers.size(0)
+            step += 1
+            if step % 1000 == 0:
+                print('step {}, running loss: {}, running_corrects: {}, example_count: {}, acc: {}'.format(
+                    step, running_loss / example_count, running_corrects, example_count, (float(running_corrects) / example_count) * 100))
+            # if step * batch_size == 40000:
+            #     break
+
+        loss = running_loss / example_count
+        acc = float(running_corrects) / example_count * 100 # (running_corrects / len(dataloader.dataset)) * 100
+        print('Local Epoch: {} Train Loss: {:.4f} Acc: {:2.3f} ({}/{})'.format(epoch+1, loss, acc, running_corrects, example_count))
+
+    return loss, acc
+
+
+def train_cifar(model, dataloader, criterion, optimizer, use_gpu=False, local_ep=1):
+    model.train()  # Set model to training mode
+    for epoch in range(local_ep):
+        running_loss = 0.0
+        running_corrects = 0
+        example_count = 0
+        step = 0
+
+        # Iterate over data.
+        for images, labels in dataloader:
+            if use_gpu:
+                questions, labels = images.cuda(), labels.cuda()
+            images, labels = Variable(images), Variable(labels)
+
+            # zero grad
+            optimizer.zero_grad()
+            preds_scores = model(images.cuda(), None, None, task='cifar100') #TODO: not sure why I need to call .cuda() again
+            _, preds = torch.max(preds_scores, 1)
+            loss = criterion(preds_scores, labels)
+
+            # backward + optimize
+            loss.backward()
+            optimizer.step()
+
+            # statistics
+            running_loss += loss.item()
+            running_corrects += torch.sum((preds == labels).data)
+            example_count += labels.size(0)
+            step += 1
+            if step % 1000 == 0:
+                print('step {}, running loss: {}, running_corrects: {}, example_count: {}, acc: {}'.format(
+                    step, running_loss / example_count, running_corrects, example_count, (float(running_corrects) / example_count) * 100))
+            # if step * batch_size == 40000:
+            #     break
+
+        loss = running_loss / example_count
+        acc = float(running_corrects) / example_count * 100 # (running_corrects / len(dataloader.dataset)) * 100
+        print('Local Epoch: {} Train Loss: {:.4f} Acc: {:2.3f} ({}/{})'.format(epoch+1, loss, acc, running_corrects, example_count))
+
     return loss, acc
 
 
@@ -55,6 +101,7 @@ def validate(model, dataloader, criterion, use_gpu=False):
     running_corrects = 0
     example_count = 0
     # Iterate over data.
+    count = 0
     for questions, images, image_ids, answers, ques_ids in dataloader:
         if use_gpu:
             questions, images, image_ids, answers = questions.cuda(
@@ -68,73 +115,186 @@ def validate(model, dataloader, criterion, use_gpu=False):
         loss = criterion(ans_scores, answers)
 
         # statistics
-        running_loss += loss.data[0]
+        running_loss += loss.item()
         running_corrects += torch.sum((preds == answers).data)
         example_count += answers.size(0)
+
+        if count > 500:
+            break
+        count += 1
+
     loss = running_loss / example_count
     # acc = (running_corrects / example_count) * 100
-    acc = (running_corrects / len(dataloader.dataset)) * 100
+    acc = float(running_corrects) / example_count * 100 # (running_corrects / len(dataloader.dataset)) * 100
     print('Validation Loss: {:.4f} Acc: {:2.3f} ({}/{})'.format(loss,
                                                                 acc, running_corrects, example_count))
     return loss, acc
 
 
-def train_model(model, data_loaders, criterion, optimizer, scheduler, save_dir, num_epochs=25, use_gpu=False, best_accuracy=0, start_epoch=0):
+def validate_cifar(model, dataloader, criterion, use_gpu=False):
+    model.eval()  # Set model to evaluate mode
+    running_loss = 0.0
+    running_corrects = 0
+    example_count = 0
+    # Iterate over data.
+    count = 0
+    for images, labels in dataloader:
+        if use_gpu:
+            questions, labels = images.cuda(), labels.cuda()
+        images, labels = Variable(images), Variable(labels)
+
+        # zero grad
+        preds_scores = model(images.cuda(), None, None, task='cifar100') #TODO: not sure why I need to call .cuda() again
+        _, preds = torch.max(preds_scores, 1)
+        loss = criterion(preds_scores, labels)
+
+        # statistics
+        running_loss += loss.item()
+        running_corrects += torch.sum((preds == labels).data)
+        example_count += labels.size(0)
+
+    loss = running_loss / example_count
+    # acc = (running_corrects / example_count) * 100
+    acc = float(running_corrects) / example_count * 100 # (running_corrects / len(dataloader.dataset)) * 100
+    print('Validation Loss: {:.4f} Acc: {:2.3f} ({}/{})'.format(loss,
+                                                                acc, running_corrects, example_count))
+    return loss, acc
+
+
+def train_model(model, data_loaders, data_loaders_cifar, criterion, optimizer, scheduler, config, save_dir, num_epochs=25, use_gpu=False,
+                best_accuracy=0, start_epoch=0, num_users=1, frac=0.1, local_ep=1):
+    tasks = ['vqa', 'cifar100']
+    num_tasks = len(tasks)
+
     print('Training Model with use_gpu={}...'.format(use_gpu))
     since = time.time()
 
     best_model_wts = model.state_dict()
     best_acc = best_accuracy
     writer = SummaryWriter(save_dir)
+
+    w_locals = []
+    w_glob = None
+
+    m = max(int(frac * num_users), 1)
+
     for epoch in range(start_epoch, num_epochs):
-        print('Epoch {}/{}'.format(epoch, num_epochs - 1))
-        print('-' * 10)
-        train_begin = time.time()
-        train_loss, train_acc = train(
-            model, data_loaders['train'], criterion, optimizer, use_gpu)
-        train_time = time.time() - train_begin
-        print('Epoch Train Time: {:.0f}m {:.0f}s'.format(
-            train_time // 60, train_time % 60))
-        writer.add_scalar('Train Loss', train_loss, epoch)
-        writer.add_scalar('Train Accuracy', train_acc, epoch)
-
-        validation_begin = time.time()
-        val_loss, val_acc = validate(
-            model, data_loaders['val'], criterion, use_gpu)
-        validation_time = time.time() - validation_begin
-        print('Epoch Validation Time: {:.0f}m {:.0f}s'.format(
-            validation_time // 60, validation_time % 60))
-        writer.add_scalar('Validation Loss', val_loss, epoch)
-        writer.add_scalar('Validation Accuracy', val_acc, epoch)
-
-        # deep copy the model
-        is_best = val_acc > best_acc
-        if is_best:
-            best_acc = val_acc
-            best_model_wts = model.state_dict()
-
-        save_checkpoint(save_dir, {
-            'epoch': epoch,
-            'best_acc': best_acc,
-            'state_dict': model.state_dict(),
-            # 'optimizer': optimizer.state_dict(),
-        }, is_best)
-
-        writer.export_scalars_to_json(save_dir + "/all_scalars.json")
-        valid_error = 1.0 - val_acc / 100.0
-        if type(scheduler) == CustomReduceLROnPlateau:
-            scheduler.step(valid_error, epoch=epoch)
-            if scheduler.shouldStopTraining():
-                print("Stop training as no improvement in accuracy - no of unconstrainedBadEopchs: {0} > {1}".format(
-                    scheduler.unconstrainedBadEpochs, scheduler.maxPatienceToStopTraining))
-                # Pdb().set_trace()
-                break
+        if config['multitask']:
+            task_ix = np.random.randint(num_tasks)
         else:
-            scheduler.step()
+            task_ix = 0
+        task = tasks[task_ix]
+
+        print('Epoch {}/{} - Task: {}'.format(epoch, num_epochs - 1, task))
+        print('-' * 10)
+
+        idxs_users = np.random.choice(range(num_users), m, replace=False)
+        grads_local = []
+
+        for user in idxs_users:
+            print('User {}'.format(user))
+            model_local = copy.deepcopy(model)
+
+            if config['optim']['class'] == 'sgd':
+                optimizer_local = optim.SGD(filter(lambda p: p.requires_grad, model_local.parameters()),
+                                      **config['optim']['params'])
+            elif config['optim']['class'] == 'rmsprop':
+                optimizer_local = optim.RMSprop(filter(lambda p: p.requires_grad, model_local.parameters()),
+                                          **config['optim']['params'])
+            else:
+                optimizer_local = optim.Adam(filter(lambda p: p.requires_grad, model_local.parameters()),
+                                       **config['optim']['params'])
+
+            # we mainly just care about copying over the reduced lr from optimizer to optimizer_local
+            for i in range(len(optimizer.param_groups)):
+                for param in optimizer.param_groups[i].keys():
+                    if param == 'params':
+                        continue
+                    optimizer_local.param_groups[i][param] = optimizer.param_groups[i][param]
+                    # if param == 'lr' and task == 'cifar100':
+                    #     optimizer_local.param_groups[i][param] *= 10.0
+            print('lr: {} {}'.format(len(optimizer_local.param_groups), optimizer_local.param_groups[0]['lr']))
+
+            train_begin = time.time()
+            if task == 'cifar100':
+                train_loss, train_acc = train_cifar(model_local, data_loaders_cifar['train'][user], criterion, optimizer_local, use_gpu, local_ep)
+            else: # vqa
+                train_loss, train_acc = train(model_local, data_loaders[('train', user)], criterion, optimizer_local,
+                                              use_gpu, local_ep)
+
+            train_time = time.time() - train_begin
+            print('Epoch Train Time: {:.0f}m {:.0f}s'.format(train_time // 60, train_time % 60))
+            writer.add_scalar('Train Loss', train_loss, epoch)
+            writer.add_scalar('Train Accuracy', train_acc, epoch)
+
+            grads = []
+            for grad in [param.grad for param in model_local.parameters()]:
+                if grad is not None:
+                    grads.append(grad.view(-1))
+            grads = torch.cat(grads).norm().item()
+            grads_local.append(grads)
+            print(grads)
+
+            w_curr = model_local.state_dict()
+            if w_glob is None:
+                w_glob = w_curr
+                for k in w_glob.keys():
+                    w_glob[k] *= grads
+            else:
+                for k in w_glob.keys():
+                    w_glob[k] += w_curr[k] * grads
+
+        for k in w_glob.keys():
+            # w_glob[k] = torch.div(w_glob[k], m)
+            w_glob[k] = torch.div(w_glob[k], sum(grads_local))
+
+        # copy weight to net_glob
+        model.load_state_dict(w_glob)
+
+        if task=='cifar100':
+            validation_begin = time.time()
+            val_loss, val_acc = validate_cifar(model, data_loaders_cifar['val'][user], criterion, use_gpu)
+
+            validation_time = time.time() - validation_begin
+            print('Epoch Validation Time: {:.0f}m {:.0f}s'.format(validation_time // 60, validation_time % 60))
+            writer.add_scalar('Validation Loss', val_loss, epoch)
+            writer.add_scalar('Validation Accuracy', val_acc, epoch)
+        else:
+            validation_begin = time.time()
+            val_loss, val_acc = validate(model, data_loaders[('val', user)], criterion, use_gpu)
+
+            validation_time = time.time() - validation_begin
+            print('Epoch Validation Time: {:.0f}m {:.0f}s'.format(validation_time // 60, validation_time % 60))
+            writer.add_scalar('Validation Loss', val_loss, epoch)
+            writer.add_scalar('Validation Accuracy', val_acc, epoch)
+
+            # deep copy the model
+            is_best = val_acc > best_acc
+            if is_best:
+                best_acc = val_acc
+                best_model_wts = model.state_dict()
+
+            save_checkpoint(save_dir, {
+                'epoch': epoch,
+                'best_acc': best_acc,
+                'state_dict': model.state_dict(),
+                # 'optimizer': optimizer.state_dict(),
+            }, is_best)
+
+            writer.export_scalars_to_json(save_dir + "/all_scalars.json")
+            valid_error = 1.0 - val_acc / 100.0
+            if type(scheduler) == CustomReduceLROnPlateau:
+                scheduler.step(valid_error, epoch=epoch)
+                if scheduler.shouldStopTraining():
+                    print("Stop training as no improvement in accuracy - no of unconstrainedBadEopchs: {0} > {1}".format(
+                        scheduler.unconstrainedBadEpochs, scheduler.maxPatienceToStopTraining))
+                    # Pdb().set_trace()
+                    break
+            else:
+                scheduler.step()
 
     time_elapsed = time.time() - since
-    print('Training complete in {:.0f}m {:.0f}s'.format(
-        time_elapsed // 60, time_elapsed % 60))
+    print('Training complete in {:.0f}m {:.0f}s'.format(time_elapsed // 60, time_elapsed % 60))
     print('Best val Acc: {:4f}'.format(best_acc))
     # load best model weights
     model.load_state_dict(best_model_wts)

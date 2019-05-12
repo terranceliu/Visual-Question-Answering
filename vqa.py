@@ -2,7 +2,7 @@
 import torch
 import torch.nn as nn
 import torchvision.models as models
-import utils
+# import utils
 import torch.nn.functional as F
 
 from IPython.core.debugger import Pdb
@@ -63,12 +63,12 @@ class Normalize(nn.Module):
 
 class ImageEmbedding(nn.Module):
     def __init__(self, image_channel_type='I', output_size=1024, mode='train',
-                 extract_features=False, features_dir=None):
+                 pretrained_vgg=True, extract_features=False, features_dir=None):
         super(ImageEmbedding, self).__init__()
-        self.extractor = models.vgg16(pretrained=True)
+        self.extractor = models.vgg16(pretrained=pretrained_vgg)
         # freeze feature extractor (VGGNet) parameters
         for param in self.extractor.parameters():
-            param.requires_grad = False
+            param.requires_grad = not pretrained_vgg
 
         extactor_fc_layers = list(self.extractor.classifier.children())[:-1]
         if image_channel_type.lower() == 'normi':
@@ -88,18 +88,20 @@ class ImageEmbedding(nn.Module):
         # Pdb().set_trace()
         if not self.extract_features:
             image = self.extractor(image)
-            if self.features_dir is not None:
-                utils.save_image_features(image, image_ids, self.features_dir)
+            # if self.features_dir is not None:
+            #     utils.save_image_features(image, image_ids, self.features_dir)
 
         image_embedding = self.fflayer(image)
         return image_embedding
 
 
 class QuesEmbedding(nn.Module):
-    def __init__(self, input_size=300, hidden_size=512, output_size=1024, num_layers=2, batch_first=True):
+    def __init__(self, input_size=300, hidden_size=512, output_size=1024, num_layers=2, batch_first=True, vocab_size=10000, dropout=0.5):
         super(QuesEmbedding, self).__init__()
         # TODO: take as parameter
         self.bidirectional = True
+        self.drop = nn.Dropout(dropout)
+
         if num_layers == 1:
             self.lstm = nn.LSTM(input_size=input_size, hidden_size=hidden_size,
                                 batch_first=batch_first, bidirectional=self.bidirectional)
@@ -115,39 +117,52 @@ class QuesEmbedding(nn.Module):
                 nn.Linear(2 * num_layers * hidden_size, output_size),
                 nn.Tanh())
 
-    def forward(self, ques):
-        _, hx = self.lstm(ques)
-        lstm_embedding = torch.cat([hx[0], hx[1]], dim=2)
-        ques_embedding = lstm_embedding[0]
-        if self.lstm.num_layers > 1 or self.bidirectional:
-            for i in range(1, self.lstm.num_layers):
-                ques_embedding = torch.cat(
-                    [ques_embedding, lstm_embedding[i]], dim=1)
-            ques_embedding = self.fflayer(ques_embedding)
-        return ques_embedding
+        self.decoder_lm = nn.Linear(hidden_size, vocab_size)
+
+    def forward(self, ques, task='vqa'):
+        output, hx = self.lstm(ques)
+
+        if task == 'vqa':
+            lstm_embedding = torch.cat([hx[0], hx[1]], dim=2)
+            ques_embedding = lstm_embedding[0]
+            if self.lstm.num_layers > 1 or self.bidirectional:
+                for i in range(1, self.lstm.num_layers):
+                    ques_embedding = torch.cat(
+                        [ques_embedding, lstm_embedding[i]], dim=1)
+                ques_embedding = self.fflayer(ques_embedding)
+            return ques_embedding
+        elif task == 'lm':
+            output = self.drop(output)
+            decoded = self.decoder(output.view(output.size(0) * output.size(1), output.size(2)))
+            return decoded.view(output.size(0), output.size(1), decoded.size(1))#, hidden
+        else:
+            msg = 'invalid task. choose: vqa, lm'
+            print(msg)
+            raise Exception(msg)
 
 
 class VQAModel(nn.Module):
 
-    def __init__(self, vocab_size=10000, word_emb_size=300, emb_size=1024, output_size=1000, image_channel_type='I', ques_channel_type='lstm', use_mutan=True, mode='train', extract_img_features=True, features_dir=None):
+    def __init__(self, vocab_size=10000, word_emb_size=300, emb_size=1024, output_size=1000, image_channel_type='I', ques_channel_type='lstm', use_mutan=True, pretrained_vgg=True, mode='train', extract_img_features=True, features_dir=None):
         super(VQAModel, self).__init__()
         self.mode = mode
         self.word_emb_size = word_emb_size
-        self.image_channel = ImageEmbedding(image_channel_type, output_size=emb_size, mode=mode,
-                                            extract_img_features=extract_img_features, features_dir=features_dir)
+        self.image_channel = ImageEmbedding(image_channel_type, output_size=emb_size, mode=mode, pretrained_vgg=pretrained_vgg,
+                                            extract_features=extract_img_features, features_dir=features_dir)
 
         # NOTE the padding_idx below.
         self.word_embeddings = nn.Embedding(vocab_size, word_emb_size)
         if ques_channel_type.lower() == 'lstm':
             self.ques_channel = QuesEmbedding(
-                input_size=word_emb_size, output_size=emb_size, num_layers=1, batch_first=False)
+                input_size=word_emb_size, output_size=emb_size, num_layers=1, batch_first=False, vocab_size=vocab_size)
         elif ques_channel_type.lower() == 'deeplstm':
             self.ques_channel = QuesEmbedding(
-                input_size=word_emb_size, output_size=emb_size, num_layers=2, batch_first=False)
+                input_size=word_emb_size, output_size=emb_size, num_layers=2, batch_first=False, vocab_size=vocab_size)
         else:
             msg = 'ques channel type not specified. please choose one of -  lstm or deeplstm'
             print(msg)
             raise Exception(msg)
+
         if use_mutan:
             self.mutan = MutanFusion(emb_size, emb_size, 5)
             self.mlp = nn.Sequential(nn.Linear(emb_size, output_size))
@@ -158,13 +173,31 @@ class VQAModel(nn.Module):
                 nn.Tanh(),
                 nn.Linear(1000, output_size))
 
-    def forward(self, images, questions, image_ids):
-        image_embeddings = self.image_channel(images, image_ids)
-        embeds = self.word_embeddings(questions)
-        ques_embeddings = self.ques_channel(embeds)
-        if hasattr(self, 'mutan'):
-            combined = self.mutan(ques_embeddings, image_embeddings)
+        # cifar100
+        self.mlp_cifar = nn.Sequential(nn.Linear(emb_size, 100))
+
+    def forward(self, images, questions, image_ids, task='vqa'):
+        if task == 'vqa':
+            image_embeddings = self.image_channel(images, image_ids)
+            embeds = self.word_embeddings(questions)
+            ques_embeddings = self.ques_channel(embeds)
+            if hasattr(self, 'mutan'):
+                combined = self.mutan(ques_embeddings, image_embeddings)
+            else:
+                combined = image_embeddings * ques_embeddings
+            output = self.mlp(combined)
+            return output
+        elif task == 'cifar100':
+            image_embeddings = self.image_channel(images, image_ids)
+            output = self.mlp_cifar(image_embeddings)
+            return output
+        elif task == 'lm':
+            embeds = self.word_embeddings(questions)
+            ques_embeddings = self.ques_channel(embeds)
+            output = ques_embeddings #TODO
+            return output
         else:
-            combined = image_embeddings * ques_embeddings
-        output = self.mlp(combined)
-        return output
+            msg = 'invalid task. choose: vqa, cifar100'
+            print(msg)
+            raise Exception(msg)
+

@@ -2,7 +2,7 @@
 import torch.nn as nn
 import torch.nn.functional as F
 import torchvision.models as models
-import utils
+# import utils
 from IPython.core.debugger import Pdb
 
 
@@ -31,8 +31,8 @@ class ImageEmbedding(nn.Module):
             image = self.cnn(image)
             # N * 512 * 14 * 14 -> N * 512 * 196 -> N * 196 * 512
             image = image.view(-1, 512, 196).transpose(1, 2)
-            if self.features_dir is not None:
-                utils.save_image_features(image, image_ids, self.features_dir)
+            # if self.features_dir is not None:
+            #     utils.save_image_features(image, image_ids, self.features_dir)
         # N * 196 * 512 -> N * 196 * 1024
         image_embedding = self.fc(image)
         return image_embedding

@@ -10,13 +10,25 @@ import numpy as np
 class VQADataset(torch.utils.data.Dataset):
     ques_vocab = {}
     ans_vocab = {}
+    data = {}
 
-    def __init__(self, data_dir, qafile, img_dir, phase, img_scale=(256, 256), img_crop=224, raw_images=False):
+    def __init__(self, data_dir, qafile, img_dir, phase, img_scale=(256, 256), img_crop=224, raw_images=False, user=0, num_users=1):
         self.data_dir = data_dir
-        self.examples = pickle.load(open(os.path.join(data_dir, qafile), 'rb'))
-        #Pdb().set_trace()
+
+        if user == 0:
+            if phase == 'train':
+                self.load_vocab(data_dir)
+            VQADataset.data[phase] = pickle.load(open(os.path.join(data_dir, qafile), 'rb'))
+
         if phase == 'train':
-            self.load_vocab(data_dir)
+            chunk_size = len(VQADataset.data[phase]) / num_users
+            start_ix, end_ix = chunk_size * user, chunk_size * (user + 1)
+            start_ix, end_ix = int(start_ix), int(end_ix)
+            self.examples = VQADataset.data[phase][start_ix: end_ix]
+        else:
+            self.examples = VQADataset.data[phase]
+
+        # Pdb().set_trace()
         self.transforms = transforms.Compose([
             transforms.Scale(img_scale),
             transforms.CenterCrop(img_crop),
@@ -29,6 +41,7 @@ class VQADataset(torch.utils.data.Dataset):
         self.raw_images = raw_images    # if true, images and load images, not embeddings
 
     def load_vocab(self, data_dir):
+        print("loading vocab")
         ques_vocab_file = os.path.join(data_dir, 'ques_stoi.tsv')
         for line in open(ques_vocab_file):
             parts = line.split('\t')
@@ -54,6 +67,35 @@ class VQADataset(torch.utils.data.Dataset):
             img = torch.load('{}/{}/{}'.format(self.data_dir, self.img_dir, imgid))
         return torch.from_numpy(ques), img, imgid, ans, ques_id
 
+class ImageDataset(torch.utils.data.Dataset):
+    data = {}
+
+    def __init__(self, data_dir, qafile, img_dir, phase, img_scale=(256, 256), img_crop=224, raw_images=False, user=0, num_users=1):
+        self.data_dir = data_dir
+
+        self.transforms = transforms.Compose([
+            transforms.Scale(img_scale),
+            transforms.CenterCrop(img_crop),
+            transforms.ToTensor(),
+            transforms.Normalize(
+                mean=[0.485, 0.456, 0.406],
+                std=[0.229, 0.224, 0.225])])
+        self.img_dir = img_dir
+        self.phase = phase
+        self.raw_images = raw_images
+
+    def __len__(self):
+        return len(self.examples)
+
+    def __getitem__(self, idx):
+        ques_id, ques, _, imgid, ans = self.examples[idx]
+        if self.raw_images:
+            img = Image.open('{0}/{1}/COCO_{1}_{2:012d}.jpg'.format(self.data_dir, self.img_dir, imgid))
+            img = img.convert('RGB')
+            img = self.transforms(img)
+        else:
+            img = torch.load('{}/{}/{}'.format(self.data_dir, self.img_dir, imgid))
+        return torch.from_numpy(ques), img, imgid, ans, ques_id
 
 class RandomSampler:
     def __init__(self,data_source,batch_size):
@@ -139,3 +181,15 @@ class VQABatchSampler:
             return len(self.sampler) // self.batch_size
         else:
             return (len(self.sampler) + self.batch_size - 1) // self.batch_size
+
+
+class CIFAR100Dataset(torch.utils.data.Dataset):
+    def __init__(self, dataloader, indices):
+        self.dataloader = dataloader
+        self.indices = indices
+
+    def __len__(self):
+        return len(self.indices)
+
+    def __getitem__(self, idx):
+        return self.dataloader[self.indices[idx]]
