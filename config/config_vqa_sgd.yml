@@ -33,7 +33,7 @@ model:
     params:
         word_emb_size: 300
         emb_size: 1024
-        image_channel_type: 'norm I'     # I/norm I
+        image_channel_type: 'normi'     # I/normI
         ques_channel_type: 'deeplstm'   # lstm/deeplstm
         use_mutan: True             # True/False - to use mutan fusion on question and image embeddings or not
     reload: 'checkpoints.pth.tar'
