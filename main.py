@@ -17,7 +17,7 @@ from san import SANModel
 from scheduler import CustomReduceLROnPlateau
 
 parser = argparse.ArgumentParser()
-parser.add_argument('-c', '--config', type=str, default='config.yml')
+parser.add_argument('-c', '--config', type=str, default='config/config_vqa_sgd.yml')
 
 
 def load_datasets(config, phases):
@@ -33,7 +33,7 @@ def load_datasets(config, phases):
 
     print('Loading preprocessed datasets')
     datafiles = {x: '{}.pkl'.format(x) for x in phases}
-    raw_images = 'preprocess' in config['images'] and config['images']['preprocess']
+    raw_images = not ('preprocess' in config['images'] and config['images']['preprocess'])
     if raw_images:
         img_dir = {x: config[x]['img_dir'] for x in phases}
     else:
@@ -62,10 +62,10 @@ def main(config):
     # add model parameters to config
     config['model']['params']['vocab_size'] = len(ques_vocab)
     config['model']['params']['output_size'] = len(ans_vocab) - 1   # -1 as don't want model to predict '<unk>'
-    config['model']['params']['exatract_img_features'] = 'preprocess' in config['data']['images'] and config['data']['images']['preprocess']
+    config['model']['params']['extract_img_features'] = 'preprocess' in config['data']['images'] and config['data']['images']['preprocess']
     # which features dir? test, train or validate?
-    config['model']['params']['features_dir'] = os.path.join(
-        config['data']['dir'], config['data']['test']['emb_dir'])
+    # config['model']['params']['features_dir'] = os.path.join(
+    #     config['data']['dir'], config['data']['test']['emb_dir'])
     if config['model']['type'] == 'vqa':
         model = VQAModel(mode=config['mode'], **config['model']['params'])
     elif config['model']['type'] == 'san':
@@ -83,7 +83,7 @@ def main(config):
         optimizer = optim.Adam(filter(lambda p: p.requires_grad, model.parameters()),
                                **config['optim']['params'])
 
-        best_acc = 0
+    best_acc = 0
     # Pdb().set_trace()
     startEpoch = 0
     if 'reload' in config['model']:

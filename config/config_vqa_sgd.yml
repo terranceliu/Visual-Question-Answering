@@ -1,25 +1,25 @@
 prefix: vqa_sgd
 verbose: True
 mode: 'train'
-save_dir: 'scratch/vqa_sgd'
+save_dir: '/home/tliu/Dev/CMU/research/multimodal/Visual-Question-Answering/vqa_sgd'
 use_gpu: True
 debug: False
 seed: 123213
 data:
     preprocess: False   # True/False - whether to preprocess vqa data files
-    dir: '/home/cse/phd/csz178058/scratch/vqadata/' # root data directory
+    dir: '/home/tliu/Dev/CMU/research/multimodal/Visual-Question-Answering/vqadata/' # root data directory
     train:
         ques: 'v2_OpenEnded_mscoco_train2014_questions.json'
         ans: 'v2_mscoco_train2014_annotations.json'
         img_dir: 'train2014' # raw images
         emb_dir: 'train2014_vqa_i_1024_vgg' # directory with image embeddings - depends on the model being used.
-        batch_size: 32
+        batch_size: 80
     val:
         ques: 'v2_OpenEnded_mscoco_val2014_questions.json'
         ans: 'v2_mscoco_val2014_annotations.json'
         img_dir: 'val2014'
         emb_dir: 'train2014_vqa_i_1024_vgg'
-        batch_size: 32
+        batch_size: 80
     images:
         preprocess: False   # True/False - whether to use embeddings or use raw images and generate embeddings
         scale: [256,256]
@@ -33,8 +33,8 @@ model:
     params:
         word_emb_size: 300
         emb_size: 1024
-        image_channel_type: 'I'     # I/norm I
-        ques_channel_type: 'lstm'   # lstm/deeplstm
+        image_channel_type: 'norm I'     # I/norm I
+        ques_channel_type: 'deeplstm'   # lstm/deeplstm
         use_mutan: True             # True/False - to use mutan fusion on question and image embeddings or not
     reload: 'checkpoints.pth.tar'
 

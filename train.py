@@ -33,17 +33,17 @@ def train(model, dataloader, criterion, optimizer, use_gpu=False):
         optimizer.step()
 
         # statistics
-        running_loss += loss.data[0]
+        running_loss += loss.item()
         running_corrects += torch.sum((preds == answers).data)
         example_count += answers.size(0)
         step += 1
-        if step % 5000 == 0:
-            print('running loss: {}, running_corrects: {}, example_count: {}, acc: {}'.format(
-                running_loss / example_count, running_corrects, example_count, (float(running_corrects) / example_count) * 100))
+        if step % 1000 == 0:
+            print('step {}, running loss: {}, running_corrects: {}, example_count: {}, acc: {}'.format(
+                step, running_loss / example_count, running_corrects, example_count, (float(running_corrects) / example_count) * 100))
         # if step * batch_size == 40000:
         #     break
     loss = running_loss / example_count
-    acc = (running_corrects / len(dataloader.dataset)) * 100
+    acc = float(running_corrects) / example_count * 100
     print('Train Loss: {:.4f} Acc: {:2.3f} ({}/{})'.format(loss,
                                                            acc, running_corrects, example_count))
     return loss, acc
@@ -54,6 +54,8 @@ def validate(model, dataloader, criterion, use_gpu=False):
     running_loss = 0.0
     running_corrects = 0
     example_count = 0
+
+    step = 0
     # Iterate over data.
     for questions, images, image_ids, answers, ques_ids in dataloader:
         if use_gpu:
@@ -68,12 +70,16 @@ def validate(model, dataloader, criterion, use_gpu=False):
         loss = criterion(ans_scores, answers)
 
         # statistics
-        running_loss += loss.data[0]
+        running_loss += loss.item()
         running_corrects += torch.sum((preds == answers).data)
         example_count += answers.size(0)
+
+        step += 1
+        if step > 500:
+            break
+
     loss = running_loss / example_count
-    # acc = (running_corrects / example_count) * 100
-    acc = (running_corrects / len(dataloader.dataset)) * 100
+    acc = float(running_corrects) / example_count * 100
     print('Validation Loss: {:.4f} Acc: {:2.3f} ({}/{})'.format(loss,
                                                                 acc, running_corrects, example_count))
     return loss, acc

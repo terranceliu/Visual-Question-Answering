@@ -2,7 +2,6 @@
 import torch
 import torch.nn as nn
 import torchvision.models as models
-import utils
 import torch.nn.functional as F
 
 from IPython.core.debugger import Pdb
@@ -63,7 +62,7 @@ class Normalize(nn.Module):
 
 class ImageEmbedding(nn.Module):
     def __init__(self, image_channel_type='I', output_size=1024, mode='train',
-                 extract_features=False, features_dir=None):
+                 extract_img_features=False, features_dir=None):
         super(ImageEmbedding, self).__init__()
         self.extractor = models.vgg16(pretrained=True)
         # freeze feature extractor (VGGNet) parameters
@@ -81,15 +80,15 @@ class ImageEmbedding(nn.Module):
 
         # TODO: Get rid of this hack
         self.mode = mode
-        self.extract_features = extract_features
+        self.extract_img_features = extract_img_features
         self.features_dir = features_dir
 
     def forward(self, image, image_ids):
         # Pdb().set_trace()
-        if not self.extract_features:
+        if not self.extract_img_features:
             image = self.extractor(image)
-            if self.features_dir is not None:
-                utils.save_image_features(image, image_ids, self.features_dir)
+            # if self.features_dir is not None:
+            #     utils.save_image_features(image, image_ids, self.features_dir)
 
         image_embedding = self.fflayer(image)
         return image_embedding
