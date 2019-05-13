@@ -53,6 +53,43 @@ def train(model, dataloader, criterion, optimizer, use_gpu=False, local_ep=1):
     return loss, acc
 
 
+def validate(model, dataloader, criterion, use_gpu=False):
+    model.eval()  # Set model to evaluate mode
+    running_loss = 0.0
+    running_corrects = 0
+    example_count = 0
+    step = 0
+
+    # Iterate over data.
+    for questions, images, image_ids, answers, ques_ids in dataloader:
+        if use_gpu:
+            questions, images, image_ids, answers = questions.cuda(
+            ), images.cuda(), image_ids.cuda(), answers.cuda()
+        questions, images, answers = Variable(questions).transpose(
+            0, 1), Variable(images), Variable(answers)
+
+        # zero grad
+        ans_scores = model(images, questions, image_ids)
+        _, preds = torch.max(ans_scores, 1)
+        loss = criterion(ans_scores, answers)
+
+        # statistics
+        running_loss += loss.item()
+        running_corrects += torch.sum((preds == answers).data)
+        example_count += answers.size(0)
+
+        step += 1
+        if step > 500:
+            break
+
+    loss = running_loss / example_count
+    # acc = (running_corrects / example_count) * 100
+    acc = float(running_corrects) / example_count * 100 # (running_corrects / len(dataloader.dataset)) * 100
+    print('Validation Loss: {:.4f} Acc: {:2.3f} ({}/{})'.format(loss,
+                                                                acc, running_corrects, example_count))
+    return loss, acc
+
+
 def train_cifar(model, dataloader, criterion, optimizer, use_gpu=False, local_ep=1):
     model.train()  # Set model to training mode
     for epoch in range(local_ep):
@@ -82,7 +119,7 @@ def train_cifar(model, dataloader, criterion, optimizer, use_gpu=False, local_ep
             running_corrects += torch.sum((preds == labels).data)
             example_count += labels.size(0)
             step += 1
-            if step % 1000 == 0:
+            if step % 500 == 0:
                 print('step {}, running loss: {}, running_corrects: {}, example_count: {}, acc: {}'.format(
                     step, running_loss / example_count, running_corrects, example_count, (float(running_corrects) / example_count) * 100))
             # if step * batch_size == 40000:
@@ -95,49 +132,14 @@ def train_cifar(model, dataloader, criterion, optimizer, use_gpu=False, local_ep
     return loss, acc
 
 
-def validate(model, dataloader, criterion, use_gpu=False):
-    model.eval()  # Set model to evaluate mode
-    running_loss = 0.0
-    running_corrects = 0
-    example_count = 0
-    # Iterate over data.
-    count = 0
-    for questions, images, image_ids, answers, ques_ids in dataloader:
-        if use_gpu:
-            questions, images, image_ids, answers = questions.cuda(
-            ), images.cuda(), image_ids.cuda(), answers.cuda()
-        questions, images, answers = Variable(questions).transpose(
-            0, 1), Variable(images), Variable(answers)
-
-        # zero grad
-        ans_scores = model(images, questions, image_ids)
-        _, preds = torch.max(ans_scores, 1)
-        loss = criterion(ans_scores, answers)
-
-        # statistics
-        running_loss += loss.item()
-        running_corrects += torch.sum((preds == answers).data)
-        example_count += answers.size(0)
-
-        if count > 500:
-            break
-        count += 1
-
-    loss = running_loss / example_count
-    # acc = (running_corrects / example_count) * 100
-    acc = float(running_corrects) / example_count * 100 # (running_corrects / len(dataloader.dataset)) * 100
-    print('Validation Loss: {:.4f} Acc: {:2.3f} ({}/{})'.format(loss,
-                                                                acc, running_corrects, example_count))
-    return loss, acc
-
-
 def validate_cifar(model, dataloader, criterion, use_gpu=False):
     model.eval()  # Set model to evaluate mode
     running_loss = 0.0
     running_corrects = 0
     example_count = 0
+    step = 0
     # Iterate over data.
-    count = 0
+
     for images, labels in dataloader:
         if use_gpu:
             questions, labels = images.cuda(), labels.cuda()
