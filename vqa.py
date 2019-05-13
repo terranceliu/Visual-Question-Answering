@@ -65,7 +65,7 @@ class ImageEmbedding(nn.Module):
     def __init__(self, image_channel_type='I', output_size=1024, mode='train',
                  pretrained_vgg=True, extract_features=False, features_dir=None):
         super(ImageEmbedding, self).__init__()
-        self.extractor = models.vgg16(pretrained=pretrained_vgg)
+        self.extractor = models.vgg19(pretrained=pretrained_vgg)
         # freeze feature extractor (VGGNet) parameters
         for param in self.extractor.parameters():
             param.requires_grad = not pretrained_vgg

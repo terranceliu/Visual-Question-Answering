@@ -13,7 +13,7 @@ local_ep: 1
 
 data:
     preprocess: False   # True/False - whether to preprocess vqa data files
-    dir: '/home/tliu/Dev/CMU/research/multimodal/Visual-Question-Answering/vqadata' # root data directory
+    dir: '/home/tliu/Dev/CMU/research/multimodal/Visual-Question-Answering/vqadata/' # root data directory
     train:
         ques: 'v2_OpenEnded_mscoco_train2014_questions.json'
         ans: 'v2_mscoco_train2014_annotations.json'
@@ -52,14 +52,14 @@ model:
     params:
         word_emb_size: 300
         emb_size: 1024
-        image_channel_type: 'norm I'     # I/norm I
+        image_channel_type: 'normi'     # I/normI
         ques_channel_type: 'deeplstm'   # lstm/deeplstm
-        use_mutan: True             # True/False - to use mutan fusion on question and image embeddings or not
-        pretrained_vgg: True # verify multiask is correct
+        use_mutan: False             # True/False - to use mutan fusion on question and image embeddings or not
+        pretrained_vgg: True # verify multitask is correct
     reload: 'checkpoints.pth.tar'
 
 optim:
-    class: sgd      # sgd/rmsprop/adam
+    class: rmsprop      # sgd/rmsprop/adam
     scheduler: 'CustomReduceLROnPlateau'
     scheduler_params:
         maxPatienceToStopTraining: 16
@@ -75,10 +75,10 @@ optim:
             eps: 0.000001
 
     params: 
-        momentum: 0.9
-        lr: 0.01      # learning rate
+#        momentum: 0.9
+        lr: 0.0003      # learning rate
         # alpha: 0.99     # alpha for adagrad/rmsprop/momentum/adam
         # beta: 0.995     # beta used for adam
         # eps: 0.00001       # epsilon that goes into denominator in rmsprop
-        weight_decay: 0.0005
+#        weight_decay: 0.0005
     n_epochs: 100
