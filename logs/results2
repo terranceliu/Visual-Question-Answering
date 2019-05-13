@@ -1,0 +1,209 @@
+normi, rmsprop
+
+Using Norm I
+VQAModel(
+  (image_channel): ImageEmbedding(
+    (extractor): VGG(
+      (features): Sequential(
+        (0): Conv2d(3, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (1): ReLU(inplace)
+        (2): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (3): ReLU(inplace)
+        (4): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+        (5): Conv2d(64, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (6): ReLU(inplace)
+        (7): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (8): ReLU(inplace)
+        (9): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+        (10): Conv2d(128, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (11): ReLU(inplace)
+        (12): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (13): ReLU(inplace)
+        (14): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (15): ReLU(inplace)
+        (16): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (17): ReLU(inplace)
+        (18): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+        (19): Conv2d(256, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (20): ReLU(inplace)
+        (21): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (22): ReLU(inplace)
+        (23): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (24): ReLU(inplace)
+        (25): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (26): ReLU(inplace)
+        (27): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+        (28): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (29): ReLU(inplace)
+        (30): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (31): ReLU(inplace)
+        (32): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (33): ReLU(inplace)
+        (34): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (35): ReLU(inplace)
+        (36): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+      )
+      (classifier): Sequential(
+        (0): Linear(in_features=25088, out_features=4096, bias=True)
+        (1): ReLU(inplace)
+        (2): Dropout(p=0.5)
+        (3): Linear(in_features=4096, out_features=4096, bias=True)
+        (4): ReLU(inplace)
+        (5): Dropout(p=0.5)
+        (6): Normalize()
+      )
+    )
+    (fflayer): Sequential(
+      (0): Linear(in_features=4096, out_features=1024, bias=True)
+      (1): Tanh()
+    )
+  )
+  (word_embeddings): Embedding(22227, 300)
+  (ques_channel): QuesEmbedding(
+    (lstm): LSTM(300, 512, num_layers=2)
+    (fflayer): Sequential(
+      (0): Linear(in_features=2048, out_features=1024, bias=True)
+      (1): Tanh()
+    )
+  )
+  (mlp): Sequential(
+    (0): Linear(in_features=1024, out_features=1000, bias=True)
+    (1): Dropout(p=0.5)
+    (2): Tanh()
+    (3): Linear(in_features=1000, out_features=1000, bias=True)
+  )
+)
+config mode  train
+CustomReduceLROnPlateau
+begin training
+Training Model with use_gpu=True...
+Epoch 0/99
+----------
+step 500, running loss: 0.03088912195183081, running_corrects: 14290, example_count: 52393, acc: 27.27463592464642
+step 1000, running loss: 0.02803870996450708, running_corrects: 30466, example_count: 104660, acc: 29.10949742021785
+step 1500, running loss: 0.02643585825067579, running_corrects: 47969, example_count: 156984, acc: 30.556617234877443
+step 2000, running loss: 0.025491449219109803, running_corrects: 65550, example_count: 209086, acc: 31.350736060759687
+step 2500, running loss: 0.02461466014187094, running_corrects: 84280, example_count: 261427, acc: 32.23844514912385
+step 3000, running loss: 0.023985964165675666, running_corrects: 103097, example_count: 313774, acc: 32.85708822273356
+step 3500, running loss: 0.023376872417476182, running_corrects: 122537, example_count: 366485, acc: 33.43574771136609
+Train Loss: 0.0232 Acc: 33.649 (130613/388158)
+Epoch Train Time: 29m 7s
+Validation Loss: 0.0221 Acc: 37.876 (19730/52091)
+Epoch Validation Time: 4m 3s
+Num_bad_epochs: 0, unconstrainedBadEpochs: 0, bestMetric: 0.6212397535082836, currentThreshold: 0.608814958438118
+Epoch 1/99
+----------
+step 500, running loss: 0.019076628089665728, running_corrects: 20249, example_count: 52547, acc: 38.53502578643881
+step 1000, running loss: 0.019184039535064135, running_corrects: 40222, example_count: 104455, acc: 38.506533914125704
+step 1500, running loss: 0.01903604895653413, running_corrects: 60428, example_count: 156773, acc: 38.54490250234415
+step 2000, running loss: 0.01884423464227111, running_corrects: 81205, example_count: 209108, acc: 38.833999655680316
+step 2500, running loss: 0.01866686693298901, running_corrects: 102196, example_count: 261395, acc: 39.096386694466226
+step 3000, running loss: 0.01857869791275083, running_corrects: 123272, example_count: 313870, acc: 39.27485901806481
+step 3500, running loss: 0.0184209544134813, running_corrects: 144758, example_count: 366452, acc: 39.50258151135756
+Train Loss: 0.0184 Acc: 39.564 (153569/388158)
+Epoch Train Time: 29m 10s
+Validation Loss: 0.0195 Acc: 41.936 (21994/52446)
+Epoch Validation Time: 3m 52s
+Num_bad_epochs: 0, unconstrainedBadEpochs: 0, bestMetric: 0.5806353201388095, currentThreshold: 0.5690226137360332
+Epoch 2/99
+----------
+step 500, running loss: 0.01699846726357466, running_corrects: 22148, example_count: 52497, acc: 42.18907747109359
+step 1000, running loss: 0.01682399555212229, running_corrects: 44665, example_count: 105176, acc: 42.46691260363581
+step 1500, running loss: 0.01687057750284029, running_corrects: 66765, example_count: 157458, acc: 42.401783332698244
+step 2000, running loss: 0.016927279821748888, running_corrects: 88647, example_count: 209665, acc: 42.2803042949467
+step 2500, running loss: 0.01692168486074244, running_corrects: 110809, example_count: 261828, acc: 42.32129489588585
+step 3000, running loss: 0.016908146567913923, running_corrects: 133109, example_count: 313916, acc: 42.40274468329107
+step 3500, running loss: 0.01686631833183468, running_corrects: 155504, example_count: 366296, acc: 42.45309804092865
+Train Loss: 0.0169 Acc: 42.483 (164902/388158)
+Epoch Train Time: 27m 39s
+Validation Loss: 0.0196 Acc: 43.889 (22733/51797)
+Epoch Validation Time: 3m 44s
+Num_bad_epochs: 0, unconstrainedBadEpochs: 0, bestMetric: 0.5611135780064482, currentThreshold: 0.5498913064463192
+Epoch 3/99
+----------
+step 500, running loss: 0.01581911809266701, running_corrects: 23343, example_count: 52573, acc: 44.401118444829095
+step 1000, running loss: 0.015913746652621238, running_corrects: 46502, example_count: 104921, acc: 44.32096529770018
+step 1500, running loss: 0.015924530400990677, running_corrects: 69918, example_count: 157178, acc: 44.48332463830816
+step 2000, running loss: 0.015953077857962163, running_corrects: 93002, example_count: 209110, acc: 44.475156616135045
+step 2500, running loss: 0.0159335984513658, running_corrects: 116507, example_count: 261455, acc: 44.56101432368859
+step 3000, running loss: 0.01590508188161081, running_corrects: 140163, example_count: 313965, acc: 44.64287420572357
+step 3500, running loss: 0.015859534869338204, running_corrects: 163654, example_count: 366497, acc: 44.65357151627435
+Train Loss: 0.0159 Acc: 44.624 (173211/388158)
+Epoch Train Time: 27m 30s
+Validation Loss: 0.0190 Acc: 45.485 (23701/52107)
+Epoch Validation Time: 3m 43s
+Num_bad_epochs: 0, unconstrainedBadEpochs: 0, bestMetric: 0.5451474849828237, currentThreshold: 0.5342445352831673
+Epoch 4/99
+----------
+step 500, running loss: 0.014777002757186575, running_corrects: 24748, example_count: 52294, acc: 47.32474088805599
+step 1000, running loss: 0.015022720886249043, running_corrects: 48832, example_count: 104539, acc: 46.711753508260074
+step 1500, running loss: 0.015119467827276837, running_corrects: 73068, example_count: 157022, acc: 46.53360675574124
+step 2000, running loss: 0.015150712910733635, running_corrects: 97379, example_count: 209023, acc: 46.58769609086082
+step 2500, running loss: 0.015143350259102793, running_corrects: 121789, example_count: 261542, acc: 46.56575234570356
+step 3000, running loss: 0.015051845511749496, running_corrects: 146547, example_count: 314100, acc: 46.656160458452725
+step 3500, running loss: 0.015097427658009855, running_corrects: 170631, example_count: 366414, acc: 46.56781673189343
+Train Loss: 0.0151 Acc: 46.613 (180931/388158)
+Epoch Train Time: 28m 45s
+Validation Loss: 0.0191 Acc: 45.792 (23723/51806)
+Epoch Validation Time: 3m 45s
+Num_bad_epochs: 1, unconstrainedBadEpochs: 1, bestMetric: 0.5451474849828237, currentThreshold: 0.5342445352831673
+Epoch 5/99
+----------
+step 500, running loss: 0.014373114324331073, running_corrects: 25529, example_count: 52082, acc: 49.01693483353174
+step 1000, running loss: 0.014325130639335774, running_corrects: 51091, example_count: 104557, acc: 48.86425586043976
+step 1500, running loss: 0.01434241463167035, running_corrects: 76499, example_count: 156883, acc: 48.76181613049215
+step 2000, running loss: 0.014332858913660098, running_corrects: 102081, example_count: 209446, acc: 48.73857700791612
+step 2500, running loss: 0.01434588267239609, running_corrects: 127465, example_count: 261676, acc: 48.711001391033186
+step 3000, running loss: 0.014369361577614937, running_corrects: 152556, example_count: 314047, acc: 48.57744222998468
+step 3500, running loss: 0.014384659776643308, running_corrects: 177909, example_count: 366503, acc: 48.542303882915014
+Train Loss: 0.0144 Acc: 48.481 (188183/388158)
+Epoch Train Time: 28m 23s
+Validation Loss: 0.0187 Acc: 46.592 (24255/52058)
+Epoch Validation Time: 3m 47s
+Num_bad_epochs: 0, unconstrainedBadEpochs: 0, bestMetric: 0.5340773752353145, currentThreshold: 0.5233958277306082
+Epoch 6/99
+----------
+step 500, running loss: 0.013542950961162632, running_corrects: 26765, example_count: 52240, acc: 51.23468606431854
+step 1000, running loss: 0.013570397391500894, running_corrects: 53333, example_count: 104704, acc: 50.936926955990224
+step 1500, running loss: 0.013601713919042895, running_corrects: 79844, example_count: 157030, acc: 50.84633509520474
+step 2000, running loss: 0.01365851506240046, running_corrects: 106146, example_count: 209289, acc: 50.71742900964695
+step 2500, running loss: 0.013676520849822661, running_corrects: 132526, example_count: 261741, acc: 50.63249548217513
+step 3000, running loss: 0.01374539416650057, running_corrects: 158407, example_count: 313973, acc: 50.45242743802811
+step 3500, running loss: 0.013775434994393909, running_corrects: 184731, example_count: 366427, acc: 50.41413432962091
+Train Loss: 0.0138 Acc: 50.364 (195491/388158)
+Epoch Train Time: 27m 42s
+Validation Loss: 0.0189 Acc: 46.798 (24365/52064)
+Epoch Validation Time: 3m 48s
+Num_bad_epochs: 1, unconstrainedBadEpochs: 1, bestMetric: 0.5340773752353145, currentThreshold: 0.5233958277306082
+Epoch 7/99
+----------
+step 500, running loss: 0.012664409631830516, running_corrects: 28177, example_count: 52429, acc: 53.743157412882184
+step 1000, running loss: 0.0128812283615219, running_corrects: 55736, example_count: 104575, acc: 53.297633277551995
+step 1500, running loss: 0.012973486368645579, running_corrects: 83050, example_count: 157061, acc: 52.87754439357957
+step 2000, running loss: 0.012994795370157446, running_corrects: 110567, example_count: 209571, acc: 52.758730931283424
+step 2500, running loss: 0.013048566616717825, running_corrects: 137856, example_count: 262073, acc: 52.60213757235579
+step 3000, running loss: 0.013109605451465877, running_corrects: 164797, example_count: 314316, acc: 52.43035671108057
+step 3500, running loss: 0.01314431663410133, running_corrects: 191774, example_count: 366688, acc: 52.298957151583906
+Train Loss: 0.0132 Acc: 52.239 (202770/388158)
+Epoch Train Time: 29m 8s
+Validation Loss: 0.0190 Acc: 48.037 (24883/51800)
+Epoch Validation Time: 3m 41s
+Num_bad_epochs: 0, unconstrainedBadEpochs: 0, bestMetric: 0.5196332046332046, currentThreshold: 0.5092405405405405
+Epoch 8/99
+----------
+step 500, running loss: 0.012339750235375237, running_corrects: 28991, example_count: 52036, acc: 55.7133522945653
+step 1000, running loss: 0.012323740360609707, running_corrects: 57985, example_count: 104526, acc: 55.47423607523487
+step 1500, running loss: 0.012411883697570203, running_corrects: 86480, example_count: 156846, acc: 55.13688586256583
+step 2000, running loss: 0.01238716462058598, running_corrects: 115345, example_count: 209501, acc: 55.057016434289096
+step 2500, running loss: 0.012452732720552598, running_corrects: 143357, example_count: 261735, acc: 54.771811183066845
+step 3000, running loss: 0.012512945659487136, running_corrects: 171242, example_count: 314254, acc: 54.49158960586023
+step 3500, running loss: 0.012574024507890089, running_corrects: 199057, example_count: 366704, acc: 54.28274575679567
+Train Loss: 0.0126 Acc: 54.221 (210462/388158)
+Epoch Train Time: 28m 24s
+Validation Loss: 0.0192 Acc: 47.817 (25016/52316)
+Epoch Validation Time: 4m 11s
+Num_bad_epochs: 1, unconstrainedBadEpochs: 1, bestMetric: 0.5196332046332046, currentThreshold: 0.5092405405405405
+Epoch 9/99
+----------
+step 500, running loss: 0.011663985792328998, running_corrects: 30156, example_count: 52435, acc: 57.511204348240675
+
