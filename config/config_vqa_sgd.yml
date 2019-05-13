@@ -13,13 +13,13 @@ data:
         ans: 'v2_mscoco_train2014_annotations.json'
         img_dir: 'train2014' # raw images
         emb_dir: 'train2014_vqa_i_1024_vgg' # directory with image embeddings - depends on the model being used.
-        batch_size: 120
+        batch_size: 100
     val:
         ques: 'v2_OpenEnded_mscoco_val2014_questions.json'
         ans: 'v2_mscoco_val2014_annotations.json'
         img_dir: 'val2014'
         emb_dir: 'train2014_vqa_i_1024_vgg'
-        batch_size: 120
+        batch_size: 100
     images:
         preprocess: False   # True/False - whether to use embeddings or use raw images and generate embeddings
         scale: [256,256]
