@@ -64,13 +64,14 @@ class ImageEmbedding(nn.Module):
     def __init__(self, image_channel_type='I', output_size=1024, mode='train',
                  extract_img_features=False, features_dir=None):
         super(ImageEmbedding, self).__init__()
-        self.extractor = models.vgg16(pretrained=True)
+        self.extractor = models.vgg19(pretrained=True)
         # freeze feature extractor (VGGNet) parameters
         for param in self.extractor.parameters():
             param.requires_grad = False
 
         extactor_fc_layers = list(self.extractor.classifier.children())[:-1]
         if image_channel_type.lower() == 'normi':
+            print("Using Norm I")
             extactor_fc_layers.append(Normalize(p=2))
         self.extractor.classifier = nn.Sequential(*extactor_fc_layers)
 
