@@ -1,0 +1,356 @@
+rmsprop, update parameters, no grad norm
+
+/usr/bin/python3.5 /home/tliu/Dev/CMU/research/multimodal/Visual-Question-Answering/main.py
+/home/tliu/Dev/CMU/research/multimodal/Visual-Question-Answering/main.py:249: YAMLLoadWarning: calling yaml.load() without Loader=... is deprecated, as the default Loader is unsafe. Please read https://msg.pyyaml.org/load for full details.
+  config = yaml.load(open(args.config))
+Loading preprocessed datasets
+Building datasets
+loading vocab
+/home/tliu/.local/lib/python3.5/site-packages/torchvision/transforms/transforms.py:188: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+Building batch samplers
+Building dataloaders
+{('train', 13): 14792, ('val', 9): 214354, ('train', 27): 14792, ('val', 6): 214354, ('train', 2): 14792, ('val', 28): 214354, ('train', 9): 14792, ('val', 21): 214354, ('train', 23): 14792, ('val', 2): 214354, ('val', 24): 214354, ('train', 5): 14792, ('val', 17): 214354, ('train', 19): 14792, ('train', 12): 14792, ('val', 14): 214354, ('train', 26): 14792, ('val', 7): 214354, ('train', 1): 14792, ('val', 29): 214354, ('train', 8): 14792, ('val', 10): 214354, ('train', 22): 14792, ('val', 3): 214354, ('train', 29): 14792, ('val', 25): 214354, ('train', 4): 14792, ('val', 22): 214354, ('train', 18): 14792, ('val', 15): 214354, ('train', 25): 14792, ('val', 4): 214354, ('train', 0): 14791, ('val', 18): 214354, ('train', 15): 14792, ('val', 11): 214354, ('train', 21): 14792, ('val', 0): 214354, ('train', 28): 14792, ('train', 11): 14792, ('val', 23): 214354, ('train', 17): 14792, ('val', 12): 214354, ('train', 24): 14792, ('val', 26): 214354, ('val', 5): 214354, ('train', 7): 14792, ('val', 19): 214354, ('train', 14): 14792, ('val', 8): 214354, ('train', 20): 14791, ('val', 1): 214354, ('train', 3): 14792, ('train', 10): 14791, ('val', 20): 214354, ('train', 16): 14792, ('val', 13): 214354, ('val', 27): 214354, ('train', 6): 14792, ('val', 16): 214354}
+ques vocab size: 22227
+ans vocab size: 1001
+Files already downloaded and verified
+Files already downloaded and verified
+VQAModel(
+  (image_channel): ImageEmbedding(
+    (extractor): VGG(
+      (features): Sequential(
+        (0): Conv2d(3, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (1): ReLU(inplace)
+        (2): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (3): ReLU(inplace)
+        (4): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+        (5): Conv2d(64, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (6): ReLU(inplace)
+        (7): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (8): ReLU(inplace)
+        (9): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+        (10): Conv2d(128, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (11): ReLU(inplace)
+        (12): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (13): ReLU(inplace)
+        (14): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (15): ReLU(inplace)
+        (16): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (17): ReLU(inplace)
+        (18): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+        (19): Conv2d(256, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (20): ReLU(inplace)
+        (21): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (22): ReLU(inplace)
+        (23): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (24): ReLU(inplace)
+        (25): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (26): ReLU(inplace)
+        (27): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+        (28): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (29): ReLU(inplace)
+        (30): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (31): ReLU(inplace)
+        (32): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (33): ReLU(inplace)
+        (34): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (35): ReLU(inplace)
+        (36): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+      )
+      (classifier): Sequential(
+        (0): Linear(in_features=25088, out_features=4096, bias=True)
+        (1): ReLU(inplace)
+        (2): Dropout(p=0.5)
+        (3): Linear(in_features=4096, out_features=4096, bias=True)
+        (4): ReLU(inplace)
+        (5): Dropout(p=0.5)
+        (6): Normalize()
+      )
+    )
+    (fflayer): Sequential(
+      (0): Linear(in_features=4096, out_features=1024, bias=True)
+      (1): Tanh()
+    )
+  )
+  (word_embeddings): Embedding(55505, 300)
+  (ques_channel): QuesEmbedding(
+    (drop): Dropout(p=0.5)
+    (lstm): LSTM(300, 512, num_layers=2)
+    (fflayer): Sequential(
+      (0): Linear(in_features=2048, out_features=1024, bias=True)
+      (1): Tanh()
+    )
+    (decoder_lm): Linear(in_features=512, out_features=55505, bias=True)
+  )
+  (mlp): Sequential(
+    (0): Linear(in_features=1024, out_features=1000, bias=True)
+    (1): Dropout(p=0.5)
+    (2): Tanh()
+    (3): Linear(in_features=1000, out_features=1000, bias=True)
+  )
+  (mlp_cifar): Sequential(
+    (0): Linear(in_features=1024, out_features=100, bias=True)
+  )
+)
+config mode  train
+CustomReduceLROnPlateau
+begin training, multitask: False, num_users: 30, frac: 0.1, local_ep: 3
+Training Model with use_gpu=True...
+Epoch 0/99 - Task: vqa
+----------
+User 5
+/home/tliu/.local/lib/python3.5/site-packages/torch/nn/modules/rnn.py:179: RuntimeWarning: RNN module weights are not part of single contiguous chunk of memory. This means they need to be compacted at every call, possibly greatly increasing memory usage. To compact weights again call flatten_parameters().
+  self.dropout, self.training, self.bidirectional, self.batch_first)
+Local Epoch: 1 Train Loss: 0.0334 Acc: 25.786 (3454/13395)
+Local Epoch: 2 Train Loss: 0.0279 Acc: 28.033 (3755/13395)
+Local Epoch: 3 Train Loss: 0.0259 Acc: 30.407 (4073/13395)
+Epoch Train Time: 3m 24s
+1.0
+User 9
+Local Epoch: 1 Train Loss: 0.0335 Acc: 25.144 (3361/13367)
+Local Epoch: 2 Train Loss: 0.0282 Acc: 28.054 (3750/13367)
+Local Epoch: 3 Train Loss: 0.0261 Acc: 29.887 (3995/13367)
+Epoch Train Time: 3m 23s
+1.0
+User 0
+Local Epoch: 1 Train Loss: 0.0215 Acc: 38.396 (5418/14111)
+Local Epoch: 2 Train Loss: 0.0175 Acc: 41.216 (5816/14111)
+Local Epoch: 3 Train Loss: 0.0164 Acc: 42.300 (5969/14111)
+Epoch Train Time: 3m 35s
+1.0
+Validation Loss: 0.0408 Acc: 24.821 (6461/26030)
+Epoch Validation Time: 2m 22s
+Num_bad_epochs: 0, unconstrainedBadEpochs: 0, bestMetric: 0.7517864003073377, currentThreshold: 0.736750672301191
+Epoch 1/99 - Task: vqa
+----------
+User 26
+Local Epoch: 1 Train Loss: 0.0419 Acc: 22.614 (2767/12236)
+Local Epoch: 2 Train Loss: 0.0376 Acc: 24.436 (2990/12236)
+Local Epoch: 3 Train Loss: 0.0354 Acc: 25.907 (3170/12236)
+Epoch Train Time: 3m 9s
+1.0
+User 10
+Local Epoch: 1 Train Loss: 0.0283 Acc: 28.787 (3867/13433)
+Local Epoch: 2 Train Loss: 0.0251 Acc: 31.251 (4198/13433)
+Local Epoch: 3 Train Loss: 0.0234 Acc: 33.760 (4535/13433)
+Epoch Train Time: 3m 24s
+1.0
+User 3
+Local Epoch: 1 Train Loss: 0.0185 Acc: 40.575 (5502/13560)
+Local Epoch: 2 Train Loss: 0.0157 Acc: 44.454 (6028/13560)
+Local Epoch: 3 Train Loss: 0.0145 Acc: 45.634 (6188/13560)
+Epoch Train Time: 3m 28s
+1.0
+Validation Loss: 0.0449 Acc: 30.771 (8031/26099)
+Epoch Validation Time: 2m 22s
+Num_bad_epochs: 0, unconstrainedBadEpochs: 0, bestMetric: 0.6922870608069275, currentThreshold: 0.6784413195907889
+Epoch 2/99 - Task: vqa
+----------
+User 15
+Local Epoch: 1 Train Loss: 0.0292 Acc: 29.294 (3771/12873)
+Local Epoch: 2 Train Loss: 0.0251 Acc: 33.675 (4335/12873)
+Local Epoch: 3 Train Loss: 0.0229 Acc: 35.081 (4516/12873)
+Epoch Train Time: 3m 18s
+1.0
+User 16
+Local Epoch: 1 Train Loss: 0.0287 Acc: 29.919 (3862/12908)
+Local Epoch: 2 Train Loss: 0.0247 Acc: 33.754 (4357/12908)
+Local Epoch: 3 Train Loss: 0.0227 Acc: 36.295 (4685/12908)
+Epoch Train Time: 3m 17s
+1.0
+User 4
+Local Epoch: 1 Train Loss: 0.0199 Acc: 41.882 (5634/13452)
+Local Epoch: 2 Train Loss: 0.0172 Acc: 44.544 (5992/13452)
+Local Epoch: 3 Train Loss: 0.0158 Acc: 46.714 (6284/13452)
+Epoch Train Time: 3m 26s
+1.0
+Validation Loss: 0.0451 Acc: 34.248 (8962/26168)
+Epoch Validation Time: 2m 23s
+Num_bad_epochs: 0, unconstrainedBadEpochs: 0, bestMetric: 0.6575206358911647, currentThreshold: 0.6443702231733414
+Epoch 3/99 - Task: vqa
+----------
+User 26
+Local Epoch: 1 Train Loss: 0.0359 Acc: 26.937 (3296/12236)
+Local Epoch: 2 Train Loss: 0.0303 Acc: 31.767 (3887/12236)
+Local Epoch: 3 Train Loss: 0.0285 Acc: 33.483 (4097/12236)
+Epoch Train Time: 3m 10s
+1.0
+User 1
+Local Epoch: 1 Train Loss: 0.0157 Acc: 44.716 (6042/13512)
+Local Epoch: 2 Train Loss: 0.0136 Acc: 48.054 (6493/13512)
+Local Epoch: 3 Train Loss: 0.0125 Acc: 51.673 (6982/13512)
+Epoch Train Time: 3m 26s
+1.0
+User 20
+Local Epoch: 1 Train Loss: 0.0249 Acc: 32.106 (4203/13091)
+Local Epoch: 2 Train Loss: 0.0215 Acc: 35.230 (4612/13091)
+Local Epoch: 3 Train Loss: 0.0197 Acc: 38.828 (5083/13091)
+Epoch Train Time: 3m 34s
+1.0
+Validation Loss: 0.0453 Acc: 35.525 (9276/26111)
+Epoch Validation Time: 2m 27s
+Num_bad_epochs: 1, unconstrainedBadEpochs: 1, bestMetric: 0.6575206358911647, currentThreshold: 0.6443702231733414
+Epoch 4/99 - Task: vqa
+----------
+User 13
+Local Epoch: 1 Train Loss: 0.0268 Acc: 33.128 (4252/12835)
+Local Epoch: 2 Train Loss: 0.0226 Acc: 37.499 (4813/12835)
+Local Epoch: 3 Train Loss: 0.0203 Acc: 40.951 (5256/12835)
+Epoch Train Time: 3m 21s
+1.0
+User 12
+Local Epoch: 1 Train Loss: 0.0291 Acc: 32.575 (4323/13271)
+Local Epoch: 2 Train Loss: 0.0245 Acc: 37.782 (5014/13271)
+Local Epoch: 3 Train Loss: 0.0222 Acc: 40.494 (5374/13271)
+Epoch Train Time: 3m 37s
+1.0
+User 21
+Local Epoch: 1 Train Loss: 0.0249 Acc: 31.931 (4158/13022)
+Local Epoch: 2 Train Loss: 0.0211 Acc: 36.231 (4718/13022)
+Local Epoch: 3 Train Loss: 0.0192 Acc: 39.502 (5144/13022)
+Epoch Train Time: 3m 27s
+1.0
+Validation Loss: 0.0450 Acc: 36.703 (9589/26126)
+Epoch Validation Time: 2m 25s
+Num_bad_epochs: 0, unconstrainedBadEpochs: 0, bestMetric: 0.6329709867564878, currentThreshold: 0.620311567021358
+Epoch 5/99 - Task: vqa
+----------
+User 16
+Local Epoch: 1 Train Loss: 0.0254 Acc: 33.917 (4378/12908)
+Local Epoch: 2 Train Loss: 0.0211 Acc: 39.766 (5133/12908)
+Local Epoch: 3 Train Loss: 0.0189 Acc: 43.252 (5583/12908)
+Epoch Train Time: 3m 29s
+1.0
+User 22
+Local Epoch: 1 Train Loss: 0.0248 Acc: 33.610 (4370/13002)
+Local Epoch: 2 Train Loss: 0.0208 Acc: 37.671 (4898/13002)
+Local Epoch: 3 Train Loss: 0.0187 Acc: 41.301 (5370/13002)
+Epoch Train Time: 3m 25s
+1.0
+User 29
+Local Epoch: 1 Train Loss: 0.0485 Acc: 26.342 (2905/11028)
+Local Epoch: 2 Train Loss: 0.0379 Acc: 30.794 (3396/11028)
+Local Epoch: 3 Train Loss: 0.0347 Acc: 33.361 (3679/11028)
+Epoch Train Time: 3m 1s
+1.0
+Validation Loss: 0.0448 Acc: 37.534 (9787/26075)
+Epoch Validation Time: 2m 26s
+Num_bad_epochs: 1, unconstrainedBadEpochs: 1, bestMetric: 0.6329709867564878, currentThreshold: 0.620311567021358
+Epoch 6/99 - Task: vqa
+----------
+User 21
+Local Epoch: 1 Train Loss: 0.0249 Acc: 33.459 (4357/13022)
+Local Epoch: 2 Train Loss: 0.0207 Acc: 38.558 (5021/13022)
+Local Epoch: 3 Train Loss: 0.0187 Acc: 42.467 (5530/13022)
+Epoch Train Time: 3m 34s
+1.0
+User 16
+Local Epoch: 1 Train Loss: 0.0249 Acc: 35.761 (4616/12908)
+Local Epoch: 2 Train Loss: 0.0208 Acc: 42.051 (5428/12908)
+Local Epoch: 3 Train Loss: 0.0184 Acc: 46.382 (5987/12908)
+Epoch Train Time: 3m 29s
+1.0
+User 5
+Local Epoch: 1 Train Loss: 0.0268 Acc: 33.214 (4449/13395)
+Local Epoch: 2 Train Loss: 0.0226 Acc: 37.962 (5085/13395)
+Local Epoch: 3 Train Loss: 0.0205 Acc: 41.112 (5507/13395)
+Epoch Train Time: 3m 27s
+1.0
+Validation Loss: 0.0496 Acc: 36.492 (9467/25943)
+Epoch Validation Time: 2m 25s
+Num_bad_epochs: 2, unconstrainedBadEpochs: 2, bestMetric: 0.6329709867564878, currentThreshold: 0.620311567021358
+Epoch 7/99 - Task: vqa
+----------
+User 28
+Local Epoch: 1 Train Loss: 0.0484 Acc: 25.585 (2965/11589)
+Local Epoch: 2 Train Loss: 0.0382 Acc: 30.382 (3521/11589)
+Local Epoch: 3 Train Loss: 0.0349 Acc: 32.557 (3773/11589)
+Epoch Train Time: 3m 9s
+1.0
+User 8
+Local Epoch: 1 Train Loss: 0.0293 Acc: 32.853 (4401/13396)
+Local Epoch: 2 Train Loss: 0.0246 Acc: 38.116 (5106/13396)
+Local Epoch: 3 Train Loss: 0.0227 Acc: 39.915 (5347/13396)
+Epoch Train Time: 3m 29s
+1.0
+User 10
+Local Epoch: 1 Train Loss: 0.0290 Acc: 32.621 (4382/13433)
+Local Epoch: 2 Train Loss: 0.0248 Acc: 36.909 (4958/13433)
+Local Epoch: 3 Train Loss: 0.0226 Acc: 39.589 (5318/13433)
+Epoch Train Time: 3m 27s
+1.0
+Validation Loss: 0.0511 Acc: 37.854 (9904/26164)
+Epoch Validation Time: 2m 22s
+Num_bad_epochs: 3, unconstrainedBadEpochs: 3, bestMetric: 0.6329709867564878, currentThreshold: 0.620311567021358
+Epoch 8/99 - Task: vqa
+----------
+User 15
+Local Epoch: 1 Train Loss: 0.0342 Acc: 33.349 (4293/12873)
+Local Epoch: 2 Train Loss: 0.0292 Acc: 36.580 (4709/12873)
+Local Epoch: 3 Train Loss: 0.0267 Acc: 38.849 (5001/12873)
+Epoch Train Time: 3m 19s
+1.0
+User 5
+Local Epoch: 1 Train Loss: 0.0311 Acc: 33.520 (4490/13395)
+Local Epoch: 2 Train Loss: 0.0272 Acc: 37.193 (4982/13395)
+Local Epoch: 3 Train Loss: 0.0251 Acc: 39.000 (5224/13395)
+Epoch Train Time: 3m 23s
+1.0
+User 10
+Local Epoch: 1 Train Loss: 0.0311 Acc: 33.805 (4541/13433)
+Local Epoch: 2 Train Loss: 0.0275 Acc: 37.587 (5049/13433)
+Local Epoch: 3 Train Loss: 0.0257 Acc: 38.778 (5209/13433)
+Epoch Train Time: 3m 25s
+1.0
+Validation Loss: 0.0691 Acc: 36.335 (9425/25939)
+Epoch Validation Time: 2m 25s
+Num_bad_epochs: 4, unconstrainedBadEpochs: 4, bestMetric: 0.6329709867564878, currentThreshold: 0.620311567021358
+Epoch 9/99 - Task: vqa
+----------
+User 11
+Local Epoch: 1 Train Loss: 0.0433 Acc: 27.960 (3738/13369)
+Local Epoch: 2 Train Loss: 0.0379 Acc: 30.705 (4105/13369)
+Local Epoch: 3 Train Loss: 0.0353 Acc: 32.979 (4409/13369)
+Epoch Train Time: 3m 24s
+1.0
+User 1
+Local Epoch: 1 Train Loss: 0.0268 Acc: 41.319 (5583/13512)
+Local Epoch: 2 Train Loss: 0.0226 Acc: 44.479 (6010/13512)
+Local Epoch: 3 Train Loss: 0.0207 Acc: 47.343 (6397/13512)
+Epoch Train Time: 3m 29s
+1.0
+User 2
+Local Epoch: 1 Train Loss: 0.0266 Acc: 41.770 (5646/13517)
+Local Epoch: 2 Train Loss: 0.0227 Acc: 44.714 (6044/13517)
+Local Epoch: 3 Train Loss: 0.0207 Acc: 47.340 (6399/13517)
+Epoch Train Time: 3m 27s
+1.0
+Validation Loss: 0.0864 Acc: 30.847 (8039/26061)
+Epoch Validation Time: 2m 22s
+Num_bad_epochs: 5, unconstrainedBadEpochs: 5, bestMetric: 0.6329709867564878, currentThreshold: 0.620311567021358
+Epoch 10/99 - Task: vqa
+----------
+User 0
+Traceback (most recent call last):
+  File "/home/tliu/Dev/CMU/research/multimodal/Visual-Question-Answering/main.py", line 255, in <module>
+    torch.cuda.manual_seed(config['seed'])
+  File "/home/tliu/Dev/CMU/research/multimodal/Visual-Question-Answering/main.py", line 235, in main
+    num_epochs=config['optim']['n_epochs'], use_gpu=config['use_gpu'], best_accuracy=best_acc,
+  File "/home/tliu/Dev/CMU/research/multimodal/Visual-Question-Answering/train.py", line 316, in train_model
+    use_gpu, local_ep=local_ep)
+  File "/home/tliu/Dev/CMU/research/multimodal/Visual-Question-Answering/train.py", line 24, in train
+    for questions, images, image_ids, answers, ques_ids in dataloader:
+  File "/home/tliu/.local/lib/python3.5/site-packages/torch/utils/data/dataloader.py", line 631, in __next__
+    idx, batch = self._get_batch()
+  File "/home/tliu/.local/lib/python3.5/site-packages/torch/utils/data/dataloader.py", line 610, in _get_batch
+    return self.data_queue.get()
+  File "/usr/lib/python3.5/multiprocessing/queues.py", line 94, in get
+    res = self._recv_bytes()
+  File "/usr/lib/python3.5/multiprocessing/connection.py", line 216, in recv_bytes
+    buf = self._recv_bytes(maxlength)
+  File "/usr/lib/python3.5/multiprocessing/connection.py", line 407, in _recv_bytes
+    buf = self._recv(4)
+  File "/usr/lib/python3.5/multiprocessing/connection.py", line 379, in _recv
+    chunk = read(handle, remaining)
+KeyboardInterrupt
+

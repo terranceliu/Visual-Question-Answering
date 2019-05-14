@@ -1,0 +1,775 @@
+rmsprop, update parameters, no grad norm
+
+/usr/bin/python3.5 /home/tliu/Dev/CMU/research/multimodal/Visual-Question-Answering/main.py
+/home/tliu/Dev/CMU/research/multimodal/Visual-Question-Answering/main.py:250: YAMLLoadWarning: calling yaml.load() without Loader=... is deprecated, as the default Loader is unsafe. Please read https://msg.pyyaml.org/load for full details.
+  config = yaml.load(open(args.config))
+Loading preprocessed datasets
+Building datasets
+loading vocab
+/home/tliu/.local/lib/python3.5/site-packages/torchvision/transforms/transforms.py:188: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+Building batch samplers
+Building dataloaders
+{('train', 10): 14791, ('val', 14): 214354, ('train', 28): 14792, ('val', 1): 214354, ('train', 5): 14792, ('val', 27): 214354, ('train', 14): 14792, ('val', 18): 214354, ('train', 16): 14792, ('val', 5): 214354, ('train', 25): 14792, ('train', 2): 14792, ('val', 22): 214354, ('train', 20): 14791, ('train', 11): 14792, ('val', 9): 214354, ('train', 29): 14792, ('val', 0): 214354, ('train', 6): 14792, ('val', 26): 214354, ('train', 15): 14792, ('val', 13): 214354, ('train', 17): 14792, ('val', 4): 214354, ('train', 26): 14792, ('train', 3): 14792, ('val', 17): 214354, ('train', 21): 14792, ('val', 8): 214354, ('val', 3): 214354, ('train', 7): 14792, ('val', 21): 214354, ('train', 8): 14792, ('val', 12): 214354, ('train', 18): 14792, ('val', 7): 214354, ('train', 27): 14792, ('val', 25): 214354, ('train', 12): 14792, ('val', 16): 214354, ('train', 22): 14792, ('val', 11): 214354, ('val', 29): 214354, ('val', 2): 214354, ('train', 0): 14791, ('val', 20): 214354, ('train', 9): 14792, ('val', 15): 214354, ('train', 19): 14792, ('val', 6): 214354, ('train', 4): 14792, ('val', 24): 214354, ('train', 13): 14792, ('val', 19): 214354, ('train', 23): 14792, ('val', 10): 214354, ('train', 24): 14792, ('val', 28): 214354, ('train', 1): 14792, ('val', 23): 214354}
+ques vocab size: 22227
+ans vocab size: 1001
+Files already downloaded and verified
+Files already downloaded and verified
+VQAModel(
+  (image_channel): ImageEmbedding(
+    (extractor): VGG(
+      (features): Sequential(
+        (0): Conv2d(3, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (1): ReLU(inplace)
+        (2): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (3): ReLU(inplace)
+        (4): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+        (5): Conv2d(64, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (6): ReLU(inplace)
+        (7): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (8): ReLU(inplace)
+        (9): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+        (10): Conv2d(128, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (11): ReLU(inplace)
+        (12): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (13): ReLU(inplace)
+        (14): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (15): ReLU(inplace)
+        (16): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (17): ReLU(inplace)
+        (18): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+        (19): Conv2d(256, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (20): ReLU(inplace)
+        (21): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (22): ReLU(inplace)
+        (23): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (24): ReLU(inplace)
+        (25): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (26): ReLU(inplace)
+        (27): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+        (28): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (29): ReLU(inplace)
+        (30): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (31): ReLU(inplace)
+        (32): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (33): ReLU(inplace)
+        (34): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (35): ReLU(inplace)
+        (36): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+      )
+      (classifier): Sequential(
+        (0): Linear(in_features=25088, out_features=4096, bias=True)
+        (1): ReLU(inplace)
+        (2): Dropout(p=0.5)
+        (3): Linear(in_features=4096, out_features=4096, bias=True)
+        (4): ReLU(inplace)
+        (5): Dropout(p=0.5)
+        (6): Normalize()
+      )
+    )
+    (fflayer): Sequential(
+      (0): Linear(in_features=4096, out_features=1024, bias=True)
+      (1): Tanh()
+    )
+  )
+  (word_embeddings): Embedding(55505, 300)
+  (ques_channel): QuesEmbedding(
+    (drop): Dropout(p=0.5)
+    (lstm): LSTM(300, 512, num_layers=2)
+    (fflayer): Sequential(
+      (0): Linear(in_features=2048, out_features=1024, bias=True)
+      (1): Tanh()
+    )
+    (decoder_lm): Linear(in_features=512, out_features=55505, bias=True)
+  )
+  (mlp): Sequential(
+    (0): Linear(in_features=1024, out_features=1000, bias=True)
+    (1): Dropout(p=0.5)
+    (2): Tanh()
+    (3): Linear(in_features=1000, out_features=1000, bias=True)
+  )
+  (mlp_cifar): Sequential(
+    (0): Linear(in_features=1024, out_features=100, bias=True)
+  )
+)
+config mode  train
+CustomReduceLROnPlateau
+begin training, multitask: False, num_users: 30, frac: 0.1, local_ep: 3
+Training Model with use_gpu=True...
+Epoch 0/99 - Task: vqa
+----------
+User 6
+/home/tliu/.local/lib/python3.5/site-packages/torch/nn/modules/rnn.py:179: RuntimeWarning: RNN module weights are not part of single contiguous chunk of memory. This means they need to be compacted at every call, possibly greatly increasing memory usage. To compact weights again call flatten_parameters().
+  self.dropout, self.training, self.bidirectional, self.batch_first)
+Local Epoch: 1 Train Loss: 0.0336 Acc: 26.190 (3493/13337)
+Local Epoch: 2 Train Loss: 0.0276 Acc: 29.017 (3870/13337)
+Local Epoch: 3 Train Loss: 0.0257 Acc: 30.727 (4098/13337)
+Epoch Train Time: 3m 24s
+2.225757122039795
+User 8
+Local Epoch: 1 Train Loss: 0.0340 Acc: 24.560 (3290/13396)
+Local Epoch: 2 Train Loss: 0.0285 Acc: 27.650 (3704/13396)
+Local Epoch: 3 Train Loss: 0.0266 Acc: 29.666 (3974/13396)
+Epoch Train Time: 3m 24s
+2.08980393409729
+User 26
+Local Epoch: 1 Train Loss: 0.0542 Acc: 15.577 (1906/12236)
+Local Epoch: 2 Train Loss: 0.0447 Acc: 21.445 (2624/12236)
+Local Epoch: 3 Train Loss: 0.0401 Acc: 23.039 (2819/12236)
+Epoch Train Time: 3m 13s
+1.9258688688278198
+Validation Loss: 0.0408 Acc: 24.466 (6402/26167)
+Epoch Validation Time: 2m 22s
+Num_bad_epochs: 0, unconstrainedBadEpochs: 0, bestMetric: 0.7553406962968625, currentThreshold: 0.7402338823709252
+Epoch 1/99 - Task: vqa
+----------
+User 15
+Local Epoch: 1 Train Loss: 0.0324 Acc: 25.821 (3324/12873)
+Local Epoch: 2 Train Loss: 0.0281 Acc: 28.758 (3702/12873)
+Local Epoch: 3 Train Loss: 0.0259 Acc: 31.026 (3994/12873)
+Epoch Train Time: 3m 19s
+2.036451816558838
+User 16
+Local Epoch: 1 Train Loss: 0.0316 Acc: 26.464 (3416/12908)
+Local Epoch: 2 Train Loss: 0.0274 Acc: 29.090 (3755/12908)
+Local Epoch: 3 Train Loss: 0.0255 Acc: 30.996 (4001/12908)
+Epoch Train Time: 3m 17s
+6.900519371032715
+User 14
+Local Epoch: 1 Train Loss: 0.0318 Acc: 26.298 (3358/12769)
+Local Epoch: 2 Train Loss: 0.0278 Acc: 29.047 (3709/12769)
+Local Epoch: 3 Train Loss: 0.0256 Acc: 31.287 (3995/12769)
+Epoch Train Time: 3m 15s
+1.978259801864624
+Validation Loss: 0.0341 Acc: 31.463 (8266/26272)
+Epoch Validation Time: 2m 24s
+Num_bad_epochs: 0, unconstrainedBadEpochs: 0, bestMetric: 0.6853684531059683, currentThreshold: 0.6716610840438489
+Epoch 2/99 - Task: vqa
+----------
+User 1
+Local Epoch: 1 Train Loss: 0.0171 Acc: 41.415 (5596/13512)
+Local Epoch: 2 Train Loss: 0.0149 Acc: 45.278 (6118/13512)
+Local Epoch: 3 Train Loss: 0.0138 Acc: 46.255 (6250/13512)
+Epoch Train Time: 3m 26s
+4.577211856842041
+User 7
+Local Epoch: 1 Train Loss: 0.0260 Acc: 31.535 (4214/13363)
+Local Epoch: 2 Train Loss: 0.0231 Acc: 34.992 (4676/13363)
+Local Epoch: 3 Train Loss: 0.0214 Acc: 36.511 (4879/13363)
+Epoch Train Time: 3m 24s
+1.9062047004699707
+User 16
+Local Epoch: 1 Train Loss: 0.0269 Acc: 31.314 (4042/12908)
+Local Epoch: 2 Train Loss: 0.0238 Acc: 35.211 (4545/12908)
+Local Epoch: 3 Train Loss: 0.0219 Acc: 37.760 (4874/12908)
+Epoch Train Time: 3m 17s
+7.093997478485107
+Validation Loss: 0.0394 Acc: 32.383 (8375/25862)
+Epoch Validation Time: 2m 21s
+Num_bad_epochs: 1, unconstrainedBadEpochs: 1, bestMetric: 0.6853684531059683, currentThreshold: 0.6716610840438489
+Epoch 3/99 - Task: vqa
+----------
+User 11
+Local Epoch: 1 Train Loss: 0.0253 Acc: 32.845 (4391/13369)
+Local Epoch: 2 Train Loss: 0.0221 Acc: 35.949 (4806/13369)
+Local Epoch: 3 Train Loss: 0.0205 Acc: 38.290 (5119/13369)
+Epoch Train Time: 3m 23s
+2.2548410892486572
+User 18
+Local Epoch: 1 Train Loss: 0.0272 Acc: 31.865 (4094/12848)
+Local Epoch: 2 Train Loss: 0.0237 Acc: 34.799 (4471/12848)
+Local Epoch: 3 Train Loss: 0.0217 Acc: 38.146 (4901/12848)
+Epoch Train Time: 3m 16s
+2.3547773361206055
+User 1
+Local Epoch: 1 Train Loss: 0.0155 Acc: 43.731 (5909/13512)
+Local Epoch: 2 Train Loss: 0.0136 Acc: 48.017 (6488/13512)
+Local Epoch: 3 Train Loss: 0.0126 Acc: 50.215 (6785/13512)
+Epoch Train Time: 3m 27s
+6.759241104125977
+Validation Loss: 0.0400 Acc: 34.256 (8910/26010)
+Epoch Validation Time: 2m 22s
+Num_bad_epochs: 0, unconstrainedBadEpochs: 0, bestMetric: 0.6574394463667821, currentThreshold: 0.6442906574394465
+Epoch 4/99 - Task: vqa
+----------
+User 6
+Local Epoch: 1 Train Loss: 0.0243 Acc: 34.753 (4635/13337)
+Local Epoch: 2 Train Loss: 0.0210 Acc: 38.547 (5141/13337)
+Local Epoch: 3 Train Loss: 0.0193 Acc: 40.579 (5412/13337)
+Epoch Train Time: 3m 24s
+2.425534963607788
+User 10
+Local Epoch: 1 Train Loss: 0.0247 Acc: 33.887 (4552/13433)
+Local Epoch: 2 Train Loss: 0.0215 Acc: 37.423 (5027/13433)
+Local Epoch: 3 Train Loss: 0.0198 Acc: 40.311 (5415/13433)
+Epoch Train Time: 3m 24s
+2.757948637008667
+User 17
+Local Epoch: 1 Train Loss: 0.0265 Acc: 32.474 (4167/12832)
+Local Epoch: 2 Train Loss: 0.0227 Acc: 36.690 (4708/12832)
+Local Epoch: 3 Train Loss: 0.0207 Acc: 40.134 (5150/12832)
+Epoch Train Time: 3m 16s
+2.6923985481262207
+Validation Loss: 0.0370 Acc: 36.517 (9496/26004)
+Epoch Validation Time: 2m 21s
+Num_bad_epochs: 0, unconstrainedBadEpochs: 0, bestMetric: 0.6348254114751576, currentThreshold: 0.6221289032456544
+Epoch 5/99 - Task: vqa
+----------
+User 15
+Local Epoch: 1 Train Loss: 0.0252 Acc: 34.118 (4392/12873)
+Local Epoch: 2 Train Loss: 0.0214 Acc: 38.880 (5005/12873)
+Local Epoch: 3 Train Loss: 0.0193 Acc: 42.655 (5491/12873)
+Epoch Train Time: 3m 18s
+2.4941670894622803
+User 17
+Local Epoch: 1 Train Loss: 0.0244 Acc: 35.419 (4545/12832)
+Local Epoch: 2 Train Loss: 0.0207 Acc: 40.960 (5256/12832)
+Local Epoch: 3 Train Loss: 0.0185 Acc: 45.488 (5837/12832)
+Epoch Train Time: 3m 14s
+4.062421798706055
+User 6
+Local Epoch: 1 Train Loss: 0.0222 Acc: 37.520 (5004/13337)
+Local Epoch: 2 Train Loss: 0.0193 Acc: 42.206 (5629/13337)
+Local Epoch: 3 Train Loss: 0.0177 Acc: 46.030 (6139/13337)
+Epoch Train Time: 3m 23s
+3.0710527896881104
+Validation Loss: 0.0342 Acc: 38.805 (10127/26097)
+Epoch Validation Time: 2m 22s
+Num_bad_epochs: 0, unconstrainedBadEpochs: 0, bestMetric: 0.6119477334559529, currentThreshold: 0.5997087787868338
+Epoch 6/99 - Task: vqa
+----------
+User 13
+Local Epoch: 1 Train Loss: 0.0249 Acc: 34.990 (4491/12835)
+Local Epoch: 2 Train Loss: 0.0210 Acc: 40.319 (5175/12835)
+Local Epoch: 3 Train Loss: 0.0190 Acc: 44.324 (5689/12835)
+Epoch Train Time: 3m 18s
+3.314798593521118
+User 16
+Local Epoch: 1 Train Loss: 0.0232 Acc: 36.721 (4740/12908)
+Local Epoch: 2 Train Loss: 0.0194 Acc: 43.105 (5564/12908)
+Local Epoch: 3 Train Loss: 0.0175 Acc: 47.746 (6163/12908)
+Epoch Train Time: 3m 17s
+7.122330665588379
+User 11
+Local Epoch: 1 Train Loss: 0.0226 Acc: 36.809 (4921/13369)
+Local Epoch: 2 Train Loss: 0.0194 Acc: 42.142 (5634/13369)
+Local Epoch: 3 Train Loss: 0.0177 Acc: 44.693 (5975/13369)
+Epoch Train Time: 3m 23s
+2.096259117126465
+Validation Loss: 0.0353 Acc: 37.465 (9768/26072)
+Epoch Validation Time: 2m 22s
+Num_bad_epochs: 1, unconstrainedBadEpochs: 1, bestMetric: 0.6119477334559529, currentThreshold: 0.5997087787868338
+Epoch 7/99 - Task: vqa
+----------
+User 13
+Local Epoch: 1 Train Loss: 0.0231 Acc: 37.803 (4852/12835)
+Local Epoch: 2 Train Loss: 0.0193 Acc: 44.784 (5748/12835)
+Local Epoch: 3 Train Loss: 0.0172 Acc: 49.388 (6339/12835)
+Epoch Train Time: 3m 16s
+3.211707592010498
+User 1
+Local Epoch: 1 Train Loss: 0.0138 Acc: 50.052 (6763/13512)
+Local Epoch: 2 Train Loss: 0.0116 Acc: 56.542 (7640/13512)
+Local Epoch: 3 Train Loss: 0.0105 Acc: 59.503 (8040/13512)
+Epoch Train Time: 3m 26s
+5.016120910644531
+User 18
+Local Epoch: 1 Train Loss: 0.0237 Acc: 36.473 (4686/12848)
+Local Epoch: 2 Train Loss: 0.0198 Acc: 42.800 (5499/12848)
+Local Epoch: 3 Train Loss: 0.0177 Acc: 46.933 (6030/12848)
+Epoch Train Time: 3m 29s
+3.0632565021514893
+Validation Loss: 0.0341 Acc: 38.829 (10156/26156)
+Epoch Validation Time: 2m 23s
+Num_bad_epochs: 2, unconstrainedBadEpochs: 2, bestMetric: 0.6119477334559529, currentThreshold: 0.5997087787868338
+Epoch 8/99 - Task: vqa
+----------
+User 0
+Local Epoch: 1 Train Loss: 0.0155 Acc: 47.077 (6643/14111)
+Local Epoch: 2 Train Loss: 0.0133 Acc: 51.187 (7223/14111)
+Local Epoch: 3 Train Loss: 0.0123 Acc: 54.256 (7656/14111)
+Epoch Train Time: 3m 49s
+1.5618520975112915
+User 3
+Local Epoch: 1 Train Loss: 0.0142 Acc: 48.422 (6566/13560)
+Local Epoch: 2 Train Loss: 0.0120 Acc: 52.979 (7184/13560)
+Local Epoch: 3 Train Loss: 0.0109 Acc: 57.198 (7756/13560)
+Epoch Train Time: 3m 28s
+1.8192329406738281
+User 14
+Local Epoch: 1 Train Loss: 0.0238 Acc: 37.160 (4745/12769)
+Local Epoch: 2 Train Loss: 0.0197 Acc: 44.201 (5644/12769)
+Local Epoch: 3 Train Loss: 0.0176 Acc: 47.819 (6106/12769)
+Epoch Train Time: 3m 16s
+2.6642112731933594
+Validation Loss: 0.0362 Acc: 39.461 (10317/26145)
+Epoch Validation Time: 2m 22s
+Num_bad_epochs: 3, unconstrainedBadEpochs: 3, bestMetric: 0.6119477334559529, currentThreshold: 0.5997087787868338
+Epoch 9/99 - Task: vqa
+----------
+User 16
+Local Epoch: 1 Train Loss: 0.0203 Acc: 43.059 (5558/12908)
+Local Epoch: 2 Train Loss: 0.0165 Acc: 52.758 (6810/12908)
+Local Epoch: 3 Train Loss: 0.0143 Acc: 58.196 (7512/12908)
+Epoch Train Time: 3m 17s
+6.442882061004639
+User 3
+Local Epoch: 1 Train Loss: 0.0130 Acc: 51.836 (7029/13560)
+Local Epoch: 2 Train Loss: 0.0109 Acc: 59.189 (8026/13560)
+Local Epoch: 3 Train Loss: 0.0097 Acc: 63.636 (8629/13560)
+Epoch Train Time: 3m 27s
+1.8255842924118042
+User 7
+Local Epoch: 1 Train Loss: 0.0225 Acc: 37.971 (5074/13363)
+Local Epoch: 2 Train Loss: 0.0188 Acc: 44.167 (5902/13363)
+Local Epoch: 3 Train Loss: 0.0170 Acc: 48.597 (6494/13363)
+Epoch Train Time: 3m 24s
+2.208714246749878
+Validation Loss: 0.0361 Acc: 39.180 (10264/26197)
+Epoch Validation Time: 2m 21s
+Num_bad_epochs: 4, unconstrainedBadEpochs: 4, bestMetric: 0.6119477334559529, currentThreshold: 0.5997087787868338
+Epoch 10/99 - Task: vqa
+----------
+User 4
+Local Epoch: 1 Train Loss: 0.0164 Acc: 47.339 (6368/13452)
+Local Epoch: 2 Train Loss: 0.0135 Acc: 54.312 (7306/13452)
+Local Epoch: 3 Train Loss: 0.0121 Acc: 59.151 (7957/13452)
+Epoch Train Time: 3m 27s
+1.9574086666107178
+User 22
+Local Epoch: 1 Train Loss: 0.0234 Acc: 35.702 (4642/13002)
+Local Epoch: 2 Train Loss: 0.0189 Acc: 42.301 (5500/13002)
+Local Epoch: 3 Train Loss: 0.0169 Acc: 47.154 (6131/13002)
+Epoch Train Time: 3m 18s
+11.829185485839844
+User 10
+Local Epoch: 1 Train Loss: 0.0222 Acc: 39.284 (5277/13433)
+Local Epoch: 2 Train Loss: 0.0183 Acc: 45.954 (6173/13433)
+Local Epoch: 3 Train Loss: 0.0163 Acc: 50.919 (6840/13433)
+Epoch Train Time: 3m 25s
+3.060375452041626
+Validation Loss: 0.0323 Acc: 40.020 (10476/26177)
+Epoch Validation Time: 2m 22s
+Num_bad_epochs: 5, unconstrainedBadEpochs: 5, bestMetric: 0.6119477334559529, currentThreshold: 0.5997087787868338
+Epoch 11/99 - Task: vqa
+----------
+User 27
+Local Epoch: 1 Train Loss: 0.0304 Acc: 28.874 (3430/11879)
+Local Epoch: 2 Train Loss: 0.0243 Acc: 36.687 (4358/11879)
+Local Epoch: 3 Train Loss: 0.0211 Acc: 41.864 (4973/11879)
+Epoch Train Time: 3m 4s
+2.8244009017944336
+User 26
+Local Epoch: 1 Train Loss: 0.0343 Acc: 29.920 (3661/12236)
+Local Epoch: 2 Train Loss: 0.0276 Acc: 37.659 (4608/12236)
+Local Epoch: 3 Train Loss: 0.0245 Acc: 43.241 (5291/12236)
+Epoch Train Time: 3m 9s
+3.21240234375
+User 28
+Local Epoch: 1 Train Loss: 0.0362 Acc: 28.579 (3312/11589)
+Local Epoch: 2 Train Loss: 0.0293 Acc: 34.809 (4034/11589)
+Local Epoch: 3 Train Loss: 0.0257 Acc: 40.366 (4678/11589)
+Epoch Train Time: 3m 1s
+3.366666555404663
+Validation Loss: 0.0300 Acc: 42.163 (11032/26165)
+Epoch Validation Time: 2m 23s
+Num_bad_epochs: 0, unconstrainedBadEpochs: 0, bestMetric: 0.5783680489203133, currentThreshold: 0.5668006879419071
+Epoch 12/99 - Task: vqa
+----------
+User 5
+Local Epoch: 1 Train Loss: 0.0227 Acc: 37.753 (5057/13395)
+Local Epoch: 2 Train Loss: 0.0191 Acc: 43.919 (5883/13395)
+Local Epoch: 3 Train Loss: 0.0172 Acc: 47.540 (6368/13395)
+Epoch Train Time: 3m 24s
+2.102790117263794
+User 10
+Local Epoch: 1 Train Loss: 0.0215 Acc: 39.745 (5339/13433)
+Local Epoch: 2 Train Loss: 0.0180 Acc: 48.470 (6511/13433)
+Local Epoch: 3 Train Loss: 0.0158 Acc: 53.651 (7207/13433)
+Epoch Train Time: 3m 25s
+3.2876408100128174
+User 8
+Local Epoch: 1 Train Loss: 0.0227 Acc: 37.519 (5026/13396)
+Local Epoch: 2 Train Loss: 0.0190 Acc: 45.110 (6043/13396)
+Local Epoch: 3 Train Loss: 0.0172 Acc: 49.134 (6582/13396)
+Epoch Train Time: 3m 23s
+1.9664487838745117
+Validation Loss: 0.0327 Acc: 41.145 (10770/26176)
+Epoch Validation Time: 2m 23s
+Num_bad_epochs: 1, unconstrainedBadEpochs: 1, bestMetric: 0.5783680489203133, currentThreshold: 0.5668006879419071
+Epoch 13/99 - Task: vqa
+----------
+User 5
+Local Epoch: 1 Train Loss: 0.0212 Acc: 40.164 (5380/13395)
+Local Epoch: 2 Train Loss: 0.0180 Acc: 47.854 (6410/13395)
+Local Epoch: 3 Train Loss: 0.0162 Acc: 52.176 (6989/13395)
+Epoch Train Time: 3m 24s
+2.0437753200531006
+User 12
+Local Epoch: 1 Train Loss: 0.0259 Acc: 37.314 (4952/13271)
+Local Epoch: 2 Train Loss: 0.0217 Acc: 45.528 (6042/13271)
+Local Epoch: 3 Train Loss: 0.0190 Acc: 49.951 (6629/13271)
+Epoch Train Time: 3m 25s
+2.36462140083313
+User 8
+Local Epoch: 1 Train Loss: 0.0212 Acc: 40.803 (5466/13396)
+Local Epoch: 2 Train Loss: 0.0179 Acc: 49.545 (6637/13396)
+Local Epoch: 3 Train Loss: 0.0160 Acc: 53.576 (7177/13396)
+Epoch Train Time: 3m 23s
+1.999038815498352
+Validation Loss: 0.0348 Acc: 41.752 (10886/26073)
+Epoch Validation Time: 2m 22s
+Num_bad_epochs: 2, unconstrainedBadEpochs: 2, bestMetric: 0.5783680489203133, currentThreshold: 0.5668006879419071
+Epoch 14/99 - Task: vqa
+----------
+User 3
+Local Epoch: 1 Train Loss: 0.0135 Acc: 52.456 (7113/13560)
+Local Epoch: 2 Train Loss: 0.0109 Acc: 62.117 (8423/13560)
+Local Epoch: 3 Train Loss: 0.0096 Acc: 66.099 (8963/13560)
+Epoch Train Time: 3m 26s
+2.0148468017578125
+User 16
+Local Epoch: 1 Train Loss: 0.0193 Acc: 48.830 (6303/12908)
+Local Epoch: 2 Train Loss: 0.0153 Acc: 59.351 (7661/12908)
+Local Epoch: 3 Train Loss: 0.0131 Acc: 64.177 (8284/12908)
+Epoch Train Time: 3m 17s
+5.900431156158447
+User 23
+Local Epoch: 1 Train Loss: 0.0297 Acc: 33.790 (4317/12776)
+Local Epoch: 2 Train Loss: 0.0244 Acc: 41.085 (5249/12776)
+Local Epoch: 3 Train Loss: 0.0216 Acc: 46.525 (5944/12776)
+Epoch Train Time: 3m 17s
+2.6132051944732666
+Validation Loss: 0.0362 Acc: 40.937 (10710/26162)
+Epoch Validation Time: 2m 22s
+Num_bad_epochs: 3, unconstrainedBadEpochs: 3, bestMetric: 0.5783680489203133, currentThreshold: 0.5668006879419071
+Epoch 15/99 - Task: vqa
+----------
+User 9
+Local Epoch: 1 Train Loss: 0.0234 Acc: 38.266 (5115/13367)
+Local Epoch: 2 Train Loss: 0.0197 Acc: 44.745 (5981/13367)
+Local Epoch: 3 Train Loss: 0.0177 Acc: 49.503 (6617/13367)
+Epoch Train Time: 3m 24s
+2.8146495819091797
+User 2
+Local Epoch: 1 Train Loss: 0.0144 Acc: 49.871 (6741/13517)
+Local Epoch: 2 Train Loss: 0.0119 Acc: 57.520 (7775/13517)
+Local Epoch: 3 Train Loss: 0.0107 Acc: 62.166 (8403/13517)
+Epoch Train Time: 3m 26s
+4.417455673217773
+User 16
+Local Epoch: 1 Train Loss: 0.0164 Acc: 56.926 (7348/12908)
+Local Epoch: 2 Train Loss: 0.0132 Acc: 65.301 (8429/12908)
+Local Epoch: 3 Train Loss: 0.0115 Acc: 69.112 (8921/12908)
+Epoch Train Time: 3m 16s
+9.47160816192627
+Validation Loss: 0.0377 Acc: 41.123 (10690/25995)
+Epoch Validation Time: 2m 20s
+Num_bad_epochs: 4, unconstrainedBadEpochs: 4, bestMetric: 0.5783680489203133, currentThreshold: 0.5668006879419071
+Epoch 16/99 - Task: vqa
+----------
+User 18
+Local Epoch: 1 Train Loss: 0.0244 Acc: 37.881 (4867/12848)
+Local Epoch: 2 Train Loss: 0.0200 Acc: 46.147 (5929/12848)
+Local Epoch: 3 Train Loss: 0.0176 Acc: 50.732 (6518/12848)
+Epoch Train Time: 3m 15s
+3.4198529720306396
+User 12
+Local Epoch: 1 Train Loss: 0.0256 Acc: 39.952 (5302/13271)
+Local Epoch: 2 Train Loss: 0.0213 Acc: 49.009 (6504/13271)
+Local Epoch: 3 Train Loss: 0.0190 Acc: 53.779 (7137/13271)
+Epoch Train Time: 3m 24s
+3.049959421157837
+User 25
+Local Epoch: 1 Train Loss: 0.0326 Acc: 28.990 (3531/12180)
+Local Epoch: 2 Train Loss: 0.0264 Acc: 37.496 (4567/12180)
+Local Epoch: 3 Train Loss: 0.0229 Acc: 42.151 (5134/12180)
+Epoch Train Time: 3m 8s
+3.8105766773223877
+Validation Loss: 0.0360 Acc: 40.993 (10652/25985)
+Epoch Validation Time: 2m 22s
+Num_bad_epochs: 5, unconstrainedBadEpochs: 5, bestMetric: 0.5783680489203133, currentThreshold: 0.5668006879419071
+Epoch 17/99 - Task: vqa
+----------
+User 12
+Local Epoch: 1 Train Loss: 0.0241 Acc: 43.652 (5793/13271)
+Local Epoch: 2 Train Loss: 0.0203 Acc: 52.023 (6904/13271)
+Local Epoch: 3 Train Loss: 0.0181 Acc: 56.492 (7497/13271)
+Epoch Train Time: 3m 24s
+3.0492300987243652
+User 28
+Local Epoch: 1 Train Loss: 0.0373 Acc: 30.339 (3516/11589)
+Local Epoch: 2 Train Loss: 0.0311 Acc: 36.345 (4212/11589)
+Local Epoch: 3 Train Loss: 0.0287 Acc: 40.607 (4706/11589)
+Epoch Train Time: 3m 1s
+6.884923934936523
+User 18
+Local Epoch: 1 Train Loss: 0.0227 Acc: 40.971 (5264/12848)
+Local Epoch: 2 Train Loss: 0.0191 Acc: 49.089 (6307/12848)
+Local Epoch: 3 Train Loss: 0.0168 Acc: 53.798 (6912/12848)
+Epoch Train Time: 3m 16s
+3.6221096515655518
+Validation Loss: 0.0347 Acc: 40.985 (10718/26151)
+Epoch Validation Time: 2m 23s
+Num_bad_epochs: 6, unconstrainedBadEpochs: 6, bestMetric: 0.5783680489203133, currentThreshold: 0.5668006879419071
+Epoch 18/99 - Task: vqa
+----------
+User 8
+Local Epoch: 1 Train Loss: 0.0225 Acc: 42.027 (5630/13396)
+Local Epoch: 2 Train Loss: 0.0194 Acc: 48.865 (6546/13396)
+Local Epoch: 3 Train Loss: 0.0173 Acc: 53.367 (7149/13396)
+Epoch Train Time: 3m 25s
+2.792276382446289
+User 21
+Local Epoch: 1 Train Loss: 0.0254 Acc: 33.835 (4406/13022)
+Local Epoch: 2 Train Loss: 0.0217 Acc: 40.908 (5327/13022)
+Local Epoch: 3 Train Loss: 0.0194 Acc: 45.070 (5869/13022)
+Epoch Train Time: 3m 21s
+6.068918228149414
+User 24
+Local Epoch: 1 Train Loss: 0.0328 Acc: 29.769 (3636/12214)
+Local Epoch: 2 Train Loss: 0.0276 Acc: 35.705 (4361/12214)
+Local Epoch: 3 Train Loss: 0.0243 Acc: 40.200 (4910/12214)
+Epoch Train Time: 3m 7s
+11.5993070602417
+Validation Loss: 0.0347 Acc: 40.868 (10608/25957)
+Epoch Validation Time: 2m 20s
+Num_bad_epochs: 7, unconstrainedBadEpochs: 7, bestMetric: 0.5783680489203133, currentThreshold: 0.5668006879419071
+Epoch 19/99 - Task: vqa
+----------
+User 6
+Local Epoch: 1 Train Loss: 0.0231 Acc: 38.772 (5171/13337)
+Local Epoch: 2 Train Loss: 0.0202 Acc: 45.250 (6035/13337)
+Local Epoch: 3 Train Loss: 0.0182 Acc: 48.872 (6518/13337)
+Epoch Train Time: 3m 24s
+6.755105495452881
+User 25
+Local Epoch: 1 Train Loss: 0.0310 Acc: 31.470 (3833/12180)
+Local Epoch: 2 Train Loss: 0.0262 Acc: 38.079 (4638/12180)
+Local Epoch: 3 Train Loss: 0.0235 Acc: 41.437 (5047/12180)
+Epoch Train Time: 3m 6s
+3.9229679107666016
+User 10
+Local Epoch: 1 Train Loss: 0.0226 Acc: 42.448 (5702/13433)
+Local Epoch: 2 Train Loss: 0.0191 Acc: 49.646 (6669/13433)
+Local Epoch: 3 Train Loss: 0.0173 Acc: 53.421 (7176/13433)
+Epoch Train Time: 3m 25s
+4.851570129394531
+Validation Loss: 0.0360 Acc: 40.452 (10461/25860)
+Epoch Validation Time: 2m 22s
+Epoch    19: reducing learning rate of group 0 to 1.5000e-04.
+Num_bad_epochs: 0, unconstrainedBadEpochs: 8, bestMetric: 0.5783680489203133, currentThreshold: 0.5668006879419071
+Epoch 20/99 - Task: vqa
+----------
+User 3
+Local Epoch: 1 Train Loss: 0.0140 Acc: 54.889 (7443/13560)
+Local Epoch: 2 Train Loss: 0.0125 Acc: 60.472 (8200/13560)
+Local Epoch: 3 Train Loss: 0.0116 Acc: 63.274 (8580/13560)
+Epoch Train Time: 3m 27s
+2.8974769115448
+User 20
+Local Epoch: 1 Train Loss: 0.0254 Acc: 33.466 (4381/13091)
+Local Epoch: 2 Train Loss: 0.0225 Acc: 38.553 (5047/13091)
+Local Epoch: 3 Train Loss: 0.0211 Acc: 41.250 (5400/13091)
+Epoch Train Time: 3m 20s
+4.452938079833984
+User 23
+Local Epoch: 1 Train Loss: 0.0303 Acc: 34.549 (4414/12776)
+Local Epoch: 2 Train Loss: 0.0281 Acc: 40.044 (5116/12776)
+Local Epoch: 3 Train Loss: 0.0257 Acc: 41.281 (5274/12776)
+Epoch Train Time: 3m 16s
+4.162092685699463
+Validation Loss: 0.0356 Acc: 41.755 (10860/26009)
+Epoch Validation Time: 2m 27s
+Num_bad_epochs: 1, unconstrainedBadEpochs: 9, bestMetric: 0.5783680489203133, currentThreshold: 0.5668006879419071
+Epoch 21/99 - Task: vqa
+----------
+User 21
+Local Epoch: 1 Train Loss: 0.0247 Acc: 36.830 (4796/13022)
+Local Epoch: 2 Train Loss: 0.0224 Acc: 41.507 (5405/13022)
+Local Epoch: 3 Train Loss: 0.0209 Acc: 43.780 (5701/13022)
+Epoch Train Time: 3m 18s
+9.435969352722168
+User 12
+Local Epoch: 1 Train Loss: 0.0251 Acc: 43.765 (5808/13271)
+Local Epoch: 2 Train Loss: 0.0230 Acc: 48.489 (6435/13271)
+Local Epoch: 3 Train Loss: 0.0213 Acc: 51.541 (6840/13271)
+Epoch Train Time: 3m 34s
+5.529615879058838
+User 13
+Local Epoch: 1 Train Loss: 0.0261 Acc: 37.102 (4762/12835)
+Local Epoch: 2 Train Loss: 0.0235 Acc: 42.493 (5454/12835)
+Local Epoch: 3 Train Loss: 0.0218 Acc: 44.947 (5769/12835)
+Epoch Train Time: 3m 44s
+5.753068923950195
+Validation Loss: 0.0373 Acc: 41.237 (10704/25957)
+Epoch Validation Time: 2m 35s
+Num_bad_epochs: 2, unconstrainedBadEpochs: 10, bestMetric: 0.5783680489203133, currentThreshold: 0.5668006879419071
+Epoch 22/99 - Task: vqa
+----------
+User 9
+Local Epoch: 1 Train Loss: 0.0251 Acc: 37.997 (5079/13367)
+Local Epoch: 2 Train Loss: 0.0229 Acc: 42.725 (5711/13367)
+Local Epoch: 3 Train Loss: 0.0216 Acc: 44.475 (5945/13367)
+Epoch Train Time: 3m 37s
+3.8692514896392822
+User 24
+Local Epoch: 1 Train Loss: 0.0313 Acc: 32.725 (3997/12214)
+Local Epoch: 2 Train Loss: 0.0285 Acc: 36.958 (4514/12214)
+Local Epoch: 3 Train Loss: 0.0263 Acc: 40.126 (4901/12214)
+Epoch Train Time: 3m 15s
+16.67224884033203
+User 18
+Local Epoch: 1 Train Loss: 0.0243 Acc: 41.298 (5306/12848)
+Local Epoch: 2 Train Loss: 0.0218 Acc: 46.832 (6017/12848)
+Local Epoch: 3 Train Loss: 0.0204 Acc: 49.120 (6311/12848)
+Epoch Train Time: 3m 24s
+5.290390491485596
+Validation Loss: 0.0359 Acc: 41.705 (10903/26143)
+Epoch Validation Time: 2m 24s
+Num_bad_epochs: 3, unconstrainedBadEpochs: 11, bestMetric: 0.5783680489203133, currentThreshold: 0.5668006879419071
+Epoch 23/99 - Task: vqa
+----------
+User 8
+Local Epoch: 1 Train Loss: 0.0238 Acc: 41.079 (5503/13396)
+Local Epoch: 2 Train Loss: 0.0218 Acc: 45.379 (6079/13396)
+Local Epoch: 3 Train Loss: 0.0203 Acc: 48.574 (6507/13396)
+Epoch Train Time: 3m 26s
+3.3314156532287598
+User 21
+Local Epoch: 1 Train Loss: 0.0240 Acc: 39.303 (5118/13022)
+Local Epoch: 2 Train Loss: 0.0221 Acc: 41.798 (5443/13022)
+Local Epoch: 3 Train Loss: 0.0209 Acc: 44.701 (5821/13022)
+Epoch Train Time: 3m 24s
+11.576231956481934
+User 16
+Local Epoch: 1 Train Loss: 0.0197 Acc: 53.068 (6850/12908)
+Local Epoch: 2 Train Loss: 0.0175 Acc: 58.406 (7539/12908)
+Local Epoch: 3 Train Loss: 0.0161 Acc: 60.947 (7867/12908)
+Epoch Train Time: 3m 23s
+21.37428092956543
+Validation Loss: 0.0385 Acc: 41.572 (10808/25998)
+Epoch Validation Time: 2m 26s
+Num_bad_epochs: 4, unconstrainedBadEpochs: 12, bestMetric: 0.5783680489203133, currentThreshold: 0.5668006879419071
+Epoch 24/99 - Task: vqa
+----------
+User 11
+Local Epoch: 1 Train Loss: 0.0258 Acc: 37.213 (4975/13369)
+Local Epoch: 2 Train Loss: 0.0234 Acc: 42.591 (5694/13369)
+Local Epoch: 3 Train Loss: 0.0222 Acc: 44.386 (5934/13369)
+Epoch Train Time: 3m 26s
+4.414511203765869
+User 22
+Local Epoch: 1 Train Loss: 0.0245 Acc: 37.733 (4906/13002)
+Local Epoch: 2 Train Loss: 0.0224 Acc: 42.678 (5549/13002)
+Local Epoch: 3 Train Loss: 0.0206 Acc: 45.085 (5862/13002)
+Epoch Train Time: 3m 22s
+21.33809471130371
+User 0
+Local Epoch: 1 Train Loss: 0.0178 Acc: 47.807 (6746/14111)
+Local Epoch: 2 Train Loss: 0.0160 Acc: 51.648 (7288/14111)
+Local Epoch: 3 Train Loss: 0.0151 Acc: 53.483 (7547/14111)
+Epoch Train Time: 3m 40s
+2.067850351333618
+Validation Loss: 0.0381 Acc: 41.257 (10717/25976)
+Epoch Validation Time: 2m 26s
+Num_bad_epochs: 5, unconstrainedBadEpochs: 13, bestMetric: 0.5783680489203133, currentThreshold: 0.5668006879419071
+Epoch 25/99 - Task: vqa
+----------
+User 14
+Local Epoch: 1 Train Loss: 0.0273 Acc: 37.474 (4785/12769)
+Local Epoch: 2 Train Loss: 0.0248 Acc: 41.162 (5256/12769)
+Local Epoch: 3 Train Loss: 0.0235 Acc: 42.948 (5484/12769)
+Epoch Train Time: 3m 17s
+4.836384296417236
+User 7
+Local Epoch: 1 Train Loss: 0.0258 Acc: 37.312 (4986/13363)
+Local Epoch: 2 Train Loss: 0.0236 Acc: 41.750 (5579/13363)
+Local Epoch: 3 Train Loss: 0.0223 Acc: 44.084 (5891/13363)
+Epoch Train Time: 3m 25s
+4.562912464141846
+User 3
+Local Epoch: 1 Train Loss: 0.0148 Acc: 55.066 (7467/13560)
+Local Epoch: 2 Train Loss: 0.0132 Acc: 60.627 (8221/13560)
+Local Epoch: 3 Train Loss: 0.0124 Acc: 62.817 (8518/13560)
+Epoch Train Time: 3m 33s
+3.4976730346679688
+Validation Loss: 0.0385 Acc: 40.973 (10600/25871)
+Epoch Validation Time: 2m 26s
+Num_bad_epochs: 6, unconstrainedBadEpochs: 14, bestMetric: 0.5783680489203133, currentThreshold: 0.5668006879419071
+Epoch 26/99 - Task: vqa
+----------
+User 16
+Local Epoch: 1 Train Loss: 0.0193 Acc: 55.508 (7165/12908)
+Local Epoch: 2 Train Loss: 0.0173 Acc: 60.621 (7825/12908)
+Local Epoch: 3 Train Loss: 0.0158 Acc: 62.969 (8128/12908)
+Epoch Train Time: 3m 25s
+13.664008140563965
+User 26
+Local Epoch: 1 Train Loss: 0.0418 Acc: 29.601 (3622/12236)
+Local Epoch: 2 Train Loss: 0.0372 Acc: 33.312 (4076/12236)
+Local Epoch: 3 Train Loss: 0.0356 Acc: 34.783 (4256/12236)
+Epoch Train Time: 3m 9s
+11.963424682617188
+User 1
+Local Epoch: 1 Train Loss: 0.0155 Acc: 53.323 (7205/13512)
+Local Epoch: 2 Train Loss: 0.0141 Acc: 57.549 (7776/13512)
+Local Epoch: 3 Train Loss: 0.0133 Acc: 60.132 (8125/13512)
+Epoch Train Time: 3m 30s
+9.982649803161621
+Validation Loss: 0.0393 Acc: 41.686 (10868/26071)
+Epoch Validation Time: 2m 25s
+Num_bad_epochs: 7, unconstrainedBadEpochs: 15, bestMetric: 0.5783680489203133, currentThreshold: 0.5668006879419071
+Epoch 27/99 - Task: vqa
+----------
+User 14
+Local Epoch: 1 Train Loss: 0.0269 Acc: 39.103 (4993/12769)
+Local Epoch: 2 Train Loss: 0.0249 Acc: 42.666 (5448/12769)
+Local Epoch: 3 Train Loss: 0.0235 Acc: 44.397 (5669/12769)
+Epoch Train Time: 3m 22s
+6.039144992828369
+User 2
+Local Epoch: 1 Train Loss: 0.0161 Acc: 51.631 (6979/13517)
+Local Epoch: 2 Train Loss: 0.0144 Acc: 56.218 (7599/13517)
+Local Epoch: 3 Train Loss: 0.0137 Acc: 58.031 (7844/13517)
+Epoch Train Time: 3m 30s
+5.528661251068115
+User 6
+Local Epoch: 1 Train Loss: 0.0244 Acc: 41.501 (5535/13337)
+Local Epoch: 2 Train Loss: 0.0223 Acc: 45.190 (6027/13337)
+Local Epoch: 3 Train Loss: 0.0212 Acc: 46.900 (6255/13337)
+Epoch Train Time: 3m 25s
+7.038174152374268
+Validation Loss: 0.0416 Acc: 41.507 (10778/25967)
+Epoch Validation Time: 2m 28s
+Epoch    27: reducing learning rate of group 0 to 7.5000e-05.
+Num_bad_epochs: 0, unconstrainedBadEpochs: 16, bestMetric: 0.5783680489203133, currentThreshold: 0.5668006879419071
+Epoch 28/99 - Task: vqa
+----------
+User 1
+Local Epoch: 1 Train Loss: 0.0151 Acc: 54.626 (7381/13512)
+Local Epoch: 2 Train Loss: 0.0143 Acc: 58.052 (7844/13512)
+Local Epoch: 3 Train Loss: 0.0138 Acc: 59.029 (7976/13512)
+Epoch Train Time: 3m 33s
+6.431740760803223
+User 29
+Local Epoch: 1 Train Loss: 0.0629 Acc: 25.698 (2834/11028)
+Local Epoch: 2 Train Loss: 0.0589 Acc: 27.321 (3013/11028)
+Local Epoch: 3 Train Loss: 0.0561 Acc: 28.210 (3111/11028)
+Epoch Train Time: 2m 58s
+71.68479919433594
+User 3
+Local Epoch: 1 Train Loss: 0.0148 Acc: 56.305 (7635/13560)
+Local Epoch: 2 Train Loss: 0.0139 Acc: 59.528 (8072/13560)
+Local Epoch: 3 Train Loss: 0.0134 Acc: 61.394 (8325/13560)
+Epoch Train Time: 3m 30s
+3.7431647777557373
+Validation Loss: 0.0397 Acc: 40.668 (10600/26065)
+Epoch Validation Time: 2m 24s
+Num_bad_epochs: 1, unconstrainedBadEpochs: 17, bestMetric: 0.5783680489203133, currentThreshold: 0.5668006879419071
+Stop training as no improvement in accuracy - no of unconstrainedBadEopchs: 17 > 16
+Training complete in 362m 54s
+Best val Acc: 42.163195
+
+Process finished with exit code 0
+

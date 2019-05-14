@@ -105,12 +105,12 @@ def train_cifar(model, dataloader, criterion, optimizer, use_gpu=False, local_ep
         # Iterate over data.
         for images, labels in dataloader:
             if use_gpu:
-                questions, labels = images.cuda(), labels.cuda()
+                images, labels = images.cuda(), labels.cuda()
             images, labels = Variable(images), Variable(labels)
 
             # zero grad
             optimizer.zero_grad()
-            preds_scores = model(images.cuda(), None, None, task='cifar100') #TODO: not sure why I need to call .cuda() again
+            preds_scores = model(images, None, None, task='cifar100')
             _, preds = torch.max(preds_scores, 1)
             loss = criterion(preds_scores, labels)
 
@@ -126,6 +126,9 @@ def train_cifar(model, dataloader, criterion, optimizer, use_gpu=False, local_ep
             if step % 200 == 0:
                 print('step {}, running loss: {}, running_corrects: {}, example_count: {}, acc: {}'.format(
                     step, running_loss / example_count, running_corrects, example_count, (float(running_corrects) / example_count) * 100))
+
+            if step > 200:
+                break
 
         loss = running_loss / example_count
         acc = float(running_corrects) / example_count * 100 # (running_corrects / len(dataloader.dataset)) * 100
@@ -144,11 +147,11 @@ def validate_cifar(model, dataloader, criterion, use_gpu=False):
 
     for images, labels in dataloader:
         if use_gpu:
-            questions, labels = images.cuda(), labels.cuda()
+            images, labels = images.cuda(), labels.cuda()
         images, labels = Variable(images), Variable(labels)
 
         # zero grad
-        preds_scores = model(images.cuda(), None, None, task='cifar100') #TODO: not sure why I need to call .cuda() again
+        preds_scores = model(images, None, None, task='cifar100')
         _, preds = torch.max(preds_scores, 1)
         loss = criterion(preds_scores, labels)
 
@@ -189,19 +192,19 @@ def train_lm(model, train_data, criterion, optimizer, ntokens, batch_size=1, seq
         running_corrects = 0
         example_count = 0
 
-        hidden = model.init_hidden(batch_size)
+        # hidden = model.init_hidden(batch_size)
         for step, i in enumerate(range(0, train_data.size(0) - 1, seq_len)):
-            data, targets = get_batch(train_data, i)
+            data, targets = get_batch(train_data, i, seq_len=seq_len)
             # Starting each batch, we detach the hidden state from how it was previously produced.
             # If we didn't, the model would try backpropagating all the way to start of the dataset.
-            hidden = repackage_hidden(hidden)
+            # hidden = repackage_hidden(hidden)
 
-            model.zero_grad()
-            output, hidden = model(None, data, None, hidden=hidden, task='lm')
-            _, preds = torch.max(output, 1)
+            # model.zero_grad()
+            output = model(None, data, None, task='lm')
+            _, preds = output.max(dim=-1)
+            preds = preds.view(-1)
 
-
-            loss = criterion(output.view(-1, ntokens), targets)
+            loss = criterion(output.view(-1, ntokens), targets) * len(data)
             loss.backward()
             optimizer.step()
 
@@ -214,13 +217,15 @@ def train_lm(model, train_data, criterion, optimizer, ntokens, batch_size=1, seq
             running_corrects += torch.sum((preds == targets).data)
             example_count += targets.size(0)
 
+            loss = running_loss / (step + 1 * seq_len)
+            acc = float(running_corrects) / example_count * 100
 
-            if step % 1000 == 0:
+            if step % 100 == 0:
                 print('step {}, running loss: {}, running_corrects: {}, example_count: {}, acc: {}'.format(
-                    step, running_loss / example_count, running_corrects, example_count, (float(running_corrects) / example_count) * 100))
+                    step, loss, running_corrects, example_count, acc))
 
-        loss = running_loss / example_count
-        acc = float(running_corrects) / example_count * 100  # (running_corrects / len(dataloader.dataset)) * 100
+        loss = running_loss / (train_data.size(0) - 1)
+        acc = float(running_corrects) / example_count * 100
         print('Local Epoch: {} Train Loss: {:.4f} Acc: {:2.3f} ({}/{})'.format(epoch + 1, loss, acc, running_corrects,
                                                                                example_count))
 
@@ -233,21 +238,19 @@ def validate_lm(model, val_data, criterion, ntokens, batch_size=1, seq_len=35):
     running_corrects = 0
     example_count = 0
 
-    hidden = model.init_hidden(batch_size)
     for step, i in enumerate(range(0, val_data.size(0) - 1, seq_len)):
-        data, targets = get_batch(val_data, i)
+        data, targets = get_batch(val_data, i, seq_len=seq_len)
 
-        output, hidden = model(None, data, None, hidden=hidden, task='lm')
-        _, preds = torch.max(output, 1)
-        loss = criterion(output.view(-1, ntokens), targets) # * len(data) ???
+        output = model(None, data, None, task='lm')
+        _, preds = output.max(dim=-1)
+        preds = preds.view(-1)
+        loss = criterion(output.view(-1, ntokens), targets) * len(data)
 
         running_loss += loss.item()
         running_corrects += torch.sum((preds == targets).data)
         example_count += targets.size(0)
 
-        hidden = repackage_hidden(hidden)
-
-    loss = running_loss / example_count
+    loss = running_loss / (val_data.size(0) - 1)
     acc = float(running_corrects) / example_count * 100
     print('Validation Loss: {:.4f} Acc: {:2.3f} ({}/{})'.format(loss, acc, running_corrects, example_count))
 
@@ -256,9 +259,9 @@ def validate_lm(model, val_data, criterion, ntokens, batch_size=1, seq_len=35):
 
 def train_model(model, data_loaders, data_loaders_cifar, data_loaders_lm, criterion, optimizer, scheduler, config, save_dir,
                 num_epochs=25, use_gpu=False, best_accuracy=0, start_epoch=0, num_users=1, frac=0.1, local_ep=1):
-    tasks = ['vqa', 'cifar100']
+    tasks = ['cifar100', 'lm', 'vqa']
     num_tasks = len(tasks)
-    ntokens = config['model']['params']['vocab_size']
+    ntokens = config['model']['params']['output_size_lm']
 
     print('Training Model with use_gpu={}...'.format(use_gpu))
     since = time.time()
@@ -274,10 +277,14 @@ def train_model(model, data_loaders, data_loaders_cifar, data_loaders_lm, criter
 
     for epoch in range(start_epoch, num_epochs):
         if config['multitask']:
-            task_ix = np.random.randint(num_tasks)
+            if epoch < config['optim']['pretrain']:
+                task_ix = np.random.randint(num_tasks - 1)
+            else:
+                task_ix = np.random.randint(num_tasks)
         else:
-            task_ix = 0
+            task_ix = -1
         task = tasks[task_ix]
+        task = 'cifar100'
 
         print('Epoch {}/{} - Task: {}'.format(epoch, num_epochs - 1, task))
         print('-' * 10)
@@ -309,8 +316,7 @@ def train_model(model, data_loaders, data_loaders_cifar, data_loaders_lm, criter
                 train_loss, train_acc = train_cifar(model_local, data_loaders_cifar['train'][user], criterion, optimizer_local,
                                                     use_gpu, local_ep=local_ep)
             elif task == 'lm':
-                train_loss, train_acc = train_lm(model_local, data_loaders_lm['train'][user], criterion, optimizer_local, ntokens,
-                                                batch_size=config['data_lm']['val']['batch_size'], local_ep=local_ep)
+                train_loss, train_acc = train_lm(model_local, data_loaders_lm['train'][user], criterion, optimizer_local, ntokens, local_ep=local_ep)
             else: # vqa
                 train_loss, train_acc = train(model_local, data_loaders[('train', user)], criterion, optimizer_local,
                                               use_gpu, local_ep=local_ep)
@@ -379,7 +385,7 @@ def train_model(model, data_loaders, data_loaders_cifar, data_loaders_lm, criter
 
         if task=='cifar100':
             validation_begin = time.time()
-            val_loss, val_acc = validate_cifar(model, data_loaders_cifar['val'][user], criterion, use_gpu)
+            val_loss, val_acc = validate_cifar(model_local, data_loaders_cifar['val'][user], criterion, use_gpu)
 
             validation_time = time.time() - validation_begin
             print('Epoch Validation Time: {:.0f}m {:.0f}s'.format(validation_time // 60, validation_time % 60))
@@ -387,8 +393,7 @@ def train_model(model, data_loaders, data_loaders_cifar, data_loaders_lm, criter
             writer.add_scalar('Validation Accuracy', val_acc, epoch)
         elif task == 'lm':
             validation_begin = time.time()
-            val_loss, val_acc = validate_lm(model, data_loaders_lm['val'][user], criterion, ntokens,
-                                            batch_size=config['data_lm']['val']['batch_size'])
+            val_loss, val_acc = validate_lm(model, data_loaders_lm['val'][user], criterion, ntokens)
 
             validation_time = time.time() - validation_begin
             print('Epoch Validation Time: {:.0f}m {:.0f}s'.format(validation_time // 60, validation_time % 60))

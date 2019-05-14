@@ -65,18 +65,18 @@ class ImageEmbedding(nn.Module):
     def __init__(self, image_channel_type='I', output_size=1024, mode='train',
                  pretrained_vgg=True, extract_features=False, features_dir=None):
         super(ImageEmbedding, self).__init__()
-        self.extractor = models.vgg19(pretrained=pretrained_vgg)
+        self.extractor = models.resnet50(pretrained=pretrained_vgg)
         # freeze feature extractor (VGGNet) parameters
         for param in self.extractor.parameters():
             param.requires_grad = not pretrained_vgg
 
-        extactor_fc_layers = list(self.extractor.classifier.children())[:-1]
+        extactor_fc_layers = list(self.extractor.children())[:-1]
         if image_channel_type.lower() == 'normi':
             extactor_fc_layers.append(Normalize(p=2))
         self.extractor.classifier = nn.Sequential(*extactor_fc_layers)
 
         self.fflayer = nn.Sequential(
-            nn.Linear(4096, output_size),
+            nn.Linear(1000, output_size),
             nn.Tanh())
 
         # TODO: Get rid of this hack
@@ -96,7 +96,7 @@ class ImageEmbedding(nn.Module):
 
 
 class QuesEmbedding(nn.Module):
-    def __init__(self, input_size=300, hidden_size=512, output_size=1024, num_layers=2, batch_first=True, vocab_size=10000, dropout=0.5):
+    def __init__(self, input_size=300, hidden_size=512, output_size=1024, output_size_lm=1024, num_layers=2, batch_first=True, vocab_size=10000, dropout=0.5):
         super(QuesEmbedding, self).__init__()
         # TODO: take as parameter
         self.bidirectional = True
@@ -117,7 +117,7 @@ class QuesEmbedding(nn.Module):
                 nn.Linear(2 * num_layers * hidden_size, output_size),
                 nn.Tanh())
 
-        self.decoder_lm = nn.Linear(hidden_size, vocab_size)
+        self.decoder_lm = nn.Linear(hidden_size, output_size_lm)
 
     def forward(self, ques, task='vqa'):
         output, hx = self.lstm(ques)
@@ -133,7 +133,7 @@ class QuesEmbedding(nn.Module):
             return ques_embedding
         elif task == 'lm':
             output = self.drop(output)
-            decoded = self.decoder(output.view(output.size(0) * output.size(1), output.size(2)))
+            decoded = self.decoder_lm(output.view(output.size(0) * output.size(1), output.size(2)))
             return decoded.view(output.size(0), output.size(1), decoded.size(1))#, hidden
         else:
             msg = 'invalid task. choose: vqa, lm'
@@ -143,7 +143,9 @@ class QuesEmbedding(nn.Module):
 
 class VQAModel(nn.Module):
 
-    def __init__(self, vocab_size=10000, word_emb_size=300, emb_size=1024, output_size=1000, image_channel_type='I', ques_channel_type='lstm', use_mutan=True, pretrained_vgg=True, mode='train', extract_img_features=True, features_dir=None):
+    def __init__(self, vocab_size=10000, word_emb_size=300, emb_size=1024, output_size=1000, output_size_lm=1000,
+                 image_channel_type='I', ques_channel_type='lstm', use_mutan=True, pretrained_vgg=True, mode='train',
+                 extract_img_features=True, features_dir=None):
         super(VQAModel, self).__init__()
         self.mode = mode
         self.word_emb_size = word_emb_size
@@ -154,10 +156,10 @@ class VQAModel(nn.Module):
         self.word_embeddings = nn.Embedding(vocab_size, word_emb_size)
         if ques_channel_type.lower() == 'lstm':
             self.ques_channel = QuesEmbedding(
-                input_size=word_emb_size, output_size=emb_size, num_layers=1, batch_first=False, vocab_size=vocab_size)
+                input_size=word_emb_size, output_size=emb_size, output_size_lm=output_size_lm, num_layers=1, batch_first=False, vocab_size=vocab_size)
         elif ques_channel_type.lower() == 'deeplstm':
             self.ques_channel = QuesEmbedding(
-                input_size=word_emb_size, output_size=emb_size, num_layers=2, batch_first=False, vocab_size=vocab_size)
+                input_size=word_emb_size, output_size=emb_size, output_size_lm=output_size_lm, num_layers=2, batch_first=False, vocab_size=vocab_size)
         else:
             msg = 'ques channel type not specified. please choose one of -  lstm or deeplstm'
             print(msg)
@@ -176,7 +178,10 @@ class VQAModel(nn.Module):
         # cifar100
         self.mlp_cifar = nn.Sequential(nn.Linear(emb_size, 100))
 
-    def forward(self, images, questions, image_ids, hidden=None, task='vqa'):
+        # lm
+        self.mlp_lm = nn.Sequential(nn.Linear(emb_size, output_size_lm))
+
+    def forward(self, images, questions, image_ids, task='vqa'):
         if task == 'vqa':
             image_embeddings = self.image_channel(images, image_ids)
             embeds = self.word_embeddings(questions)
@@ -193,9 +198,10 @@ class VQAModel(nn.Module):
             return output
         elif task == 'lm':
             embeds = self.word_embeddings(questions)
-            ques_embeddings = self.ques_channel(embeds)
-            output = ques_embeddings #TODO
-            return output
+            ques_embeddings = self.ques_channel(embeds, task='lm')
+            return ques_embeddings
+            # output = self.mlp_lm(ques_embeddings)
+            # return output
         else:
             msg = 'invalid task. choose: vqa, cifar100'
             print(msg)

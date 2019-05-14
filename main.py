@@ -73,7 +73,6 @@ def load_datasets_cifar_helper(config, train=True, download=True, num_users=1):
         phase = 'train'
         transform = transforms.Compose([
             # transforms.RandomCrop(32, padding=4),
-            transforms.RandomHorizontalFlip(),
             transforms.Resize(config['images']['scale']),
             transforms.CenterCrop(config['images']['crop']),
             transforms.ToTensor(),
@@ -148,12 +147,13 @@ def load_datasets_lm(config, ques_dict):
     vocab = corpus.get_word2ix()
 
     train_data = split_data(corpus.train, num_users=num_users)
-    val_data = split_data(corpus.val, num_users=num_users)
+    val_data = corpus.val
+    val_data = batchify(config, val_data, config['data_lm']['val']['batch_size'])
 
     dataloaders = {'train': {}, 'val': {}}
     for i in range(num_users):
         dataloaders['train'][i] = batchify(config, train_data[i], config['data_lm']['train']['batch_size'])
-        dataloaders['val'][i] = batchify(config, val_data[i], config['data_lm']['train']['batch_size'])
+        dataloaders['val'][i] = val_data
 
     return dataloaders, vocab
 
@@ -180,6 +180,7 @@ def main(config):
     else:
         config['model']['params']['vocab_size'] = len(ques_vocab)
     config['model']['params']['output_size'] = len(ans_vocab) - 1   # -1 as don't want model to predict '<unk>'
+    config['model']['params']['output_size_lm'] = len(vocab) - 1
     config['model']['params']['extract_img_features'] = 'preprocess' in config['data']['images'] and config['data']['images']['preprocess']
     # which features dir? test, train or validate?
     config['model']['params']['features_dir'] = os.path.join(
