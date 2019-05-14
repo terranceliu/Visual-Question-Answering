@@ -126,9 +126,9 @@ def train_cifar(model, dataloader, criterion, optimizer, use_gpu=False, local_ep
             if step % 200 == 0:
                 print('step {}, running loss: {}, running_corrects: {}, example_count: {}, acc: {}'.format(
                     step, running_loss / example_count, running_corrects, example_count, (float(running_corrects) / example_count) * 100))
-
-            if step > 200:
-                break
+            #
+            # if step > 200:
+            #     break
 
         loss = running_loss / example_count
         acc = float(running_corrects) / example_count * 100 # (running_corrects / len(dataloader.dataset)) * 100

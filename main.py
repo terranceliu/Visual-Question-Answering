@@ -72,7 +72,8 @@ def load_datasets_cifar_helper(config, train=True, download=True, num_users=1):
     if train:
         phase = 'train'
         transform = transforms.Compose([
-            # transforms.RandomCrop(32, padding=4),
+            transforms.RandomCrop(32, padding=4),
+            transforms.RandomHorizontalFlip(),
             transforms.Resize(config['images']['scale']),
             transforms.CenterCrop(config['images']['crop']),
             transforms.ToTensor(),
