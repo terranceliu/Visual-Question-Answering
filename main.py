@@ -97,6 +97,7 @@ def main(config):
             model.load_state_dict(checkpoint['state_dict'])
             # optimizer.load_state_dict(checkpoint['optimizer'])
     if config['use_gpu']:
+        model = nn.DataParallel(model)
         model = model.cuda()
 
     print('config mode ', config['mode'])

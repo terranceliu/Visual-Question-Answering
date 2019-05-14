@@ -40,8 +40,10 @@ def train(model, dataloader, criterion, optimizer, use_gpu=False):
         if step % 500 == 0:
             print('step {}, running loss: {}, running_corrects: {}, example_count: {}, acc: {}'.format(
                 step, running_loss / example_count, running_corrects, example_count, (float(running_corrects) / example_count) * 100))
-        # if step * batch_size == 40000:
-        #     break
+
+        decay_rate = 0.3 ** (1 / (50000 * 500/100))
+        optimizer.param_groups[0]['lr'] = optimizer.param_groups[0]['lr'] * decay_rate #0.99997592083
+
     loss = running_loss / example_count
     acc = float(running_corrects) / example_count * 100
     print('Train Loss: {:.4f} Acc: {:2.3f} ({}/{})'.format(loss,
@@ -93,7 +95,7 @@ def train_model(model, data_loaders, criterion, optimizer, scheduler, save_dir, 
     best_acc = best_accuracy
     writer = SummaryWriter(save_dir)
     for epoch in range(start_epoch, num_epochs):
-        print('Epoch {}/{}'.format(epoch, num_epochs - 1))
+        print('Epoch {}/{}, lr: {}'.format(epoch, num_epochs - 1, optimizer.param_groups[0]['lr'] ))
         print('-' * 10)
         train_begin = time.time()
         train_loss, train_acc = train(

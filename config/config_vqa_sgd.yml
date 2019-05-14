@@ -42,11 +42,11 @@ optim:
     class: rmsprop      # sgd/rmsprop/adam
     scheduler: 'CustomReduceLROnPlateau'
     scheduler_params:
-        maxPatienceToStopTraining: 16
+        maxPatienceToStopTraining: 20
         base_class_params:
             mode: 'min'
-            factor: 0.5
-            patience: 7
+            factor: 0.999999
+            patience: 10
             verbose: True 
             threshold: 0.02 
             threshold_mode: 'rel' 

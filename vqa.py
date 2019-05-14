@@ -64,19 +64,19 @@ class ImageEmbedding(nn.Module):
     def __init__(self, image_channel_type='I', output_size=1024, mode='train',
                  extract_img_features=False, features_dir=None):
         super(ImageEmbedding, self).__init__()
-        self.extractor = models.vgg19(pretrained=True)
+        self.extractor = models.resnet50(pretrained=True)
         # freeze feature extractor (VGGNet) parameters
         for param in self.extractor.parameters():
             param.requires_grad = False
 
-        extactor_fc_layers = list(self.extractor.classifier.children())[:-1]
+        extactor_fc_layers = list(self.extractor.children())[:-1]
         if image_channel_type.lower() == 'normi':
             print("Using Norm I")
             extactor_fc_layers.append(Normalize(p=2))
         self.extractor.classifier = nn.Sequential(*extactor_fc_layers)
 
         self.fflayer = nn.Sequential(
-            nn.Linear(4096, output_size),
+            nn.Linear(1000, output_size),
             nn.Tanh())
 
         # TODO: Get rid of this hack
