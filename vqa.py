@@ -176,7 +176,7 @@ class VQAModel(nn.Module):
         # cifar100
         self.mlp_cifar = nn.Sequential(nn.Linear(emb_size, 100))
 
-    def forward(self, images, questions, image_ids, task='vqa'):
+    def forward(self, images, questions, image_ids, hidden=None, task='vqa'):
         if task == 'vqa':
             image_embeddings = self.image_channel(images, image_ids)
             embeds = self.word_embeddings(questions)

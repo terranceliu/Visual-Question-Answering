@@ -12,7 +12,7 @@ from torchvision.datasets import CIFAR100
 import pdb
 
 from preprocess import preprocess
-from dataset import VQADataset, VQABatchSampler, CIFAR100Dataset
+from dataset import VQADataset, VQABatchSampler, CIFAR100Dataset, Corpus
 from train import train_model, test_model
 # from vqa_mutan_bilstm import VQAModel as VQAModel
 from vqa import VQAModel
@@ -23,7 +23,8 @@ parser = argparse.ArgumentParser()
 parser.add_argument('-c', '--config', type=str, default='config/config_vqa_sgd.yml')
 
 
-def load_datasets(config, phases, num_users=1):
+def load_datasets(config, phases):
+    num_users = config['num_users']
     config = config['data']
     if 'preprocess' in config and config['preprocess']:
         print('Preprocessing datasets')
@@ -110,7 +111,8 @@ def load_datasets_cifar_helper(config, train=True, download=True, num_users=1):
     return dataloaders
 
 
-def load_datasets_cifar(config, download=True, num_users=1):
+def load_datasets_cifar(config, download=True):
+    num_users = config['num_users']
     dataloaders_train = load_datasets_cifar_helper(config, train=True, download=download, num_users=num_users)
     dataloaders_val = load_datasets_cifar_helper(config, train=False, download=download, num_users=num_users)
 
@@ -120,6 +122,40 @@ def load_datasets_cifar(config, download=True, num_users=1):
 
     return dataloaders
 
+
+def batchify(config, data, bsz):
+    # Work out how cleanly we can divide the dataset into bsz parts.
+    nbatch = data.size(0) // bsz
+    # Trim off any extra elements that wouldn't cleanly fit (remainders).
+    data = data.narrow(0, 0, nbatch * bsz)
+    # Evenly divide the data across the bsz batches.
+    data = data.view(bsz, -1).t().contiguous()
+    if config['use_gpu']:
+        data = data.cuda()
+
+    return data
+
+
+def split_data(data, num_users=1):
+    chunk_size = len(data) // num_users
+    splits = torch.split(data, chunk_size)
+    return splits
+
+
+def load_datasets_lm(config, ques_dict):
+    num_users = config['num_users']
+    corpus = Corpus(config['data_lm']['dir'], dictionary=ques_dict)
+    vocab = corpus.get_word2ix()
+
+    train_data = split_data(corpus.train, num_users=num_users)
+    val_data = split_data(corpus.val, num_users=num_users)
+
+    dataloaders = {'train': {}, 'val': {}}
+    for i in range(num_users):
+        dataloaders['train'][i] = batchify(config, train_data[i], config['data_lm']['train']['batch_size'])
+        dataloaders['val'][i] = batchify(config, val_data[i], config['data_lm']['train']['batch_size'])
+
+    return dataloaders, vocab
 
 def main(config):
     if config['mode'] == 'test':
@@ -131,13 +167,18 @@ def main(config):
     local_ep = config['local_ep']
     frac = config['frac']
 
-    dataloaders, ques_vocab, ans_vocab = load_datasets(config, phases, num_users=num_users)
-    dataloaders_cifar = load_datasets_cifar(config, num_users=num_users)
+    dataloaders, ques_vocab, ans_vocab = load_datasets(config, phases)
+    dataloaders_cifar = load_datasets_cifar(config)
+    dataloaders_lm, vocab = load_datasets_lm(config, ques_vocab)
 
     # pdb.set_trace()
 
     # add model parameters to config
-    config['model']['params']['vocab_size'] = len(ques_vocab)
+    if config['multitask']:
+        print("total vocab size: {}".format(len(vocab)))
+        config['model']['params']['vocab_size'] = len(vocab)
+    else:
+        config['model']['params']['vocab_size'] = len(ques_vocab)
     config['model']['params']['output_size'] = len(ans_vocab) - 1   # -1 as don't want model to predict '<unk>'
     config['model']['params']['extract_img_features'] = 'preprocess' in config['data']['images'] and config['data']['images']['preprocess']
     # which features dir? test, train or validate?
@@ -190,7 +231,7 @@ def main(config):
             exp_lr_scheduler = lr_scheduler.StepLR(optimizer, step_size=7, gamma=0.1)
 
         print("begin training, multitask: {}, num_users: {}, frac: {}, local_ep: {}". format(config['multitask'], num_users, frac, local_ep))
-        model = train_model(model, dataloaders, dataloaders_cifar, criterion, optimizer, exp_lr_scheduler, config, save_dir,
+        model = train_model(model, dataloaders, dataloaders_cifar, dataloaders_lm, criterion, optimizer, exp_lr_scheduler, config, save_dir,
                             num_epochs=config['optim']['n_epochs'], use_gpu=config['use_gpu'], best_accuracy=best_acc,
                             start_epoch=startEpoch, num_users=num_users, frac=frac, local_ep=local_ep)
 

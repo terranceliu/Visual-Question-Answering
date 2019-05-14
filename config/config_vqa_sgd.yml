@@ -7,9 +7,10 @@ debug: False
 seed: 123213
 
 multitask: False # verify pretrained_vgg
-num_users: 1
+num_users: 30
 frac: 0.1
-local_ep: 1
+local_ep: 3
+use_grad_norm: True
 
 data:
     preprocess: False   # True/False - whether to preprocess vqa data files
@@ -19,13 +20,13 @@ data:
         ans: 'v2_mscoco_train2014_annotations.json'
         img_dir: 'train2014' # raw images
         emb_dir: 'train2014_vqa_i_1024_vgg' # directory with image embeddings - depends on the model being used.
-        batch_size: 100
+        batch_size: 10
     val:
         ques: 'v2_OpenEnded_mscoco_val2014_questions.json'
         ans: 'v2_mscoco_val2014_annotations.json'
         img_dir: 'val2014'
         emb_dir: 'train2014_vqa_i_1024_vgg'
-        batch_size: 100
+        batch_size: 10
     images:
         preprocess: False   # True/False - whether to use embeddings or use raw images and generate embeddings
         scale: [256,256]
@@ -37,15 +38,22 @@ data:
 data_cifar:
     dir: '/home/tliu/Dev/CMU/research/multimodal/Visual-Question-Answering/cifar100_data'
     train:
-        batch_size: 32
+        batch_size: 100
     val:
-        batch_size: 32
+        batch_size: 100
     images:
         scale: [256,256]
         crop: 224
     loader:
         workers: 4
         pin_memory: True
+
+data_lm:
+    dir: '/home/tliu/Dev/CMU/research/multimodal/Visual-Question-Answering/wikitext-2'
+    train:
+        batch_size: 100
+    val:
+        batch_size: 100
 
 model:
     type: vqa
@@ -59,7 +67,7 @@ model:
     reload: 'checkpoints.pth.tar'
 
 optim:
-    class: rmsprop      # sgd/rmsprop/adam
+    class: sgd      # sgd/rmsprop/adam
     scheduler: 'CustomReduceLROnPlateau'
     scheduler_params:
         maxPatienceToStopTraining: 16
@@ -75,10 +83,10 @@ optim:
             eps: 0.000001
 
     params: 
-#        momentum: 0.9
-        lr: 0.0003      # learning rate
+        momentum: 0.9
+        lr: 0.001     # learning rate
         # alpha: 0.99     # alpha for adagrad/rmsprop/momentum/adam
         # beta: 0.995     # beta used for adam
         # eps: 0.00001       # epsilon that goes into denominator in rmsprop
-#        weight_decay: 0.0005
+        weight_decay: 0.0005
     n_epochs: 100

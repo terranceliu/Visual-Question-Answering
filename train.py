@@ -12,6 +12,7 @@ import torch.optim as optim
 
 def train(model, dataloader, criterion, optimizer, use_gpu=False, local_ep=1):
     model.train()  # Set model to training mode
+
     for epoch in range(local_ep):
         running_loss = 0.0
         running_corrects = 0
@@ -43,8 +44,6 @@ def train(model, dataloader, criterion, optimizer, use_gpu=False, local_ep=1):
             if step % 1000 == 0:
                 print('step {}, running loss: {}, running_corrects: {}, example_count: {}, acc: {}'.format(
                     step, running_loss / example_count, running_corrects, example_count, (float(running_corrects) / example_count) * 100))
-            # if step * batch_size == 40000:
-            #     break
 
         loss = running_loss / example_count
         acc = float(running_corrects) / example_count * 100 # (running_corrects / len(dataloader.dataset)) * 100
@@ -79,7 +78,7 @@ def validate(model, dataloader, criterion, use_gpu=False):
         example_count += answers.size(0)
 
         step += 1
-        if step > 500:
+        if step > 30000:
             break
 
     loss = running_loss / example_count
@@ -92,6 +91,8 @@ def validate(model, dataloader, criterion, use_gpu=False):
 
 def train_cifar(model, dataloader, criterion, optimizer, use_gpu=False, local_ep=1):
     model.train()  # Set model to training mode
+    grads = []
+
     for epoch in range(local_ep):
         running_loss = 0.0
         running_corrects = 0
@@ -119,17 +120,20 @@ def train_cifar(model, dataloader, criterion, optimizer, use_gpu=False, local_ep
             running_corrects += torch.sum((preds == labels).data)
             example_count += labels.size(0)
             step += 1
-            if step % 500 == 0:
+            if step % 200 == 0:
                 print('step {}, running loss: {}, running_corrects: {}, example_count: {}, acc: {}'.format(
                     step, running_loss / example_count, running_corrects, example_count, (float(running_corrects) / example_count) * 100))
-            # if step * batch_size == 40000:
-            #     break
+
+            for grad in [param.grad for param in model.parameters()]:
+                if grad is not None:
+                    grads.append(grad.view(-1))
 
         loss = running_loss / example_count
         acc = float(running_corrects) / example_count * 100 # (running_corrects / len(dataloader.dataset)) * 100
+        grads = torch.cat(grads).norm().item()
         print('Local Epoch: {} Train Loss: {:.4f} Acc: {:2.3f} ({}/{})'.format(epoch+1, loss, acc, running_corrects, example_count))
 
-    return loss, acc
+    return loss, acc, grads
 
 
 def validate_cifar(model, dataloader, criterion, use_gpu=False):
@@ -163,10 +167,107 @@ def validate_cifar(model, dataloader, criterion, use_gpu=False):
     return loss, acc
 
 
-def train_model(model, data_loaders, data_loaders_cifar, criterion, optimizer, scheduler, config, save_dir, num_epochs=25, use_gpu=False,
-                best_accuracy=0, start_epoch=0, num_users=1, frac=0.1, local_ep=1):
+def repackage_hidden(h):
+    """Wraps hidden states in new Tensors, to detach them from their history."""
+    if isinstance(h, torch.Tensor):
+        return h.detach()
+    else:
+        return tuple(repackage_hidden(v) for v in h)
+
+
+def get_batch(source, i, seq_len=35):
+    seq_len = min(seq_len, len(source) - 1 - i)
+    data = source[i:i+seq_len]
+    target = source[i+1:i+1+seq_len].view(-1)
+    return data, target
+
+
+def train_lm(model, train_data, criterion, optimizer, ntokens, batch_size=1, seq_len=35, clip=0.25, local_ep=1):
+    # Turn on training mode which enables dropout.
+    model.train()
+    grads = []
+
+    for epoch in range(local_ep):
+        running_loss = 0.0
+        running_corrects = 0
+        example_count = 0
+
+        hidden = model.init_hidden(batch_size)
+        for step, i in enumerate(range(0, train_data.size(0) - 1, seq_len)):
+            data, targets = get_batch(train_data, i)
+            # Starting each batch, we detach the hidden state from how it was previously produced.
+            # If we didn't, the model would try backpropagating all the way to start of the dataset.
+            hidden = repackage_hidden(hidden)
+
+            model.zero_grad()
+            output, hidden = model(None, data, None, hidden=hidden, task='lm')
+            _, preds = torch.max(output, 1)
+
+
+            loss = criterion(output.view(-1, ntokens), targets)
+            loss.backward()
+            optimizer.step()
+
+            # # `clip_grad_norm` helps prevent the exploding gradient problem in RNNs / LSTMs.
+            # torch.nn.utils.clip_grad_norm_(model.parameters(), clip)
+            # for p in model.parameters():
+            #     p.data.add_(-lr, p.grad.data)
+
+            running_loss += loss.item()
+            running_corrects += torch.sum((preds == targets).data)
+            example_count += targets.size(0)
+
+
+            if step % 1000 == 0:
+                print('step {}, running loss: {}, running_corrects: {}, example_count: {}, acc: {}'.format(
+                    step, running_loss / example_count, running_corrects, example_count, (float(running_corrects) / example_count) * 100))
+
+
+            for grad in [param.grad for param in model.parameters()]:
+                if grad is not None:
+                    grads.append(grad.view(-1))
+
+        loss = running_loss / example_count
+        acc = float(running_corrects) / example_count * 100  # (running_corrects / len(dataloader.dataset)) * 100
+        grads = torch.cat(grads).norm().item()
+        print('Local Epoch: {} Train Loss: {:.4f} Acc: {:2.3f} ({}/{})'.format(epoch + 1, loss, acc, running_corrects,
+                                                                               example_count))
+
+    return loss, acc, grads
+
+
+def validate_lm(model, val_data, criterion, ntokens, batch_size=1, seq_len=35):
+    model.eval()
+    running_loss = 0.0
+    running_corrects = 0
+    example_count = 0
+
+    hidden = model.init_hidden(batch_size)
+    for step, i in enumerate(range(0, val_data.size(0) - 1, seq_len)):
+        data, targets = get_batch(val_data, i)
+
+        output, hidden = model(None, data, None, hidden=hidden, task='lm')
+        _, preds = torch.max(output, 1)
+        loss = criterion(output.view(-1, ntokens), targets) # * len(data) ???
+
+        running_loss += loss.item()
+        running_corrects += torch.sum((preds == targets).data)
+        example_count += targets.size(0)
+
+        hidden = repackage_hidden(hidden)
+
+    loss = running_loss / example_count
+    acc = float(running_corrects) / example_count * 100
+    print('Validation Loss: {:.4f} Acc: {:2.3f} ({}/{})'.format(loss, acc, running_corrects, example_count))
+
+    return loss, acc
+
+
+def train_model(model, data_loaders, data_loaders_cifar, data_loaders_lm, criterion, optimizer, scheduler, config, save_dir,
+                num_epochs=25, use_gpu=False, best_accuracy=0, start_epoch=0, num_users=1, frac=0.1, local_ep=1):
     tasks = ['vqa', 'cifar100']
     num_tasks = len(tasks)
+    ntokens = config['model']['params']['vocab_size']
 
     print('Training Model with use_gpu={}...'.format(use_gpu))
     since = time.time()
@@ -208,34 +309,41 @@ def train_model(model, data_loaders, data_loaders_cifar, criterion, optimizer, s
                                        **config['optim']['params'])
 
             # we mainly just care about copying over the reduced lr from optimizer to optimizer_local
-            for i in range(len(optimizer.param_groups)):
-                for param in optimizer.param_groups[i].keys():
-                    if param == 'params':
-                        continue
-                    optimizer_local.param_groups[i][param] = optimizer.param_groups[i][param]
-                    # if param == 'lr' and task == 'cifar100':
-                    #     optimizer_local.param_groups[i][param] *= 10.0
-            print('lr: {} {}'.format(len(optimizer_local.param_groups), optimizer_local.param_groups[0]['lr']))
+            # for i in range(len(optimizer.param_groups)):
+            #     for param in optimizer.param_groups[i].keys():
+            #         if param == 'params':
+            #             continue
+            #         optimizer_local.param_groups[i][param] = optimizer.param_groups[i][param]
+            #         # if param == 'lr' and task == 'cifar100':
+            #         #     optimizer_local.param_groups[i][param] *= 10.0
+            # print('lr: {} {}'.format(len(optimizer_local.param_groups), optimizer_local.param_groups[0]['lr']))
 
             train_begin = time.time()
             if task == 'cifar100':
-                train_loss, train_acc = train_cifar(model_local, data_loaders_cifar['train'][user], criterion, optimizer_local, use_gpu, local_ep)
+                train_loss, train_acc, grads = train_cifar(model_local, data_loaders_cifar['train'][user], criterion, optimizer_local,
+                                                    use_gpu, local_ep=local_ep)
+            elif task == 'lm':
+                train_loss, train_acc, grads = train_lm(model_local, data_loaders_lm['train'][user], criterion, optimizer_local, ntokens,
+                                                batch_size=config['data_lm']['val']['batch_size'], local_ep=local_ep)
             else: # vqa
                 train_loss, train_acc = train(model_local, data_loaders[('train', user)], criterion, optimizer_local,
-                                              use_gpu, local_ep)
+                                              use_gpu, local_ep=local_ep)
 
             train_time = time.time() - train_begin
             print('Epoch Train Time: {:.0f}m {:.0f}s'.format(train_time // 60, train_time % 60))
             writer.add_scalar('Train Loss', train_loss, epoch)
             writer.add_scalar('Train Accuracy', train_acc, epoch)
 
-            grads = []
-            for grad in [param.grad for param in model_local.parameters()]:
-                if grad is not None:
-                    grads.append(grad.view(-1))
-            grads = torch.cat(grads).norm().item()
-            grads_local.append(grads)
+            if not config['use_grad_norm']:
+                grads = 1.0
+            else:
+                grads = []
+                for grad in [param.grad for param in model_local.parameters()]:
+                    if grad is not None:
+                        grads.append(grad.view(-1))
+                grads = torch.cat(grads).norm().item()
             print(grads)
+            grads_local.append(grads)
 
             w_curr = model_local.state_dict()
             if w_glob is None:
@@ -247,7 +355,6 @@ def train_model(model, data_loaders, data_loaders_cifar, criterion, optimizer, s
                     w_glob[k] += w_curr[k] * grads
 
         for k in w_glob.keys():
-            # w_glob[k] = torch.div(w_glob[k], m)
             w_glob[k] = torch.div(w_glob[k], sum(grads_local))
 
         # copy weight to net_glob
@@ -256,6 +363,15 @@ def train_model(model, data_loaders, data_loaders_cifar, criterion, optimizer, s
         if task=='cifar100':
             validation_begin = time.time()
             val_loss, val_acc = validate_cifar(model, data_loaders_cifar['val'][user], criterion, use_gpu)
+
+            validation_time = time.time() - validation_begin
+            print('Epoch Validation Time: {:.0f}m {:.0f}s'.format(validation_time // 60, validation_time % 60))
+            writer.add_scalar('Validation Loss', val_loss, epoch)
+            writer.add_scalar('Validation Accuracy', val_acc, epoch)
+        elif task == 'lm':
+            validation_begin = time.time()
+            val_loss, val_acc = validate_lm(model, data_loaders_lm['val'][user], criterion, ntokens,
+                                            batch_size=config['data_lm']['val']['batch_size'])
 
             validation_time = time.time() - validation_begin
             print('Epoch Validation Time: {:.0f}m {:.0f}s'.format(validation_time // 60, validation_time % 60))

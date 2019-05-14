@@ -1,0 +1,1414 @@
+batch_size = 1
+
+/usr/bin/python3.5 /home/tliu/Dev/CMU/research/multimodal/Visual-Question-Answering/main.py
+/home/tliu/Dev/CMU/research/multimodal/Visual-Question-Answering/main.py:250: YAMLLoadWarning: calling yaml.load() without Loader=... is deprecated, as the default Loader is unsafe. Please read https://msg.pyyaml.org/load for full details.
+  config = yaml.load(open(args.config))
+Loading preprocessed datasets
+Building datasets
+loading vocab
+/home/tliu/.local/lib/python3.5/site-packages/torchvision/transforms/transforms.py:188: UserWarning: The use of the transforms.Scale transform is deprecated, please use transforms.Resize instead.
+  "please use transforms.Resize instead.")
+Building batch samplers
+Building dataloaders
+{('train', 32): 4437, ('val', 50): 214354, ('val', 37): 214354, ('train', 19): 4438, ('val', 99): 214354, ('train', 81): 4437, ('train', 4): 4437, ('val', 22): 214354, ('train', 66): 4438, ('train', 9): 4437, ('val', 84): 214354, ('val', 9): 214354, ('train', 58): 4437, ('val', 71): 214354, ('val', 60): 214354, ('train', 47): 4438, ('val', 47): 214354, ('val', 34): 214354, ('train', 30): 4437, ('val', 96): 214354, ('train', 92): 4438, ('train', 3): 4438, ('val', 94): 214354, ('val', 19): 214354, ('train', 65): 4437, ('train', 52): 4438, ('val', 81): 214354, ('val', 6): 214354, ('train', 57): 4438, ('val', 68): 214354, ('val', 57): 214354, ('train', 42): 4438, ('val', 44): 214354, ('train', 86): 4437, ('train', 29): 4438, ('val', 29): 214354, ('train', 91): 4438, ('train', 14): 4438, ('val', 91): 214354, ('val', 16): 214354, ('train', 76): 4437, ('train', 51): 4437, ('val', 78): 214354, ('val', 3): 214354, ('train', 36): 4438, ('val', 65): 214354, ('val', 54): 214354, ('train', 98): 4438, ('train', 41): 4437, ('val', 41): 214354, ('train', 23): 4437, ('train', 85): 4438, ('train', 24): 4438, ('val', 26): 214354, ('train', 70): 4438, ('train', 13): 4437, ('val', 88): 214354, ('val', 13): 214354, ('train', 75): 4438, ('train', 62): 4437, ('val', 75): 214354, ('val', 0): 214354, ('train', 35): 4438, ('val', 51): 214354, ('train', 97): 4437, ('val', 38): 214354, ('train', 18): 4437, ('train', 80): 4438, ('train', 7): 4438, ('val', 23): 214354, ('train', 69): 4437, ('train', 8): 4438, ('val', 85): 214354, ('val', 10): 214354, ('train', 61): 4438, ('val', 72): 214354, ('val', 61): 214354, ('train', 46): 4437, ('val', 48): 214354, ('val', 35): 214354, ('train', 17): 4438, ('val', 97): 214354, ('train', 95): 4437, ('train', 2): 4437, ('val', 95): 214354, ('val', 20): 214354, ('train', 64): 4438, ('train', 55): 4437, ('val', 82): 214354, ('val', 7): 214354, ('train', 56): 4438, ('val', 69): 214354, ('val', 58): 214354, ('train', 45): 4438, ('val', 45): 214354, ('val', 32): 214354, ('train', 28): 4438, ('val', 30): 214354, ('train', 90): 4437, ('train', 1): 4438, ('val', 92): 214354, ('val', 17): 214354, ('train', 79): 4437, ('train', 50): 4438, ('val', 79): 214354, ('val', 4): 214354, ('train', 39): 4437, ('val', 66): 214354, ('val', 55): 214354, ('train', 40): 4438, ('val', 42): 214354, ('train', 22): 4438, ('train', 84): 4438, ('train', 27): 4437, ('val', 27): 214354, ('train', 89): 4438, ('train', 12): 4438, ('val', 89): 214354, ('val', 14): 214354, ('train', 74): 4437, ('train', 49): 4438, ('val', 76): 214354, ('val', 1): 214354, ('train', 34): 4437, ('val', 52): 214354, ('train', 96): 4438, ('val', 39): 214354, ('train', 21): 4438, ('train', 83): 4437, ('train', 6): 4437, ('val', 24): 214354, ('train', 68): 4438, ('train', 11): 4437, ('val', 86): 214354, ('val', 11): 214354, ('train', 73): 4438, ('train', 60): 4437, ('val', 73): 214354, ('val', 62): 214354, ('train', 33): 4438, ('val', 49): 214354, ('val', 36): 214354, ('train', 16): 4437, ('val', 98): 214354, ('train', 94): 4438, ('train', 5): 4438, ('val', 21): 214354, ('train', 67): 4437, ('train', 54): 4438, ('val', 83): 214354, ('val', 8): 214354, ('train', 59): 4438, ('val', 70): 214354, ('val', 59): 214354, ('train', 44): 4437, ('val', 46): 214354, ('val', 33): 214354, ('train', 31): 4438, ('val', 31): 214354, ('train', 93): 4437, ('train', 0): 4437, ('val', 93): 214354, ('val', 18): 214354, ('train', 78): 4438, ('train', 53): 4437, ('val', 80): 214354, ('val', 5): 214354, ('train', 38): 4438, ('val', 67): 214354, ('val', 56): 214354, ('train', 43): 4438, ('val', 43): 214354, ('train', 87): 4438, ('train', 26): 4438, ('val', 28): 214354, ('train', 88): 4437, ('train', 15): 4438, ('val', 90): 214354, ('val', 15): 214354, ('train', 77): 4438, ('train', 48): 4437, ('val', 77): 214354, ('val', 2): 214354, ('train', 37): 4437, ('val', 64): 214354, ('val', 53): 214354, ('train', 99): 4438, ('val', 40): 214354, ('train', 20): 4437, ('train', 82): 4438, ('train', 25): 4437, ('val', 25): 214354, ('train', 71): 4438, ('train', 10): 4438, ('val', 87): 214354, ('val', 12): 214354, ('train', 72): 4437, ('train', 63): 4438, ('val', 74): 214354, ('val', 63): 214354}
+ques vocab size: 22227
+ans vocab size: 1001
+Files already downloaded and verified
+Files already downloaded and verified
+VQAModel(
+  (image_channel): ImageEmbedding(
+    (extractor): VGG(
+      (features): Sequential(
+        (0): Conv2d(3, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (1): ReLU(inplace)
+        (2): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (3): ReLU(inplace)
+        (4): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+        (5): Conv2d(64, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (6): ReLU(inplace)
+        (7): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (8): ReLU(inplace)
+        (9): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+        (10): Conv2d(128, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (11): ReLU(inplace)
+        (12): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (13): ReLU(inplace)
+        (14): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (15): ReLU(inplace)
+        (16): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (17): ReLU(inplace)
+        (18): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+        (19): Conv2d(256, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (20): ReLU(inplace)
+        (21): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (22): ReLU(inplace)
+        (23): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (24): ReLU(inplace)
+        (25): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (26): ReLU(inplace)
+        (27): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+        (28): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (29): ReLU(inplace)
+        (30): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (31): ReLU(inplace)
+        (32): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (33): ReLU(inplace)
+        (34): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (35): ReLU(inplace)
+        (36): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+      )
+      (classifier): Sequential(
+        (0): Linear(in_features=25088, out_features=4096, bias=True)
+        (1): ReLU(inplace)
+        (2): Dropout(p=0.5)
+        (3): Linear(in_features=4096, out_features=4096, bias=True)
+        (4): ReLU(inplace)
+        (5): Dropout(p=0.5)
+        (6): Normalize()
+      )
+    )
+    (fflayer): Sequential(
+      (0): Linear(in_features=4096, out_features=1024, bias=True)
+      (1): Tanh()
+    )
+  )
+  (word_embeddings): Embedding(55505, 300)
+  (ques_channel): QuesEmbedding(
+    (drop): Dropout(p=0.5)
+    (lstm): LSTM(300, 512, num_layers=2)
+    (fflayer): Sequential(
+      (0): Linear(in_features=2048, out_features=1024, bias=True)
+      (1): Tanh()
+    )
+    (decoder_lm): Linear(in_features=512, out_features=55505, bias=True)
+  )
+  (mlp): Sequential(
+    (0): Linear(in_features=1024, out_features=1000, bias=True)
+    (1): Dropout(p=0.5)
+    (2): Tanh()
+    (3): Linear(in_features=1000, out_features=1000, bias=True)
+  )
+  (mlp_cifar): Sequential(
+    (0): Linear(in_features=1024, out_features=100, bias=True)
+  )
+)
+config mode  train
+CustomReduceLROnPlateau
+begin training, multitask: False, num_users: 100, frac: 0.1, local_ep: 1
+Training Model with use_gpu=True...
+Epoch 0/99 - Task: vqa
+----------
+User 67
+/home/tliu/.local/lib/python3.5/site-packages/torch/nn/modules/rnn.py:179: RuntimeWarning: RNN module weights are not part of single contiguous chunk of memory. This means they need to be compacted at every call, possibly greatly increasing memory usage. To compact weights again call flatten_parameters().
+  self.dropout, self.training, self.bidirectional, self.batch_first)
+step 1000, running loss: 3.910950591444969, running_corrects: 233, example_count: 1000, acc: 23.3
+step 2000, running loss: 3.699239542588592, running_corrects: 473, example_count: 2000, acc: 23.65
+step 3000, running loss: 3.569627564658721, running_corrects: 743, example_count: 3000, acc: 24.766666666666666
+Local Epoch: 1 Train Loss: 3.4886 Acc: 25.045 (980/3913)
+Epoch Train Time: 1m 7s
+1.0
+User 84
+step 1000, running loss: 4.993633279442787, running_corrects: 161, example_count: 1000, acc: 16.1
+step 2000, running loss: 4.782491464108229, running_corrects: 339, example_count: 2000, acc: 16.950000000000003
+step 3000, running loss: 4.572745234767596, running_corrects: 555, example_count: 3000, acc: 18.5
+Local Epoch: 1 Train Loss: 4.5257 Acc: 19.147 (705/3682)
+Epoch Train Time: 1m 1s
+1.0
+User 2
+step 1000, running loss: 2.4598877375125885, running_corrects: 368, example_count: 1000, acc: 36.8
+step 2000, running loss: 2.2935887246727944, running_corrects: 774, example_count: 2000, acc: 38.7
+step 3000, running loss: 2.2189985466500124, running_corrects: 1151, example_count: 3000, acc: 38.36666666666667
+step 4000, running loss: 2.200407777123153, running_corrects: 1557, example_count: 4000, acc: 38.925
+Local Epoch: 1 Train Loss: 2.1890 Acc: 39.049 (1642/4205)
+Epoch Train Time: 1m 9s
+1.0
+User 45
+step 1000, running loss: 4.288519474625588, running_corrects: 227, example_count: 1000, acc: 22.7
+step 2000, running loss: 4.161614599943161, running_corrects: 441, example_count: 2000, acc: 22.05
+step 3000, running loss: 4.053719596664111, running_corrects: 667, example_count: 3000, acc: 22.233333333333334
+Local Epoch: 1 Train Loss: 3.9560 Acc: 22.833 (880/3854)
+Epoch Train Time: 1m 4s
+1.0
+User 43
+step 1000, running loss: 4.39666145837307, running_corrects: 201, example_count: 1000, acc: 20.1
+step 2000, running loss: 4.228226789772511, running_corrects: 430, example_count: 2000, acc: 21.5
+step 3000, running loss: 4.121966867188613, running_corrects: 649, example_count: 3000, acc: 21.633333333333333
+Local Epoch: 1 Train Loss: 4.0843 Acc: 22.075 (847/3837)
+Epoch Train Time: 1m 5s
+1.0
+User 81
+step 1000, running loss: 5.287477075815201, running_corrects: 128, example_count: 1000, acc: 12.8
+step 2000, running loss: 5.0018855410218235, running_corrects: 311, example_count: 2000, acc: 15.55
+step 3000, running loss: 4.7121853889624274, running_corrects: 520, example_count: 3000, acc: 17.333333333333336
+Local Epoch: 1 Train Loss: 4.5891 Acc: 17.992 (656/3646)
+Epoch Train Time: 1m 2s
+1.0
+User 78
+step 1000, running loss: 3.6704295580387116, running_corrects: 232, example_count: 1000, acc: 23.200000000000003
+step 2000, running loss: 3.49764696007967, running_corrects: 507, example_count: 2000, acc: 25.35
+step 3000, running loss: 3.3534582775235178, running_corrects: 805, example_count: 3000, acc: 26.833333333333332
+Local Epoch: 1 Train Loss: 3.3044 Acc: 27.037 (1055/3902)
+Epoch Train Time: 1m 6s
+1.0
+User 68
+step 1000, running loss: 3.938071296930313, running_corrects: 209, example_count: 1000, acc: 20.9
+step 2000, running loss: 3.7463631311804058, running_corrects: 434, example_count: 2000, acc: 21.7
+step 3000, running loss: 3.579758041292429, running_corrects: 713, example_count: 3000, acc: 23.766666666666666
+Local Epoch: 1 Train Loss: 3.4819 Acc: 24.974 (976/3908)
+Epoch Train Time: 1m 6s
+1.0
+User 91
+step 1000, running loss: 5.154358716487884, running_corrects: 180, example_count: 1000, acc: 18.0
+step 2000, running loss: 4.919905593454838, running_corrects: 377, example_count: 2000, acc: 18.85
+step 3000, running loss: 4.748658985614776, running_corrects: 588, example_count: 3000, acc: 19.6
+Local Epoch: 1 Train Loss: 4.6301 Acc: 19.949 (700/3509)
+Epoch Train Time: 1m 2s
+1.0
+User 94
+step 1000, running loss: 4.7588542958498, running_corrects: 179, example_count: 1000, acc: 17.9
+step 2000, running loss: 4.507199470192194, running_corrects: 384, example_count: 2000, acc: 19.2
+step 3000, running loss: 4.425324710448583, running_corrects: 576, example_count: 3000, acc: 19.2
+Local Epoch: 1 Train Loss: 4.3929 Acc: 19.354 (671/3467)
+Epoch Train Time: 0m 57s
+1.0
+Validation Loss: 5.7744 Acc: 21.573 (6472/30001)
+Epoch Validation Time: 6m 0s
+Num_bad_epochs: 0, unconstrainedBadEpochs: 0, bestMetric: 0.7842738575380821, currentThreshold: 0.7685883803873205
+Epoch 1/99 - Task: vqa
+----------
+User 51
+step 1000, running loss: 3.9777103087604044, running_corrects: 207, example_count: 1000, acc: 20.7
+step 2000, running loss: 3.8333122241199016, running_corrects: 440, example_count: 2000, acc: 22.0
+step 3000, running loss: 3.749794828971227, running_corrects: 681, example_count: 3000, acc: 22.7
+Local Epoch: 1 Train Loss: 3.6934 Acc: 23.221 (894/3850)
+Epoch Train Time: 1m 17s
+1.0
+User 67
+step 1000, running loss: 3.248835287451744, running_corrects: 261, example_count: 1000, acc: 26.1
+step 2000, running loss: 3.168545997411013, running_corrects: 548, example_count: 2000, acc: 27.400000000000002
+step 3000, running loss: 3.156509416202704, running_corrects: 840, example_count: 3000, acc: 28.000000000000004
+Local Epoch: 1 Train Loss: 3.1017 Acc: 27.754 (1086/3913)
+Epoch Train Time: 1m 14s
+1.0
+User 37
+step 1000, running loss: 3.516923186957836, running_corrects: 241, example_count: 1000, acc: 24.099999999999998
+step 2000, running loss: 3.403958117991686, running_corrects: 497, example_count: 2000, acc: 24.85
+step 3000, running loss: 3.368877784669399, running_corrects: 776, example_count: 3000, acc: 25.866666666666667
+step 4000, running loss: 3.3081242136359217, running_corrects: 1041, example_count: 4000, acc: 26.025
+Local Epoch: 1 Train Loss: 3.3059 Acc: 26.004 (1042/4007)
+Epoch Train Time: 1m 17s
+1.0
+User 13
+step 1000, running loss: 2.2773708308935166, running_corrects: 392, example_count: 1000, acc: 39.2
+step 2000, running loss: 2.1449283786416053, running_corrects: 790, example_count: 2000, acc: 39.5
+step 3000, running loss: 2.13211722912391, running_corrects: 1192, example_count: 3000, acc: 39.733333333333334
+step 4000, running loss: 2.1025844979062676, running_corrects: 1563, example_count: 4000, acc: 39.074999999999996
+Local Epoch: 1 Train Loss: 2.0982 Acc: 39.006 (1593/4084)
+Epoch Train Time: 1m 17s
+1.0
+User 2
+step 1000, running loss: 2.2387537122368815, running_corrects: 373, example_count: 1000, acc: 37.3
+step 2000, running loss: 2.1185513371527196, running_corrects: 767, example_count: 2000, acc: 38.35
+step 3000, running loss: 2.079805743475755, running_corrects: 1180, example_count: 3000, acc: 39.33333333333333
+step 4000, running loss: 2.0792040258049966, running_corrects: 1581, example_count: 4000, acc: 39.525
+Local Epoch: 1 Train Loss: 2.0748 Acc: 39.429 (1658/4205)
+Epoch Train Time: 1m 16s
+1.0
+User 4
+step 1000, running loss: 2.296239939749241, running_corrects: 373, example_count: 1000, acc: 37.3
+step 2000, running loss: 2.20650889185071, running_corrects: 752, example_count: 2000, acc: 37.6
+step 3000, running loss: 2.1895605975985526, running_corrects: 1116, example_count: 3000, acc: 37.2
+step 4000, running loss: 2.1483334691375493, running_corrects: 1512, example_count: 4000, acc: 37.8
+Local Epoch: 1 Train Loss: 2.1508 Acc: 37.757 (1525/4039)
+Epoch Train Time: 1m 20s
+1.0
+User 53
+step 1000, running loss: 3.9535375022292136, running_corrects: 220, example_count: 1000, acc: 22.0
+step 2000, running loss: 3.78673038688302, running_corrects: 461, example_count: 2000, acc: 23.05
+step 3000, running loss: 3.747472130715847, running_corrects: 718, example_count: 3000, acc: 23.933333333333334
+Local Epoch: 1 Train Loss: 3.7020 Acc: 24.373 (942/3865)
+Epoch Train Time: 1m 8s
+1.0
+User 81
+step 1000, running loss: 4.070945175886155, running_corrects: 209, example_count: 1000, acc: 20.9
+step 2000, running loss: 4.058085620135069, running_corrects: 410, example_count: 2000, acc: 20.5
+step 3000, running loss: 4.047111215889454, running_corrects: 619, example_count: 3000, acc: 20.633333333333333
+Local Epoch: 1 Train Loss: 4.0435 Acc: 20.543 (749/3646)
+Epoch Train Time: 1m 12s
+1.0
+User 24
+step 1000, running loss: 3.6850353908538818, running_corrects: 220, example_count: 1000, acc: 22.0
+step 2000, running loss: 3.458821168601513, running_corrects: 478, example_count: 2000, acc: 23.9
+step 3000, running loss: 3.333419733762741, running_corrects: 761, example_count: 3000, acc: 25.366666666666664
+step 4000, running loss: 3.3033105487823486, running_corrects: 1028, example_count: 4000, acc: 25.7
+Local Epoch: 1 Train Loss: 3.2983 Acc: 25.706 (1037/4034)
+Epoch Train Time: 1m 18s
+1.0
+User 6
+step 1000, running loss: 2.397033324718475, running_corrects: 368, example_count: 1000, acc: 36.8
+step 2000, running loss: 2.2213573430776594, running_corrects: 785, example_count: 2000, acc: 39.25
+step 3000, running loss: 2.195677107234796, running_corrects: 1181, example_count: 3000, acc: 39.36666666666667
+step 4000, running loss: 2.1626737071871758, running_corrects: 1600, example_count: 4000, acc: 40.0
+Local Epoch: 1 Train Loss: 2.1594 Acc: 39.955 (1615/4042)
+Epoch Train Time: 1m 16s
+1.0
+Validation Loss: 3.9364 Acc: 24.533 (7360/30001)
+Epoch Validation Time: 6m 24s
+Num_bad_epochs: 0, unconstrainedBadEpochs: 0, bestMetric: 0.7546748441718609, currentThreshold: 0.7395813472884237
+Epoch 2/99 - Task: vqa
+----------
+User 66
+step 1000, running loss: 3.0926175578534605, running_corrects: 270, example_count: 1000, acc: 27.0
+step 2000, running loss: 2.980629074111581, running_corrects: 558, example_count: 2000, acc: 27.900000000000002
+step 3000, running loss: 2.968997080097596, running_corrects: 850, example_count: 3000, acc: 28.333333333333332
+Local Epoch: 1 Train Loss: 2.9407 Acc: 28.973 (1143/3945)
+Epoch Train Time: 1m 15s
+1.0
+User 3
+step 1000, running loss: 2.150008787035942, running_corrects: 391, example_count: 1000, acc: 39.1
+step 2000, running loss: 2.0704402614831925, running_corrects: 813, example_count: 2000, acc: 40.65
+step 3000, running loss: 2.0963286198973656, running_corrects: 1200, example_count: 3000, acc: 40.0
+step 4000, running loss: 2.0494571299254893, running_corrects: 1614, example_count: 4000, acc: 40.35
+Local Epoch: 1 Train Loss: 2.0398 Acc: 40.486 (1649/4073)
+Epoch Train Time: 1m 20s
+1.0
+User 90
+step 1000, running loss: 4.07297804325819, running_corrects: 200, example_count: 1000, acc: 20.0
+step 2000, running loss: 3.9506217241585255, running_corrects: 445, example_count: 2000, acc: 22.25
+step 3000, running loss: 3.8813712517023085, running_corrects: 672, example_count: 3000, acc: 22.400000000000002
+Local Epoch: 1 Train Loss: 3.8399 Acc: 22.600 (817/3615)
+Epoch Train Time: 1m 9s
+1.0
+User 20
+step 1000, running loss: 3.3389092460870744, running_corrects: 266, example_count: 1000, acc: 26.6
+step 2000, running loss: 3.235515435516834, running_corrects: 548, example_count: 2000, acc: 27.400000000000002
+step 3000, running loss: 3.1979843607346217, running_corrects: 827, example_count: 3000, acc: 27.566666666666666
+step 4000, running loss: 3.204531238436699, running_corrects: 1078, example_count: 4000, acc: 26.950000000000003
+Local Epoch: 1 Train Loss: 3.2061 Acc: 26.962 (1082/4013)
+Epoch Train Time: 1m 24s
+1.0
+User 27
+step 1000, running loss: 3.428868007183075, running_corrects: 240, example_count: 1000, acc: 24.0
+step 2000, running loss: 3.3432129582464696, running_corrects: 521, example_count: 2000, acc: 26.05
+step 3000, running loss: 3.260914758463701, running_corrects: 793, example_count: 3000, acc: 26.43333333333333
+step 4000, running loss: 3.2386396968513727, running_corrects: 1085, example_count: 4000, acc: 27.125
+Local Epoch: 1 Train Loss: 3.2399 Acc: 27.084 (1085/4006)
+Epoch Train Time: 1m 18s
+1.0
+User 89
+step 1000, running loss: 3.945226212978363, running_corrects: 242, example_count: 1000, acc: 24.2
+step 2000, running loss: 4.037713933825493, running_corrects: 437, example_count: 2000, acc: 21.85
+step 3000, running loss: 3.9150314138929048, running_corrects: 662, example_count: 3000, acc: 22.066666666666666
+Local Epoch: 1 Train Loss: 3.8749 Acc: 22.296 (804/3606)
+Epoch Train Time: 1m 7s
+1.0
+User 53
+step 1000, running loss: 3.7207001228928567, running_corrects: 231, example_count: 1000, acc: 23.1
+step 2000, running loss: 3.650925221145153, running_corrects: 463, example_count: 2000, acc: 23.150000000000002
+step 3000, running loss: 3.6010437692602477, running_corrects: 725, example_count: 3000, acc: 24.166666666666668
+Local Epoch: 1 Train Loss: 3.5376 Acc: 24.554 (949/3865)
+Epoch Train Time: 1m 7s
+1.0
+User 59
+step 1000, running loss: 3.776161994576454, running_corrects: 230, example_count: 1000, acc: 23.0
+step 2000, running loss: 3.593649953573942, running_corrects: 491, example_count: 2000, acc: 24.55
+step 3000, running loss: 3.584403119623661, running_corrects: 733, example_count: 3000, acc: 24.433333333333334
+Local Epoch: 1 Train Loss: 3.5691 Acc: 24.322 (932/3832)
+Epoch Train Time: 1m 7s
+1.0
+User 9
+step 1000, running loss: 2.0954676119089126, running_corrects: 384, example_count: 1000, acc: 38.4
+step 2000, running loss: 2.1045885834693907, running_corrects: 779, example_count: 2000, acc: 38.95
+step 3000, running loss: 2.063734005411466, running_corrects: 1177, example_count: 3000, acc: 39.233333333333334
+step 4000, running loss: 2.0593669804632664, running_corrects: 1582, example_count: 4000, acc: 39.550000000000004
+Local Epoch: 1 Train Loss: 2.0562 Acc: 39.719 (1613/4061)
+Epoch Train Time: 1m 10s
+1.0
+User 50
+step 1000, running loss: 3.6507943222522736, running_corrects: 251, example_count: 1000, acc: 25.1
+step 2000, running loss: 3.6133264806270597, running_corrects: 497, example_count: 2000, acc: 24.85
+step 3000, running loss: 3.570552395224571, running_corrects: 727, example_count: 3000, acc: 24.233333333333334
+Local Epoch: 1 Train Loss: 3.5495 Acc: 24.091 (934/3877)
+Epoch Train Time: 1m 7s
+1.0
+Validation Loss: 3.3904 Acc: 28.372 (8512/30001)
+Epoch Validation Time: 5m 0s
+Num_bad_epochs: 0, unconstrainedBadEpochs: 0, bestMetric: 0.7162761241291957, currentThreshold: 0.7019506016466118
+Epoch 3/99 - Task: vqa
+----------
+User 7
+step 1000, running loss: 2.113426659345627, running_corrects: 396, example_count: 1000, acc: 39.6
+step 2000, running loss: 2.0778090719878675, running_corrects: 800, example_count: 2000, acc: 40.0
+step 3000, running loss: 2.021189686437448, running_corrects: 1199, example_count: 3000, acc: 39.96666666666667
+step 4000, running loss: 2.0218729709982872, running_corrects: 1603, example_count: 4000, acc: 40.075
+Local Epoch: 1 Train Loss: 2.0210 Acc: 39.995 (1633/4083)
+Epoch Train Time: 1m 7s
+1.0
+User 5
+step 1000, running loss: 2.0587546783089636, running_corrects: 414, example_count: 1000, acc: 41.4
+step 2000, running loss: 2.0451074543595316, running_corrects: 806, example_count: 2000, acc: 40.300000000000004
+step 3000, running loss: 2.0289796485503513, running_corrects: 1227, example_count: 3000, acc: 40.9
+step 4000, running loss: 1.9971038757562638, running_corrects: 1653, example_count: 4000, acc: 41.325
+Local Epoch: 1 Train Loss: 1.9919 Acc: 41.407 (1677/4050)
+Epoch Train Time: 1m 6s
+1.0
+User 62
+step 1000, running loss: 3.559400930047035, running_corrects: 243, example_count: 1000, acc: 24.3
+step 2000, running loss: 3.5455533989667893, running_corrects: 497, example_count: 2000, acc: 24.85
+step 3000, running loss: 3.4689379923343657, running_corrects: 787, example_count: 3000, acc: 26.23333333333333
+Local Epoch: 1 Train Loss: 3.4665 Acc: 26.403 (1016/3848)
+Epoch Train Time: 1m 4s
+1.0
+User 11
+step 1000, running loss: 2.088256094098091, running_corrects: 389, example_count: 1000, acc: 38.9
+step 2000, running loss: 2.066594315171242, running_corrects: 771, example_count: 2000, acc: 38.550000000000004
+step 3000, running loss: 2.0638394338091213, running_corrects: 1187, example_count: 3000, acc: 39.56666666666667
+step 4000, running loss: 2.0382960801720618, running_corrects: 1606, example_count: 4000, acc: 40.150000000000006
+Local Epoch: 1 Train Loss: 2.0422 Acc: 40.010 (1630/4074)
+Epoch Train Time: 1m 6s
+1.0
+User 2
+step 1000, running loss: 1.9797107696533203, running_corrects: 406, example_count: 1000, acc: 40.6
+step 2000, running loss: 1.9620805429816246, running_corrects: 791, example_count: 2000, acc: 39.550000000000004
+step 3000, running loss: 1.9539017592072487, running_corrects: 1185, example_count: 3000, acc: 39.5
+step 4000, running loss: 1.9473121982067823, running_corrects: 1576, example_count: 4000, acc: 39.4
+Local Epoch: 1 Train Loss: 1.9526 Acc: 39.191 (1648/4205)
+Epoch Train Time: 1m 8s
+1.0
+User 26
+step 1000, running loss: 3.2076827356219293, running_corrects: 273, example_count: 1000, acc: 27.3
+step 2000, running loss: 3.193268563449383, running_corrects: 550, example_count: 2000, acc: 27.500000000000004
+step 3000, running loss: 3.1357572758595147, running_corrects: 852, example_count: 3000, acc: 28.4
+step 4000, running loss: 3.1317347735464574, running_corrects: 1129, example_count: 4000, acc: 28.225
+Local Epoch: 1 Train Loss: 3.1281 Acc: 28.298 (1139/4025)
+Epoch Train Time: 1m 6s
+1.0
+User 73
+step 1000, running loss: 2.9889959816336633, running_corrects: 271, example_count: 1000, acc: 27.1
+step 2000, running loss: 2.959874221801758, running_corrects: 555, example_count: 2000, acc: 27.750000000000004
+step 3000, running loss: 2.902807266155879, running_corrects: 865, example_count: 3000, acc: 28.833333333333332
+Local Epoch: 1 Train Loss: 2.9245 Acc: 28.769 (1122/3900)
+Epoch Train Time: 1m 5s
+1.0
+User 70
+step 1000, running loss: 3.108652892768383, running_corrects: 258, example_count: 1000, acc: 25.8
+step 2000, running loss: 2.933038100272417, running_corrects: 591, example_count: 2000, acc: 29.549999999999997
+step 3000, running loss: 2.9672887508273122, running_corrects: 878, example_count: 3000, acc: 29.26666666666667
+Local Epoch: 1 Train Loss: 2.9753 Acc: 29.285 (1143/3903)
+Epoch Train Time: 1m 5s
+1.0
+User 6
+step 1000, running loss: 2.102796665430069, running_corrects: 387, example_count: 1000, acc: 38.7
+step 2000, running loss: 2.070011124521494, running_corrects: 788, example_count: 2000, acc: 39.4
+step 3000, running loss: 2.0253430065910023, running_corrects: 1208, example_count: 3000, acc: 40.266666666666666
+step 4000, running loss: 2.0104918971806764, running_corrects: 1598, example_count: 4000, acc: 39.95
+Local Epoch: 1 Train Loss: 2.0076 Acc: 40.005 (1617/4042)
+Epoch Train Time: 1m 6s
+1.0
+User 97
+step 1000, running loss: 3.9848071216344834, running_corrects: 221, example_count: 1000, acc: 22.1
+step 2000, running loss: 3.96288136485219, running_corrects: 443, example_count: 2000, acc: 22.15
+step 3000, running loss: 3.9270336197415987, running_corrects: 701, example_count: 3000, acc: 23.366666666666667
+Local Epoch: 1 Train Loss: 3.9104 Acc: 23.411 (788/3366)
+Epoch Train Time: 0m 58s
+1.0
+Validation Loss: 3.2189 Acc: 28.732 (8620/30001)
+Epoch Validation Time: 4m 57s
+Num_bad_epochs: 1, unconstrainedBadEpochs: 1, bestMetric: 0.7162761241291957, currentThreshold: 0.7019506016466118
+Epoch 4/99 - Task: vqa
+----------
+User 44
+step 1000, running loss: 3.506964797437191, running_corrects: 258, example_count: 1000, acc: 25.8
+step 2000, running loss: 3.475273751229048, running_corrects: 518, example_count: 2000, acc: 25.900000000000002
+step 3000, running loss: 3.4635645581881205, running_corrects: 778, example_count: 3000, acc: 25.933333333333337
+Local Epoch: 1 Train Loss: 3.4286 Acc: 26.858 (1030/3835)
+Epoch Train Time: 1m 4s
+1.0
+User 84
+step 1000, running loss: 3.925057444512844, running_corrects: 224, example_count: 1000, acc: 22.400000000000002
+step 2000, running loss: 3.9344207103550435, running_corrects: 434, example_count: 2000, acc: 21.7
+step 3000, running loss: 3.9162397931814192, running_corrects: 651, example_count: 3000, acc: 21.7
+Local Epoch: 1 Train Loss: 3.9077 Acc: 21.429 (789/3682)
+Epoch Train Time: 1m 2s
+1.0
+User 93
+step 1000, running loss: 3.8597358272075653, running_corrects: 259, example_count: 1000, acc: 25.900000000000002
+step 2000, running loss: 3.7295794843435286, running_corrects: 497, example_count: 2000, acc: 24.85
+step 3000, running loss: 3.72155466290315, running_corrects: 724, example_count: 3000, acc: 24.133333333333333
+Local Epoch: 1 Train Loss: 3.7538 Acc: 23.928 (854/3569)
+Epoch Train Time: 1m 0s
+1.0
+User 85
+step 1000, running loss: 3.849690228521824, running_corrects: 225, example_count: 1000, acc: 22.5
+step 2000, running loss: 3.9028774808347224, running_corrects: 436, example_count: 2000, acc: 21.8
+step 3000, running loss: 3.890764097034931, running_corrects: 665, example_count: 3000, acc: 22.166666666666668
+Local Epoch: 1 Train Loss: 3.8784 Acc: 22.228 (812/3653)
+Epoch Train Time: 1m 1s
+1.0
+User 19
+step 1000, running loss: 3.1968299610614777, running_corrects: 275, example_count: 1000, acc: 27.500000000000004
+step 2000, running loss: 3.155129003405571, running_corrects: 560, example_count: 2000, acc: 28.000000000000004
+step 3000, running loss: 3.1017082603971162, running_corrects: 848, example_count: 3000, acc: 28.26666666666667
+step 4000, running loss: 3.0827457159012557, running_corrects: 1141, example_count: 4000, acc: 28.525
+Local Epoch: 1 Train Loss: 3.0829 Acc: 28.497 (1143/4011)
+Epoch Train Time: 1m 6s
+1.0
+User 0
+step 1000, running loss: 1.83081450766325, running_corrects: 401, example_count: 1000, acc: 40.1
+step 2000, running loss: 1.7894508325755596, running_corrects: 827, example_count: 2000, acc: 41.349999999999994
+step 3000, running loss: 1.8160337396661441, running_corrects: 1209, example_count: 3000, acc: 40.300000000000004
+step 4000, running loss: 1.76644418887794, running_corrects: 1649, example_count: 4000, acc: 41.225
+Local Epoch: 1 Train Loss: 1.7573 Acc: 41.505 (1781/4291)
+Epoch Train Time: 1m 9s
+1.0
+User 34
+step 1000, running loss: 3.337427993953228, running_corrects: 264, example_count: 1000, acc: 26.400000000000002
+step 2000, running loss: 3.1652205403745173, running_corrects: 542, example_count: 2000, acc: 27.1
+step 3000, running loss: 3.1212268237868943, running_corrects: 827, example_count: 3000, acc: 27.566666666666666
+step 4000, running loss: 3.1044540566056966, running_corrects: 1117, example_count: 4000, acc: 27.925
+Local Epoch: 1 Train Loss: 3.1068 Acc: 27.901 (1118/4007)
+Epoch Train Time: 1m 6s
+1.0
+User 32
+step 1000, running loss: 3.313208167463541, running_corrects: 252, example_count: 1000, acc: 25.2
+step 2000, running loss: 3.2062665702849626, running_corrects: 515, example_count: 2000, acc: 25.75
+step 3000, running loss: 3.083971510400375, running_corrects: 799, example_count: 3000, acc: 26.633333333333333
+step 4000, running loss: 3.085418847627938, running_corrects: 1096, example_count: 4000, acc: 27.400000000000002
+Local Epoch: 1 Train Loss: 3.0873 Acc: 27.374 (1101/4022)
+Epoch Train Time: 1m 6s
+1.0
+User 43
+step 1000, running loss: 3.423798265904188, running_corrects: 276, example_count: 1000, acc: 27.6
+step 2000, running loss: 3.441168866083026, running_corrects: 536, example_count: 2000, acc: 26.8
+step 3000, running loss: 3.443687015901009, running_corrects: 808, example_count: 3000, acc: 26.93333333333333
+Local Epoch: 1 Train Loss: 3.3737 Acc: 27.522 (1056/3837)
+Epoch Train Time: 1m 3s
+1.0
+User 68
+step 1000, running loss: 3.1571013934612275, running_corrects: 273, example_count: 1000, acc: 27.3
+step 2000, running loss: 2.942000643312931, running_corrects: 575, example_count: 2000, acc: 28.749999999999996
+step 3000, running loss: 2.9276984472672143, running_corrects: 872, example_count: 3000, acc: 29.06666666666667
+Local Epoch: 1 Train Loss: 2.8973 Acc: 29.734 (1162/3908)
+Epoch Train Time: 1m 5s
+1.0
+Validation Loss: 3.0528 Acc: 30.392 (9118/30001)
+Epoch Validation Time: 4m 57s
+Num_bad_epochs: 0, unconstrainedBadEpochs: 0, bestMetric: 0.6960767974400853, currentThreshold: 0.6821552614912836
+Epoch 5/99 - Task: vqa
+----------
+User 17
+step 1000, running loss: 3.1879652218818664, running_corrects: 293, example_count: 1000, acc: 29.299999999999997
+step 2000, running loss: 3.081753580272198, running_corrects: 568, example_count: 2000, acc: 28.4
+step 3000, running loss: 3.0511557524204256, running_corrects: 885, example_count: 3000, acc: 29.5
+Local Epoch: 1 Train Loss: 3.0566 Acc: 29.572 (1174/3970)
+Epoch Train Time: 1m 5s
+1.0
+User 1
+step 1000, running loss: 1.7917177398204804, running_corrects: 408, example_count: 1000, acc: 40.8
+step 2000, running loss: 1.8022783327698708, running_corrects: 822, example_count: 2000, acc: 41.099999999999994
+step 3000, running loss: 1.7359911778767905, running_corrects: 1259, example_count: 3000, acc: 41.96666666666667
+step 4000, running loss: 1.72137895616889, running_corrects: 1692, example_count: 4000, acc: 42.3
+Local Epoch: 1 Train Loss: 1.7135 Acc: 42.244 (1800/4261)
+Epoch Train Time: 1m 9s
+1.0
+User 86
+step 1000, running loss: 3.8480944398641586, running_corrects: 227, example_count: 1000, acc: 22.7
+step 2000, running loss: 3.8668361598849295, running_corrects: 438, example_count: 2000, acc: 21.9
+step 3000, running loss: 3.865185033539931, running_corrects: 654, example_count: 3000, acc: 21.8
+Local Epoch: 1 Train Loss: 3.8509 Acc: 22.256 (809/3635)
+Epoch Train Time: 1m 1s
+1.0
+User 16
+step 1000, running loss: 3.1325874643325804, running_corrects: 281, example_count: 1000, acc: 28.1
+step 2000, running loss: 3.001251094043255, running_corrects: 600, example_count: 2000, acc: 30.0
+step 3000, running loss: 2.9946184646487235, running_corrects: 913, example_count: 3000, acc: 30.433333333333334
+step 4000, running loss: 2.9878752957731485, running_corrects: 1218, example_count: 4000, acc: 30.45
+Local Epoch: 1 Train Loss: 2.9841 Acc: 30.488 (1225/4018)
+Epoch Train Time: 1m 6s
+1.0
+User 73
+step 1000, running loss: 2.8954239234924315, running_corrects: 307, example_count: 1000, acc: 30.7
+step 2000, running loss: 2.8630820887088775, running_corrects: 608, example_count: 2000, acc: 30.4
+step 3000, running loss: 2.8482478903134663, running_corrects: 925, example_count: 3000, acc: 30.833333333333336
+Local Epoch: 1 Train Loss: 2.8533 Acc: 31.051 (1211/3900)
+Epoch Train Time: 1m 5s
+1.0
+User 21
+step 1000, running loss: 3.2764890815615653, running_corrects: 269, example_count: 1000, acc: 26.900000000000002
+step 2000, running loss: 3.1528653931319712, running_corrects: 551, example_count: 2000, acc: 27.55
+step 3000, running loss: 3.145009150087833, running_corrects: 846, example_count: 3000, acc: 28.199999999999996
+step 4000, running loss: 3.131084587350488, running_corrects: 1159, example_count: 4000, acc: 28.975
+Local Epoch: 1 Train Loss: 3.1294 Acc: 28.947 (1168/4035)
+Epoch Train Time: 1m 6s
+1.0
+User 7
+step 1000, running loss: 2.0184200633764267, running_corrects: 395, example_count: 1000, acc: 39.5
+step 2000, running loss: 1.968166865170002, running_corrects: 843, example_count: 2000, acc: 42.15
+step 3000, running loss: 1.9635191424687704, running_corrects: 1261, example_count: 3000, acc: 42.03333333333333
+step 4000, running loss: 1.9640302645862102, running_corrects: 1675, example_count: 4000, acc: 41.875
+Local Epoch: 1 Train Loss: 1.9535 Acc: 41.979 (1714/4083)
+Epoch Train Time: 1m 7s
+1.0
+User 53
+step 1000, running loss: 3.431358245074749, running_corrects: 263, example_count: 1000, acc: 26.3
+step 2000, running loss: 3.412981102257967, running_corrects: 512, example_count: 2000, acc: 25.6
+step 3000, running loss: 3.3901534248391787, running_corrects: 804, example_count: 3000, acc: 26.8
+Local Epoch: 1 Train Loss: 3.3377 Acc: 27.322 (1056/3865)
+Epoch Train Time: 1m 4s
+1.0
+User 9
+step 1000, running loss: 1.9402060663700105, running_corrects: 417, example_count: 1000, acc: 41.699999999999996
+step 2000, running loss: 1.9615045465230943, running_corrects: 840, example_count: 2000, acc: 42.0
+step 3000, running loss: 1.9136847321987152, running_corrects: 1274, example_count: 3000, acc: 42.46666666666667
+step 4000, running loss: 1.9030402112752198, running_corrects: 1700, example_count: 4000, acc: 42.5
+Local Epoch: 1 Train Loss: 1.8983 Acc: 42.551 (1728/4061)
+Epoch Train Time: 1m 6s
+1.0
+User 47
+step 1000, running loss: 3.456379230737686, running_corrects: 265, example_count: 1000, acc: 26.5
+step 2000, running loss: 3.4695596372187136, running_corrects: 525, example_count: 2000, acc: 26.25
+step 3000, running loss: 3.39832169487079, running_corrects: 792, example_count: 3000, acc: 26.400000000000002
+Local Epoch: 1 Train Loss: 3.4043 Acc: 26.379 (1009/3825)
+Epoch Train Time: 1m 3s
+1.0
+Validation Loss: 3.0581 Acc: 31.896 (9569/30001)
+Epoch Validation Time: 4m 57s
+Num_bad_epochs: 0, unconstrainedBadEpochs: 0, bestMetric: 0.68104396520116, currentThreshold: 0.6674230858971367
+Epoch 6/99 - Task: vqa
+----------
+User 93
+step 1000, running loss: 3.8982464833259582, running_corrects: 235, example_count: 1000, acc: 23.5
+step 2000, running loss: 3.8613035690784456, running_corrects: 471, example_count: 2000, acc: 23.549999999999997
+step 3000, running loss: 3.7881856310566264, running_corrects: 747, example_count: 3000, acc: 24.9
+Local Epoch: 1 Train Loss: 3.7762 Acc: 25.077 (895/3569)
+Epoch Train Time: 1m 1s
+1.0
+User 29
+step 1000, running loss: 3.1553438764214516, running_corrects: 256, example_count: 1000, acc: 25.6
+step 2000, running loss: 3.1594676828980446, running_corrects: 547, example_count: 2000, acc: 27.35
+step 3000, running loss: 3.179634010016918, running_corrects: 815, example_count: 3000, acc: 27.166666666666668
+step 4000, running loss: 3.1757573738843203, running_corrects: 1102, example_count: 4000, acc: 27.55
+Local Epoch: 1 Train Loss: 3.1798 Acc: 27.568 (1111/4030)
+Epoch Train Time: 1m 6s
+1.0
+User 66
+step 1000, running loss: 2.83486756080389, running_corrects: 311, example_count: 1000, acc: 31.1
+step 2000, running loss: 2.872278151512146, running_corrects: 608, example_count: 2000, acc: 30.4
+step 3000, running loss: 2.854550886174043, running_corrects: 924, example_count: 3000, acc: 30.8
+Local Epoch: 1 Train Loss: 2.8310 Acc: 30.748 (1213/3945)
+Epoch Train Time: 1m 6s
+1.0
+User 99
+step 1000, running loss: 3.7663791128396986, running_corrects: 228, example_count: 1000, acc: 22.8
+step 2000, running loss: 3.6816750153303146, running_corrects: 490, example_count: 2000, acc: 24.5
+step 3000, running loss: 3.666068466265996, running_corrects: 760, example_count: 3000, acc: 25.333333333333336
+Local Epoch: 1 Train Loss: 3.6379 Acc: 25.464 (824/3236)
+Epoch Train Time: 0m 57s
+1.0
+User 73
+step 1000, running loss: 2.8318402662277222, running_corrects: 307, example_count: 1000, acc: 30.7
+step 2000, running loss: 2.827449859678745, running_corrects: 598, example_count: 2000, acc: 29.9
+step 3000, running loss: 2.8520208806594214, running_corrects: 879, example_count: 3000, acc: 29.299999999999997
+Local Epoch: 1 Train Loss: 2.8707 Acc: 29.333 (1144/3900)
+Epoch Train Time: 1m 5s
+1.0
+User 72
+step 1000, running loss: 2.9693120461404323, running_corrects: 295, example_count: 1000, acc: 29.5
+step 2000, running loss: 3.0019218450039626, running_corrects: 608, example_count: 2000, acc: 30.4
+step 3000, running loss: 3.0126887369453907, running_corrects: 914, example_count: 3000, acc: 30.466666666666665
+Local Epoch: 1 Train Loss: 3.0026 Acc: 30.474 (1190/3905)
+Epoch Train Time: 1m 5s
+1.0
+User 16
+step 1000, running loss: 2.983085372686386, running_corrects: 324, example_count: 1000, acc: 32.4
+step 2000, running loss: 2.915914205878973, running_corrects: 655, example_count: 2000, acc: 32.75
+step 3000, running loss: 2.950558509747187, running_corrects: 957, example_count: 3000, acc: 31.900000000000002
+step 4000, running loss: 2.969813483417034, running_corrects: 1268, example_count: 4000, acc: 31.7
+Local Epoch: 1 Train Loss: 2.9676 Acc: 31.682 (1273/4018)
+Epoch Train Time: 1m 6s
+1.0
+User 1
+step 1000, running loss: 1.927199180662632, running_corrects: 386, example_count: 1000, acc: 38.6
+step 2000, running loss: 1.8003723725676537, running_corrects: 807, example_count: 2000, acc: 40.35
+step 3000, running loss: 1.7505389099617799, running_corrects: 1226, example_count: 3000, acc: 40.86666666666667
+step 4000, running loss: 1.7356204185560347, running_corrects: 1679, example_count: 4000, acc: 41.975
+Local Epoch: 1 Train Loss: 1.7121 Acc: 42.079 (1793/4261)
+Epoch Train Time: 1m 9s
+1.0
+User 32
+step 1000, running loss: 3.0599281299114227, running_corrects: 305, example_count: 1000, acc: 30.5
+step 2000, running loss: 3.117059253156185, running_corrects: 597, example_count: 2000, acc: 29.849999999999998
+step 3000, running loss: 3.081356578350067, running_corrects: 897, example_count: 3000, acc: 29.9
+step 4000, running loss: 3.0638936641812324, running_corrects: 1182, example_count: 4000, acc: 29.549999999999997
+Local Epoch: 1 Train Loss: 3.0675 Acc: 29.488 (1186/4022)
+Epoch Train Time: 1m 6s
+1.0
+User 91
+step 1000, running loss: 3.843364615082741, running_corrects: 226, example_count: 1000, acc: 22.6
+step 2000, running loss: 3.8906844890117647, running_corrects: 456, example_count: 2000, acc: 22.8
+step 3000, running loss: 3.872476696093877, running_corrects: 678, example_count: 3000, acc: 22.6
+Local Epoch: 1 Train Loss: 3.8546 Acc: 22.742 (798/3509)
+Epoch Train Time: 0m 59s
+1.0
+Validation Loss: 3.0689 Acc: 32.646 (9794/30001)
+Epoch Validation Time: 4m 57s
+Num_bad_epochs: 1, unconstrainedBadEpochs: 1, bestMetric: 0.68104396520116, currentThreshold: 0.6674230858971367
+Epoch 7/99 - Task: vqa
+----------
+User 40
+step 1000, running loss: 3.241779317498207, running_corrects: 297, example_count: 1000, acc: 29.7
+step 2000, running loss: 3.2685781942009924, running_corrects: 559, example_count: 2000, acc: 27.950000000000003
+step 3000, running loss: 3.269270452241103, running_corrects: 853, example_count: 3000, acc: 28.433333333333334
+step 4000, running loss: 3.244890270486474, running_corrects: 1152, example_count: 4000, acc: 28.799999999999997
+Local Epoch: 1 Train Loss: 3.2509 Acc: 28.767 (1157/4022)
+Epoch Train Time: 1m 6s
+1.0
+User 39
+step 1000, running loss: 3.2011112068295478, running_corrects: 288, example_count: 1000, acc: 28.799999999999997
+step 2000, running loss: 3.161673536449671, running_corrects: 587, example_count: 2000, acc: 29.349999999999998
+step 3000, running loss: 3.1883054192364217, running_corrects: 883, example_count: 3000, acc: 29.433333333333334
+step 4000, running loss: 3.1753634537383912, running_corrects: 1174, example_count: 4000, acc: 29.349999999999998
+Local Epoch: 1 Train Loss: 3.1690 Acc: 29.304 (1188/4054)
+Epoch Train Time: 1m 7s
+1.0
+User 15
+step 1000, running loss: 2.077017300903797, running_corrects: 423, example_count: 1000, acc: 42.3
+step 2000, running loss: 2.0576710937917233, running_corrects: 852, example_count: 2000, acc: 42.6
+step 3000, running loss: 2.045244731038809, running_corrects: 1292, example_count: 3000, acc: 43.06666666666666
+step 4000, running loss: 2.015990459524095, running_corrects: 1726, example_count: 4000, acc: 43.15
+Local Epoch: 1 Train Loss: 2.0136 Acc: 43.168 (1747/4047)
+Epoch Train Time: 1m 6s
+1.0
+User 68
+step 1000, running loss: 2.983889379143715, running_corrects: 288, example_count: 1000, acc: 28.799999999999997
+step 2000, running loss: 2.970429382741451, running_corrects: 610, example_count: 2000, acc: 30.5
+step 3000, running loss: 2.964761874318123, running_corrects: 923, example_count: 3000, acc: 30.766666666666666
+Local Epoch: 1 Train Loss: 2.9757 Acc: 30.067 (1175/3908)
+Epoch Train Time: 1m 5s
+1.0
+User 25
+step 1000, running loss: 3.1113308750391004, running_corrects: 300, example_count: 1000, acc: 30.0
+step 2000, running loss: 3.0909556053578853, running_corrects: 599, example_count: 2000, acc: 29.95
+step 3000, running loss: 3.0855706875721616, running_corrects: 889, example_count: 3000, acc: 29.633333333333333
+step 4000, running loss: 3.134645188435912, running_corrects: 1172, example_count: 4000, acc: 29.299999999999997
+Local Epoch: 1 Train Loss: 3.1340 Acc: 29.310 (1173/4002)
+Epoch Train Time: 1m 6s
+1.0
+User 73
+step 1000, running loss: 2.873864313662052, running_corrects: 297, example_count: 1000, acc: 29.7
+step 2000, running loss: 2.9008829974234103, running_corrects: 598, example_count: 2000, acc: 29.9
+step 3000, running loss: 2.870021455625693, running_corrects: 872, example_count: 3000, acc: 29.06666666666667
+Local Epoch: 1 Train Loss: 2.9208 Acc: 29.385 (1146/3900)
+Epoch Train Time: 1m 5s
+1.0
+User 26
+step 1000, running loss: 3.15307718873024, running_corrects: 296, example_count: 1000, acc: 29.599999999999998
+step 2000, running loss: 3.154697733670473, running_corrects: 594, example_count: 2000, acc: 29.7
+step 3000, running loss: 3.0969467579523724, running_corrects: 913, example_count: 3000, acc: 30.433333333333334
+step 4000, running loss: 3.091135777935386, running_corrects: 1251, example_count: 4000, acc: 31.275
+Local Epoch: 1 Train Loss: 3.0907 Acc: 31.329 (1261/4025)
+Epoch Train Time: 1m 6s
+1.0
+User 7
+step 1000, running loss: 2.027797805070877, running_corrects: 414, example_count: 1000, acc: 41.4
+step 2000, running loss: 2.0440574329197405, running_corrects: 820, example_count: 2000, acc: 41.0
+step 3000, running loss: 2.0264946286678316, running_corrects: 1243, example_count: 3000, acc: 41.43333333333333
+step 4000, running loss: 1.998620768211782, running_corrects: 1667, example_count: 4000, acc: 41.675000000000004
+Local Epoch: 1 Train Loss: 1.9922 Acc: 41.661 (1701/4083)
+Epoch Train Time: 1m 6s
+1.0
+User 65
+step 1000, running loss: 3.0135033358335495, running_corrects: 293, example_count: 1000, acc: 29.299999999999997
+step 2000, running loss: 3.0816319981515408, running_corrects: 586, example_count: 2000, acc: 29.299999999999997
+step 3000, running loss: 3.072111694256465, running_corrects: 875, example_count: 3000, acc: 29.166666666666668
+Local Epoch: 1 Train Loss: 3.0574 Acc: 29.517 (1150/3896)
+Epoch Train Time: 1m 5s
+1.0
+User 49
+step 1000, running loss: 3.6311279868483544, running_corrects: 256, example_count: 1000, acc: 25.6
+step 2000, running loss: 3.523825121790171, running_corrects: 512, example_count: 2000, acc: 25.6
+step 3000, running loss: 3.5214068814317385, running_corrects: 800, example_count: 3000, acc: 26.666666666666668
+Local Epoch: 1 Train Loss: 3.5030 Acc: 27.174 (1025/3772)
+Epoch Train Time: 1m 2s
+1.0
+Validation Loss: 3.1885 Acc: 32.976 (9893/30001)
+Epoch Validation Time: 4m 57s
+Num_bad_epochs: 2, unconstrainedBadEpochs: 2, bestMetric: 0.68104396520116, currentThreshold: 0.6674230858971367
+Epoch 8/99 - Task: vqa
+----------
+User 24
+step 1000, running loss: 3.149905959278345, running_corrects: 290, example_count: 1000, acc: 28.999999999999996
+step 2000, running loss: 3.18986098010838, running_corrects: 593, example_count: 2000, acc: 29.65
+step 3000, running loss: 3.227831242064635, running_corrects: 887, example_count: 3000, acc: 29.56666666666667
+step 4000, running loss: 3.212900970354676, running_corrects: 1203, example_count: 4000, acc: 30.075000000000003
+Local Epoch: 1 Train Loss: 3.2113 Acc: 30.119 (1215/4034)
+Epoch Train Time: 1m 6s
+1.0
+User 76
+step 1000, running loss: 3.1015076991319654, running_corrects: 310, example_count: 1000, acc: 31.0
+step 2000, running loss: 3.167379188299179, running_corrects: 588, example_count: 2000, acc: 29.4
+step 3000, running loss: 3.1478466793894766, running_corrects: 887, example_count: 3000, acc: 29.56666666666667
+Local Epoch: 1 Train Loss: 3.1611 Acc: 29.671 (1164/3923)
+Epoch Train Time: 1m 5s
+1.0
+User 97
+step 1000, running loss: 4.342271249055862, running_corrects: 233, example_count: 1000, acc: 23.3
+step 2000, running loss: 4.35206184270978, running_corrects: 467, example_count: 2000, acc: 23.35
+step 3000, running loss: 4.287300717433293, running_corrects: 686, example_count: 3000, acc: 22.866666666666667
+Local Epoch: 1 Train Loss: 4.2629 Acc: 23.054 (776/3366)
+Epoch Train Time: 0m 58s
+1.0
+User 73
+step 1000, running loss: 2.9532454025149346, running_corrects: 316, example_count: 1000, acc: 31.6
+step 2000, running loss: 2.996841783285141, running_corrects: 628, example_count: 2000, acc: 31.4
+step 3000, running loss: 3.017151364982128, running_corrects: 935, example_count: 3000, acc: 31.166666666666664
+Local Epoch: 1 Train Loss: 3.0104 Acc: 30.641 (1195/3900)
+Epoch Train Time: 1m 5s
+1.0
+User 12
+step 1000, running loss: 2.1038824025690555, running_corrects: 401, example_count: 1000, acc: 40.1
+step 2000, running loss: 2.03952570399642, running_corrects: 819, example_count: 2000, acc: 40.949999999999996
+step 3000, running loss: 2.0513122761646905, running_corrects: 1263, example_count: 3000, acc: 42.1
+step 4000, running loss: 2.064105342179537, running_corrects: 1693, example_count: 4000, acc: 42.325
+Local Epoch: 1 Train Loss: 2.0700 Acc: 42.324 (1712/4045)
+Epoch Train Time: 1m 6s
+1.0
+User 20
+step 1000, running loss: 3.169502384752035, running_corrects: 332, example_count: 1000, acc: 33.2
+step 2000, running loss: 3.266588471800089, running_corrects: 610, example_count: 2000, acc: 30.5
+step 3000, running loss: 3.2386276415189106, running_corrects: 881, example_count: 3000, acc: 29.366666666666667
+step 4000, running loss: 3.228631601765752, running_corrects: 1177, example_count: 4000, acc: 29.425
+Local Epoch: 1 Train Loss: 3.2236 Acc: 29.429 (1181/4013)
+Epoch Train Time: 1m 6s
+1.0
+User 3
+step 1000, running loss: 2.26937778198719, running_corrects: 409, example_count: 1000, acc: 40.9
+step 2000, running loss: 2.066973540663719, running_corrects: 871, example_count: 2000, acc: 43.55
+step 3000, running loss: 2.051433757245541, running_corrects: 1307, example_count: 3000, acc: 43.56666666666666
+step 4000, running loss: 2.0554979984592645, running_corrects: 1713, example_count: 4000, acc: 42.825
+Local Epoch: 1 Train Loss: 2.0515 Acc: 42.941 (1749/4073)
+Epoch Train Time: 1m 6s
+1.0
+User 94
+step 1000, running loss: 4.061581468522549, running_corrects: 246, example_count: 1000, acc: 24.6
+step 2000, running loss: 4.088405493527651, running_corrects: 485, example_count: 2000, acc: 24.25
+step 3000, running loss: 4.056968212564787, running_corrects: 734, example_count: 3000, acc: 24.46666666666667
+Local Epoch: 1 Train Loss: 4.0498 Acc: 24.546 (851/3467)
+Epoch Train Time: 0m 59s
+1.0
+User 14
+step 1000, running loss: 2.033936248421669, running_corrects: 390, example_count: 1000, acc: 39.0
+step 2000, running loss: 2.024205687433481, running_corrects: 805, example_count: 2000, acc: 40.25
+step 3000, running loss: 2.0152843765318393, running_corrects: 1240, example_count: 3000, acc: 41.333333333333336
+step 4000, running loss: 1.9869531410392374, running_corrects: 1649, example_count: 4000, acc: 41.225
+Local Epoch: 1 Train Loss: 1.9865 Acc: 41.239 (1664/4035)
+Epoch Train Time: 1m 6s
+1.0
+User 41
+step 1000, running loss: 3.2385271589159967, running_corrects: 289, example_count: 1000, acc: 28.9
+step 2000, running loss: 3.3011295216679573, running_corrects: 585, example_count: 2000, acc: 29.25
+step 3000, running loss: 3.292692161122958, running_corrects: 875, example_count: 3000, acc: 29.166666666666668
+step 4000, running loss: 3.304261848554015, running_corrects: 1184, example_count: 4000, acc: 29.599999999999998
+Local Epoch: 1 Train Loss: 3.3094 Acc: 29.730 (1210/4070)
+Epoch Train Time: 1m 7s
+1.0
+Validation Loss: 3.3071 Acc: 33.669 (10101/30001)
+Epoch Validation Time: 4m 57s
+Num_bad_epochs: 0, unconstrainedBadEpochs: 0, bestMetric: 0.6633112229592346, currentThreshold: 0.6500449985000499
+Epoch 9/99 - Task: vqa
+----------
+User 74
+step 1000, running loss: 3.152446978747845, running_corrects: 303, example_count: 1000, acc: 30.3
+step 2000, running loss: 3.053641461253166, running_corrects: 629, example_count: 2000, acc: 31.45
+step 3000, running loss: 3.1694744825959207, running_corrects: 917, example_count: 3000, acc: 30.566666666666663
+Local Epoch: 1 Train Loss: 3.1690 Acc: 30.877 (1211/3922)
+Epoch Train Time: 1m 5s
+1.0
+User 85
+step 1000, running loss: 4.4346468552350995, running_corrects: 228, example_count: 1000, acc: 22.8
+step 2000, running loss: 4.506844845294952, running_corrects: 452, example_count: 2000, acc: 22.6
+step 3000, running loss: 4.470608535170555, running_corrects: 671, example_count: 3000, acc: 22.366666666666667
+Local Epoch: 1 Train Loss: 4.4749 Acc: 22.557 (824/3653)
+Epoch Train Time: 1m 1s
+1.0
+User 34
+step 1000, running loss: 3.4560339909493925, running_corrects: 310, example_count: 1000, acc: 31.0
+step 2000, running loss: 3.4105813577920197, running_corrects: 618, example_count: 2000, acc: 30.9
+step 3000, running loss: 3.453829973101616, running_corrects: 909, example_count: 3000, acc: 30.3
+step 4000, running loss: 3.3974619706496596, running_corrects: 1247, example_count: 4000, acc: 31.175000000000004
+Local Epoch: 1 Train Loss: 3.4005 Acc: 31.121 (1247/4007)
+Epoch Train Time: 1m 6s
+1.0
+User 25
+step 1000, running loss: 3.3570296496748924, running_corrects: 323, example_count: 1000, acc: 32.300000000000004
+step 2000, running loss: 3.3412363659590483, running_corrects: 619, example_count: 2000, acc: 30.95
+step 3000, running loss: 3.3418521091739337, running_corrects: 896, example_count: 3000, acc: 29.86666666666667
+step 4000, running loss: 3.3386083118058743, running_corrects: 1200, example_count: 4000, acc: 30.0
+Local Epoch: 1 Train Loss: 3.3388 Acc: 29.985 (1200/4002)
+Epoch Train Time: 1m 6s
+1.0
+User 19
+step 1000, running loss: 3.4062177514135836, running_corrects: 295, example_count: 1000, acc: 29.5
+step 2000, running loss: 3.34916421072185, running_corrects: 587, example_count: 2000, acc: 29.349999999999998
+step 3000, running loss: 3.3653266340295476, running_corrects: 886, example_count: 3000, acc: 29.533333333333335
+step 4000, running loss: 3.3563626028075815, running_corrects: 1175, example_count: 4000, acc: 29.375
+Local Epoch: 1 Train Loss: 3.3579 Acc: 29.319 (1176/4011)
+Epoch Train Time: 1m 6s
+1.0
+User 21
+step 1000, running loss: 3.44555102519691, running_corrects: 309, example_count: 1000, acc: 30.9
+step 2000, running loss: 3.441000127993524, running_corrects: 620, example_count: 2000, acc: 31.0
+step 3000, running loss: 3.407868696893255, running_corrects: 902, example_count: 3000, acc: 30.06666666666667
+step 4000, running loss: 3.428901759479195, running_corrects: 1166, example_count: 4000, acc: 29.15
+Local Epoch: 1 Train Loss: 3.4307 Acc: 29.145 (1176/4035)
+Epoch Train Time: 1m 6s
+1.0
+User 53
+step 1000, running loss: 3.75261748957634, running_corrects: 268, example_count: 1000, acc: 26.8
+step 2000, running loss: 3.7348987213373186, running_corrects: 552, example_count: 2000, acc: 27.6
+step 3000, running loss: 3.7479166122078897, running_corrects: 843, example_count: 3000, acc: 28.1
+Local Epoch: 1 Train Loss: 3.7716 Acc: 28.072 (1085/3865)
+Epoch Train Time: 1m 4s
+1.0
+User 67
+step 1000, running loss: 3.0168885632753373, running_corrects: 291, example_count: 1000, acc: 29.099999999999998
+step 2000, running loss: 3.139435460835695, running_corrects: 588, example_count: 2000, acc: 29.4
+step 3000, running loss: 3.168182300011317, running_corrects: 879, example_count: 3000, acc: 29.299999999999997
+Local Epoch: 1 Train Loss: 3.2210 Acc: 29.236 (1144/3913)
+Epoch Train Time: 1m 5s
+1.0
+User 39
+step 1000, running loss: 3.5224247455894946, running_corrects: 292, example_count: 1000, acc: 29.2
+step 2000, running loss: 3.4076934558153154, running_corrects: 603, example_count: 2000, acc: 30.15
+step 3000, running loss: 3.4057910953859487, running_corrects: 915, example_count: 3000, acc: 30.5
+step 4000, running loss: 3.3858695540353656, running_corrects: 1227, example_count: 4000, acc: 30.675
+Local Epoch: 1 Train Loss: 3.3923 Acc: 30.562 (1239/4054)
+Epoch Train Time: 1m 7s
+1.0
+User 82
+step 1000, running loss: 4.541954534679651, running_corrects: 230, example_count: 1000, acc: 23.0
+step 2000, running loss: 4.573066682234407, running_corrects: 456, example_count: 2000, acc: 22.8
+step 3000, running loss: 4.453135938594738, running_corrects: 684, example_count: 3000, acc: 22.8
+Local Epoch: 1 Train Loss: 4.4565 Acc: 22.774 (834/3662)
+Epoch Train Time: 1m 2s
+1.0
+Validation Loss: 3.4972 Acc: 33.186 (9956/30001)
+Epoch Validation Time: 4m 57s
+Num_bad_epochs: 1, unconstrainedBadEpochs: 1, bestMetric: 0.6633112229592346, currentThreshold: 0.6500449985000499
+Epoch 10/99 - Task: vqa
+----------
+User 71
+step 1000, running loss: 3.4498939642608164, running_corrects: 292, example_count: 1000, acc: 29.2
+step 2000, running loss: 3.5019059587568044, running_corrects: 596, example_count: 2000, acc: 29.799999999999997
+step 3000, running loss: 3.5479535758594674, running_corrects: 877, example_count: 3000, acc: 29.233333333333334
+Local Epoch: 1 Train Loss: 3.5343 Acc: 29.241 (1141/3902)
+Epoch Train Time: 1m 5s
+1.0
+User 22
+step 1000, running loss: 3.3459778930544855, running_corrects: 309, example_count: 1000, acc: 30.9
+step 2000, running loss: 3.324062557026744, running_corrects: 633, example_count: 2000, acc: 31.65
+step 3000, running loss: 3.341818749278784, running_corrects: 956, example_count: 3000, acc: 31.866666666666667
+Local Epoch: 1 Train Loss: 3.4320 Acc: 31.012 (1229/3963)
+Epoch Train Time: 1m 5s
+1.0
+User 34
+step 1000, running loss: 3.5922230100408195, running_corrects: 318, example_count: 1000, acc: 31.8
+step 2000, running loss: 3.606799241859466, running_corrects: 630, example_count: 2000, acc: 31.5
+step 3000, running loss: 3.5339350042666, running_corrects: 936, example_count: 3000, acc: 31.2
+step 4000, running loss: 3.553746511766687, running_corrects: 1233, example_count: 4000, acc: 30.825000000000003
+Local Epoch: 1 Train Loss: 3.5509 Acc: 30.871 (1237/4007)
+Epoch Train Time: 1m 6s
+1.0
+User 84
+step 1000, running loss: 4.781538206636906, running_corrects: 204, example_count: 1000, acc: 20.4
+step 2000, running loss: 4.77204398176074, running_corrects: 454, example_count: 2000, acc: 22.7
+step 3000, running loss: 4.821996157328288, running_corrects: 675, example_count: 3000, acc: 22.5
+Local Epoch: 1 Train Loss: 4.8618 Acc: 22.053 (812/3682)
+Epoch Train Time: 1m 2s
+1.0
+User 6
+step 1000, running loss: 2.301777108117938, running_corrects: 432, example_count: 1000, acc: 43.2
+step 2000, running loss: 2.294403913132846, running_corrects: 864, example_count: 2000, acc: 43.2
+step 3000, running loss: 2.228560003280019, running_corrects: 1280, example_count: 3000, acc: 42.66666666666667
+step 4000, running loss: 2.2699011004897764, running_corrects: 1701, example_count: 4000, acc: 42.525
+Local Epoch: 1 Train Loss: 2.2704 Acc: 42.454 (1716/4042)
+Epoch Train Time: 1m 6s
+1.0
+User 31
+step 1000, running loss: 3.65212477850914, running_corrects: 299, example_count: 1000, acc: 29.9
+step 2000, running loss: 3.612958764061332, running_corrects: 579, example_count: 2000, acc: 28.95
+step 3000, running loss: 3.5926924900809922, running_corrects: 871, example_count: 3000, acc: 29.03333333333333
+step 4000, running loss: 3.626747845977545, running_corrects: 1176, example_count: 4000, acc: 29.4
+Local Epoch: 1 Train Loss: 3.6255 Acc: 29.447 (1182/4014)
+Epoch Train Time: 1m 6s
+1.0
+User 20
+step 1000, running loss: 3.5656322552412747, running_corrects: 297, example_count: 1000, acc: 29.7
+step 2000, running loss: 3.474376861669123, running_corrects: 603, example_count: 2000, acc: 30.15
+step 3000, running loss: 3.481089399307966, running_corrects: 917, example_count: 3000, acc: 30.566666666666663
+step 4000, running loss: 3.48790771497041, running_corrects: 1248, example_count: 4000, acc: 31.2
+Local Epoch: 1 Train Loss: 3.4888 Acc: 31.298 (1256/4013)
+Epoch Train Time: 1m 6s
+1.0
+User 70
+step 1000, running loss: 3.311270188868046, running_corrects: 297, example_count: 1000, acc: 29.7
+step 2000, running loss: 3.39209601290524, running_corrects: 610, example_count: 2000, acc: 30.5
+step 3000, running loss: 3.431826524009307, running_corrects: 907, example_count: 3000, acc: 30.233333333333334
+Local Epoch: 1 Train Loss: 3.4644 Acc: 29.926 (1168/3903)
+Epoch Train Time: 1m 5s
+1.0
+User 15
+step 1000, running loss: 2.3073185987621545, running_corrects: 404, example_count: 1000, acc: 40.400000000000006
+step 2000, running loss: 2.3278485541269185, running_corrects: 815, example_count: 2000, acc: 40.75
+step 3000, running loss: 2.334675596120457, running_corrects: 1228, example_count: 3000, acc: 40.93333333333333
+step 4000, running loss: 2.2667119457386433, running_corrects: 1648, example_count: 4000, acc: 41.199999999999996
+Local Epoch: 1 Train Loss: 2.2698 Acc: 41.315 (1672/4047)
+Epoch Train Time: 1m 6s
+1.0
+User 98
+step 1000, running loss: 4.51133479654789, running_corrects: 243, example_count: 1000, acc: 24.3
+step 2000, running loss: 4.56881751216948, running_corrects: 503, example_count: 2000, acc: 25.15
+step 3000, running loss: 4.642179040759802, running_corrects: 742, example_count: 3000, acc: 24.73333333333333
+Local Epoch: 1 Train Loss: 4.6569 Acc: 24.525 (813/3315)
+Epoch Train Time: 0m 57s
+1.0
+Validation Loss: 3.7284 Acc: 33.956 (10187/30001)
+Epoch Validation Time: 4m 57s
+Num_bad_epochs: 2, unconstrainedBadEpochs: 2, bestMetric: 0.6633112229592346, currentThreshold: 0.6500449985000499
+Epoch 11/99 - Task: vqa
+----------
+User 33
+step 1000, running loss: 3.958409638762474, running_corrects: 283, example_count: 1000, acc: 28.299999999999997
+step 2000, running loss: 3.73023157646507, running_corrects: 592, example_count: 2000, acc: 29.599999999999998
+step 3000, running loss: 3.761443954716126, running_corrects: 880, example_count: 3000, acc: 29.333333333333332
+step 4000, running loss: 3.7980106822401285, running_corrects: 1180, example_count: 4000, acc: 29.5
+Local Epoch: 1 Train Loss: 3.8015 Acc: 29.513 (1200/4066)
+Epoch Train Time: 1m 7s
+1.0
+User 47
+step 1000, running loss: 4.327842033058405, running_corrects: 268, example_count: 1000, acc: 26.8
+step 2000, running loss: 4.428295104250312, running_corrects: 535, example_count: 2000, acc: 26.75
+step 3000, running loss: 4.3658226371953885, running_corrects: 806, example_count: 3000, acc: 26.866666666666667
+Local Epoch: 1 Train Loss: 4.3877 Acc: 26.954 (1031/3825)
+Epoch Train Time: 1m 3s
+1.0
+User 34
+step 1000, running loss: 3.7164425215125085, running_corrects: 326, example_count: 1000, acc: 32.6
+step 2000, running loss: 3.760452149808407, running_corrects: 630, example_count: 2000, acc: 31.5
+step 3000, running loss: 3.7265462101002536, running_corrects: 941, example_count: 3000, acc: 31.366666666666664
+step 4000, running loss: 3.7261754683908075, running_corrects: 1252, example_count: 4000, acc: 31.3
+Local Epoch: 1 Train Loss: 3.7352 Acc: 31.270 (1253/4007)
+Epoch Train Time: 1m 6s
+1.0
+User 36
+step 1000, running loss: 3.848169449239969, running_corrects: 281, example_count: 1000, acc: 28.1
+step 2000, running loss: 3.856251122862101, running_corrects: 562, example_count: 2000, acc: 28.1
+step 3000, running loss: 3.822380527714888, running_corrects: 869, example_count: 3000, acc: 28.96666666666667
+step 4000, running loss: 3.7791887770500034, running_corrects: 1176, example_count: 4000, acc: 29.4
+Local Epoch: 1 Train Loss: 3.7773 Acc: 29.448 (1180/4007)
+Epoch Train Time: 1m 6s
+1.0
+User 96
+step 1000, running loss: 4.8537383208274845, running_corrects: 251, example_count: 1000, acc: 25.1
+step 2000, running loss: 4.8315630859136585, running_corrects: 489, example_count: 2000, acc: 24.45
+step 3000, running loss: 4.897450625141461, running_corrects: 731, example_count: 3000, acc: 24.366666666666667
+Local Epoch: 1 Train Loss: 4.8829 Acc: 24.335 (832/3419)
+Epoch Train Time: 0m 58s
+1.0
+User 28
+step 1000, running loss: 3.806730017542839, running_corrects: 308, example_count: 1000, acc: 30.8
+step 2000, running loss: 3.838393952280283, running_corrects: 611, example_count: 2000, acc: 30.55
+step 3000, running loss: 3.791591426054637, running_corrects: 914, example_count: 3000, acc: 30.466666666666665
+step 4000, running loss: 3.77681197213009, running_corrects: 1232, example_count: 4000, acc: 30.8
+Local Epoch: 1 Train Loss: 3.7807 Acc: 30.754 (1236/4019)
+Epoch Train Time: 1m 6s
+1.0
+User 4
+step 1000, running loss: 2.526662706464529, running_corrects: 391, example_count: 1000, acc: 39.1
+step 2000, running loss: 2.5023773001730443, running_corrects: 792, example_count: 2000, acc: 39.6
+step 3000, running loss: 2.465237249806523, running_corrects: 1207, example_count: 3000, acc: 40.233333333333334
+step 4000, running loss: 2.409719052826986, running_corrects: 1663, example_count: 4000, acc: 41.575
+Local Epoch: 1 Train Loss: 2.4081 Acc: 41.520 (1677/4039)
+Epoch Train Time: 1m 6s
+1.0
+User 32
+step 1000, running loss: 3.57530340641737, running_corrects: 305, example_count: 1000, acc: 30.5
+step 2000, running loss: 3.639977387368679, running_corrects: 623, example_count: 2000, acc: 31.15
+step 3000, running loss: 3.7357842364907263, running_corrects: 922, example_count: 3000, acc: 30.733333333333334
+step 4000, running loss: 3.7169649334847925, running_corrects: 1238, example_count: 4000, acc: 30.95
+Local Epoch: 1 Train Loss: 3.7205 Acc: 30.955 (1245/4022)
+Epoch Train Time: 1m 6s
+1.0
+User 39
+step 1000, running loss: 3.549465284436941, running_corrects: 316, example_count: 1000, acc: 31.6
+step 2000, running loss: 3.6825966803580523, running_corrects: 640, example_count: 2000, acc: 32.0
+step 3000, running loss: 3.7429258277118205, running_corrects: 953, example_count: 3000, acc: 31.766666666666666
+step 4000, running loss: 3.7249790518805383, running_corrects: 1273, example_count: 4000, acc: 31.825
+Local Epoch: 1 Train Loss: 3.7473 Acc: 31.672 (1284/4054)
+Epoch Train Time: 1m 7s
+1.0
+User 20
+step 1000, running loss: 3.6393733421713113, running_corrects: 301, example_count: 1000, acc: 30.099999999999998
+step 2000, running loss: 3.774511731259525, running_corrects: 590, example_count: 2000, acc: 29.5
+step 3000, running loss: 3.681929008487612, running_corrects: 925, example_count: 3000, acc: 30.833333333333336
+step 4000, running loss: 3.6712077795518563, running_corrects: 1242, example_count: 4000, acc: 31.05
+Local Epoch: 1 Train Loss: 3.6704 Acc: 31.099 (1248/4013)
+Epoch Train Time: 1m 6s
+1.0
+Validation Loss: 4.0181 Acc: 34.132 (10240/30001)
+Epoch Validation Time: 4m 57s
+Num_bad_epochs: 3, unconstrainedBadEpochs: 3, bestMetric: 0.6633112229592346, currentThreshold: 0.6500449985000499
+Epoch 12/99 - Task: vqa
+----------
+User 53
+step 1000, running loss: 4.558979194879532, running_corrects: 293, example_count: 1000, acc: 29.299999999999997
+step 2000, running loss: 4.474115888729692, running_corrects: 559, example_count: 2000, acc: 27.950000000000003
+step 3000, running loss: 4.560535967649271, running_corrects: 848, example_count: 3000, acc: 28.26666666666667
+Local Epoch: 1 Train Loss: 4.5892 Acc: 28.176 (1089/3865)
+Epoch Train Time: 1m 4s
+1.0
+User 45
+step 1000, running loss: 4.640965359985828, running_corrects: 280, example_count: 1000, acc: 28.000000000000004
+step 2000, running loss: 4.75703628885746, running_corrects: 533, example_count: 2000, acc: 26.650000000000002
+step 3000, running loss: 4.770659812172254, running_corrects: 818, example_count: 3000, acc: 27.266666666666666
+Local Epoch: 1 Train Loss: 4.6724 Acc: 28.101 (1083/3854)
+Epoch Train Time: 1m 4s
+1.0
+User 65
+step 1000, running loss: 3.819458019196987, running_corrects: 315, example_count: 1000, acc: 31.5
+step 2000, running loss: 3.8807553870528935, running_corrects: 626, example_count: 2000, acc: 31.3
+step 3000, running loss: 3.8928529229362807, running_corrects: 927, example_count: 3000, acc: 30.9
+Local Epoch: 1 Train Loss: 3.9715 Acc: 30.056 (1171/3896)
+Epoch Train Time: 1m 5s
+1.0
+User 60
+step 1000, running loss: 4.8554316789805885, running_corrects: 266, example_count: 1000, acc: 26.6
+step 2000, running loss: 4.724827170148492, running_corrects: 542, example_count: 2000, acc: 27.1
+step 3000, running loss: 4.748270131528377, running_corrects: 820, example_count: 3000, acc: 27.333333333333332
+Local Epoch: 1 Train Loss: 4.7656 Acc: 27.230 (1044/3834)
+Epoch Train Time: 1m 3s
+1.0
+User 61
+step 1000, running loss: 4.691840835630893, running_corrects: 267, example_count: 1000, acc: 26.700000000000003
+step 2000, running loss: 4.7417458564862605, running_corrects: 549, example_count: 2000, acc: 27.450000000000003
+step 3000, running loss: 4.77250437613825, running_corrects: 798, example_count: 3000, acc: 26.6
+Local Epoch: 1 Train Loss: 4.7170 Acc: 27.039 (1051/3887)
+Epoch Train Time: 1m 4s
+1.0
+User 58
+step 1000, running loss: 4.7733634594678875, running_corrects: 270, example_count: 1000, acc: 27.0
+step 2000, running loss: 4.650170368932187, running_corrects: 555, example_count: 2000, acc: 27.750000000000004
+step 3000, running loss: 4.634832294831673, running_corrects: 830, example_count: 3000, acc: 27.666666666666668
+Local Epoch: 1 Train Loss: 4.6872 Acc: 27.327 (1057/3868)
+Epoch Train Time: 1m 4s
+1.0
+User 90
+step 1000, running loss: 5.400470094084739, running_corrects: 234, example_count: 1000, acc: 23.400000000000002
+step 2000, running loss: 5.418859866350889, running_corrects: 444, example_count: 2000, acc: 22.2
+step 3000, running loss: 5.3833033009767535, running_corrects: 693, example_count: 3000, acc: 23.1
+Local Epoch: 1 Train Loss: 5.2831 Acc: 23.264 (841/3615)
+Epoch Train Time: 1m 1s
+1.0
+User 14
+step 1000, running loss: 2.692430677115917, running_corrects: 425, example_count: 1000, acc: 42.5
+step 2000, running loss: 2.55676035310328, running_corrects: 846, example_count: 2000, acc: 42.3
+step 3000, running loss: 2.431892086468637, running_corrects: 1283, example_count: 3000, acc: 42.766666666666666
+step 4000, running loss: 2.4310003216285256, running_corrects: 1717, example_count: 4000, acc: 42.925000000000004
+Local Epoch: 1 Train Loss: 2.4303 Acc: 42.875 (1730/4035)
+Epoch Train Time: 1m 6s
+1.0
+User 12
+step 1000, running loss: 2.8923435615897177, running_corrects: 394, example_count: 1000, acc: 39.4
+step 2000, running loss: 2.599057394772768, running_corrects: 816, example_count: 2000, acc: 40.8
+step 3000, running loss: 2.550266531124711, running_corrects: 1241, example_count: 3000, acc: 41.36666666666667
+step 4000, running loss: 2.568480813127011, running_corrects: 1648, example_count: 4000, acc: 41.199999999999996
+Local Epoch: 1 Train Loss: 2.5662 Acc: 41.286 (1670/4045)
+Epoch Train Time: 1m 5s
+1.0
+User 63
+step 1000, running loss: 4.516452404975891, running_corrects: 277, example_count: 1000, acc: 27.700000000000003
+step 2000, running loss: 4.5000468938499685, running_corrects: 562, example_count: 2000, acc: 28.1
+step 3000, running loss: 4.534524959951639, running_corrects: 843, example_count: 3000, acc: 28.1
+Local Epoch: 1 Train Loss: 4.5303 Acc: 27.951 (1082/3871)
+Epoch Train Time: 1m 4s
+1.0
+Validation Loss: 4.1829 Acc: 34.796 (10439/30001)
+Epoch Validation Time: 4m 57s
+Num_bad_epochs: 4, unconstrainedBadEpochs: 4, bestMetric: 0.6633112229592346, currentThreshold: 0.6500449985000499
+Epoch 13/99 - Task: vqa
+----------
+User 46
+step 1000, running loss: 5.20087999111414, running_corrects: 264, example_count: 1000, acc: 26.400000000000002
+step 2000, running loss: 5.079318605184555, running_corrects: 528, example_count: 2000, acc: 26.400000000000002
+step 3000, running loss: 5.039146690783402, running_corrects: 810, example_count: 3000, acc: 27.0
+Local Epoch: 1 Train Loss: 5.0267 Acc: 26.959 (1046/3880)
+Epoch Train Time: 1m 4s
+1.0
+User 6
+step 1000, running loss: 2.9208925321251153, running_corrects: 406, example_count: 1000, acc: 40.6
+step 2000, running loss: 2.6865674543455245, running_corrects: 849, example_count: 2000, acc: 42.449999999999996
+step 3000, running loss: 2.66953133734564, running_corrects: 1261, example_count: 3000, acc: 42.03333333333333
+step 4000, running loss: 2.6996577812992038, running_corrects: 1673, example_count: 4000, acc: 41.825
+Local Epoch: 1 Train Loss: 2.7019 Acc: 41.762 (1688/4042)
+Epoch Train Time: 1m 6s
+1.0
+User 9
+step 1000, running loss: 2.803939429342747, running_corrects: 436, example_count: 1000, acc: 43.6
+step 2000, running loss: 2.7004418070614338, running_corrects: 854, example_count: 2000, acc: 42.699999999999996
+step 3000, running loss: 2.6439501635829608, running_corrects: 1258, example_count: 3000, acc: 41.93333333333334
+step 4000, running loss: 2.5963958426862956, running_corrects: 1686, example_count: 4000, acc: 42.15
+Local Epoch: 1 Train Loss: 2.5822 Acc: 42.256 (1716/4061)
+Epoch Train Time: 1m 6s
+1.0
+User 37
+step 1000, running loss: 4.113777929067612, running_corrects: 316, example_count: 1000, acc: 31.6
+step 2000, running loss: 4.237669080860913, running_corrects: 618, example_count: 2000, acc: 30.9
+step 3000, running loss: 4.160838874345025, running_corrects: 915, example_count: 3000, acc: 30.5
+step 4000, running loss: 4.22495165316388, running_corrects: 1208, example_count: 4000, acc: 30.2
+Local Epoch: 1 Train Loss: 4.2223 Acc: 30.272 (1213/4007)
+Epoch Train Time: 1m 6s
+1.0
+User 13
+step 1000, running loss: 2.682849657356739, running_corrects: 432, example_count: 1000, acc: 43.2
+step 2000, running loss: 2.77673292735219, running_corrects: 816, example_count: 2000, acc: 40.8
+step 3000, running loss: 2.686293977955977, running_corrects: 1248, example_count: 3000, acc: 41.6
+step 4000, running loss: 2.623958040609956, running_corrects: 1698, example_count: 4000, acc: 42.449999999999996
+Local Epoch: 1 Train Loss: 2.6180 Acc: 42.605 (1740/4084)
+Epoch Train Time: 1m 7s
+1.0
+User 76
+step 1000, running loss: 4.387079028487205, running_corrects: 273, example_count: 1000, acc: 27.3
+step 2000, running loss: 4.344828547284007, running_corrects: 546, example_count: 2000, acc: 27.3
+step 3000, running loss: 4.236282211194435, running_corrects: 861, example_count: 3000, acc: 28.7
+Local Epoch: 1 Train Loss: 4.2463 Acc: 28.550 (1120/3923)
+Epoch Train Time: 1m 5s
+1.0
+User 53
+step 1000, running loss: 5.148748749762773, running_corrects: 249, example_count: 1000, acc: 24.9
+step 2000, running loss: 4.95780835288763, running_corrects: 525, example_count: 2000, acc: 26.25
+step 3000, running loss: 4.880788142462571, running_corrects: 808, example_count: 3000, acc: 26.93333333333333
+Local Epoch: 1 Train Loss: 4.8103 Acc: 27.762 (1073/3865)
+Epoch Train Time: 1m 4s
+1.0
+User 99
+step 1000, running loss: 5.7744936044216155, running_corrects: 260, example_count: 1000, acc: 26.0
+step 2000, running loss: 5.714893682196736, running_corrects: 517, example_count: 2000, acc: 25.85
+step 3000, running loss: 5.589562814861536, running_corrects: 793, example_count: 3000, acc: 26.43333333333333
+Local Epoch: 1 Train Loss: 5.5430 Acc: 26.422 (855/3236)
+Epoch Train Time: 0m 57s
+1.0
+User 18
+step 1000, running loss: 4.577829370319844, running_corrects: 303, example_count: 1000, acc: 30.3
+step 2000, running loss: 4.42902482175827, running_corrects: 608, example_count: 2000, acc: 30.4
+step 3000, running loss: 4.381065192202727, running_corrects: 907, example_count: 3000, acc: 30.233333333333334
+step 4000, running loss: 4.398347551599145, running_corrects: 1218, example_count: 4000, acc: 30.45
+Local Epoch: 1 Train Loss: 4.3971 Acc: 30.413 (1236/4064)
+Epoch Train Time: 1m 7s
+1.0
+User 87
+step 1000, running loss: 5.586633624851704, running_corrects: 240, example_count: 1000, acc: 24.0
+step 2000, running loss: 5.609361386045814, running_corrects: 449, example_count: 2000, acc: 22.45
+step 3000, running loss: 5.6111110170185565, running_corrects: 706, example_count: 3000, acc: 23.533333333333335
+Local Epoch: 1 Train Loss: 5.6831 Acc: 23.174 (866/3737)
+Epoch Train Time: 1m 3s
+1.0
+Validation Loss: 4.4820 Acc: 34.722 (10417/30001)
+Epoch Validation Time: 4m 57s
+Num_bad_epochs: 5, unconstrainedBadEpochs: 5, bestMetric: 0.6633112229592346, currentThreshold: 0.6500449985000499
+Epoch 14/99 - Task: vqa
+----------
+User 41
+step 1000, running loss: 4.679096191167831, running_corrects: 294, example_count: 1000, acc: 29.4
+step 2000, running loss: 4.632737991712988, running_corrects: 613, example_count: 2000, acc: 30.65
+step 3000, running loss: 4.607345623781284, running_corrects: 918, example_count: 3000, acc: 30.599999999999998
+step 4000, running loss: 4.6064934434369205, running_corrects: 1219, example_count: 4000, acc: 30.475
+Local Epoch: 1 Train Loss: 4.5939 Acc: 30.418 (1238/4070)
+Epoch Train Time: 1m 7s
+1.0
+User 28
+step 1000, running loss: 4.747348173975944, running_corrects: 305, example_count: 1000, acc: 30.5
+step 2000, running loss: 4.544078338377178, running_corrects: 609, example_count: 2000, acc: 30.45
+step 3000, running loss: 4.504067074730992, running_corrects: 912, example_count: 3000, acc: 30.4
+step 4000, running loss: 4.49570425464958, running_corrects: 1210, example_count: 4000, acc: 30.25
+Local Epoch: 1 Train Loss: 4.4899 Acc: 30.331 (1219/4019)
+Epoch Train Time: 1m 6s
+1.0
+User 63
+step 1000, running loss: 5.130817076444626, running_corrects: 286, example_count: 1000, acc: 28.599999999999998
+step 2000, running loss: 5.166979776918888, running_corrects: 535, example_count: 2000, acc: 26.75
+step 3000, running loss: 5.09737195644776, running_corrects: 817, example_count: 3000, acc: 27.23333333333333
+Local Epoch: 1 Train Loss: 5.0795 Acc: 27.331 (1058/3871)
+Epoch Train Time: 1m 4s
+1.0
+User 47
+step 1000, running loss: 5.161027766764164, running_corrects: 265, example_count: 1000, acc: 26.5
+step 2000, running loss: 5.2773761355727915, running_corrects: 559, example_count: 2000, acc: 27.950000000000003
+step 3000, running loss: 5.222569082483649, running_corrects: 847, example_count: 3000, acc: 28.233333333333334
+Local Epoch: 1 Train Loss: 5.2307 Acc: 28.654 (1096/3825)
+Epoch Train Time: 1m 3s
+1.0
+User 93
+step 1000, running loss: 6.466183097362518, running_corrects: 230, example_count: 1000, acc: 23.0
+step 2000, running loss: 6.139058913469315, running_corrects: 456, example_count: 2000, acc: 22.8
+step 3000, running loss: 6.056469493329525, running_corrects: 698, example_count: 3000, acc: 23.266666666666666
+Local Epoch: 1 Train Loss: 6.0422 Acc: 23.648 (844/3569)
+Epoch Train Time: 1m 0s
+1.0
+User 48
+step 1000, running loss: 5.263075683653355, running_corrects: 287, example_count: 1000, acc: 28.7
+step 2000, running loss: 5.411357332020998, running_corrects: 552, example_count: 2000, acc: 27.6
+step 3000, running loss: 5.339229533712069, running_corrects: 819, example_count: 3000, acc: 27.3
+Local Epoch: 1 Train Loss: 5.3977 Acc: 27.099 (1052/3882)
+Epoch Train Time: 1m 4s
+1.0
+User 64
+step 1000, running loss: 4.458208181142807, running_corrects: 297, example_count: 1000, acc: 29.7
+step 2000, running loss: 4.4224503082633015, running_corrects: 587, example_count: 2000, acc: 29.349999999999998
+step 3000, running loss: 4.407236433625221, running_corrects: 906, example_count: 3000, acc: 30.2
+Local Epoch: 1 Train Loss: 4.3427 Acc: 29.972 (1162/3877)
+Epoch Train Time: 1m 4s
+1.0
+User 11
+step 1000, running loss: 3.11268885743618, running_corrects: 421, example_count: 1000, acc: 42.1
+step 2000, running loss: 3.0133943602442743, running_corrects: 843, example_count: 2000, acc: 42.15
+step 3000, running loss: 2.94027772184213, running_corrects: 1253, example_count: 3000, acc: 41.766666666666666
+step 4000, running loss: 2.8632146817147732, running_corrects: 1683, example_count: 4000, acc: 42.075
+Local Epoch: 1 Train Loss: 2.8572 Acc: 41.949 (1709/4074)
+Epoch Train Time: 1m 6s
+1.0
+User 17
+step 1000, running loss: 4.7157729331851, running_corrects: 315, example_count: 1000, acc: 31.5
+step 2000, running loss: 4.456108139187098, running_corrects: 660, example_count: 2000, acc: 33.0
+step 3000, running loss: 4.482236958493789, running_corrects: 986, example_count: 3000, acc: 32.86666666666667
+Local Epoch: 1 Train Loss: 4.4515 Acc: 32.645 (1296/3970)
+Epoch Train Time: 1m 5s
+1.0
+User 76
+step 1000, running loss: 4.344130296826362, running_corrects: 312, example_count: 1000, acc: 31.2
+step 2000, running loss: 4.469474500596523, running_corrects: 601, example_count: 2000, acc: 30.049999999999997
+step 3000, running loss: 4.514410673896472, running_corrects: 896, example_count: 3000, acc: 29.86666666666667
+Local Epoch: 1 Train Loss: 4.4560 Acc: 30.257 (1187/3923)
+Epoch Train Time: 1m 5s
+1.0
+Validation Loss: 4.7866 Acc: 34.366 (10310/30001)
+Epoch Validation Time: 4m 57s
+Num_bad_epochs: 6, unconstrainedBadEpochs: 6, bestMetric: 0.6633112229592346, currentThreshold: 0.6500449985000499
+Epoch 15/99 - Task: vqa
+----------
+User 35
+step 1000, running loss: 4.668984538435936, running_corrects: 296, example_count: 1000, acc: 29.599999999999998
+step 2000, running loss: 4.779781681269407, running_corrects: 593, example_count: 2000, acc: 29.65
+step 3000, running loss: 4.744080385863781, running_corrects: 865, example_count: 3000, acc: 28.833333333333332
+step 4000, running loss: 4.700430085673928, running_corrects: 1180, example_count: 4000, acc: 29.5
+Local Epoch: 1 Train Loss: 4.6968 Acc: 29.455 (1190/4040)
+Epoch Train Time: 1m 6s
+1.0
+User 90
+step 1000, running loss: 6.517958329260349, running_corrects: 252, example_count: 1000, acc: 25.2
+step 2000, running loss: 6.440853427797556, running_corrects: 490, example_count: 2000, acc: 24.5
+step 3000, running loss: 6.25326169838508, running_corrects: 723, example_count: 3000, acc: 24.099999999999998
+Local Epoch: 1 Train Loss: 6.1704 Acc: 23.873 (863/3615)
+Epoch Train Time: 1m 1s
+1.0
+User 92
+step 1000, running loss: 6.640164568185806, running_corrects: 232, example_count: 1000, acc: 23.200000000000003
+step 2000, running loss: 6.5115805293917655, running_corrects: 469, example_count: 2000, acc: 23.45
+step 3000, running loss: 6.4162225626309715, running_corrects: 688, example_count: 3000, acc: 22.933333333333334
+Local Epoch: 1 Train Loss: 6.3844 Acc: 22.740 (810/3562)
+Epoch Train Time: 1m 0s
+1.0
+User 22
+step 1000, running loss: 4.457370205841959, running_corrects: 328, example_count: 1000, acc: 32.800000000000004
+step 2000, running loss: 4.478761010508984, running_corrects: 635, example_count: 2000, acc: 31.75
+step 3000, running loss: 4.472338835505147, running_corrects: 933, example_count: 3000, acc: 31.1
+Local Epoch: 1 Train Loss: 4.5178 Acc: 30.482 (1208/3963)
+Epoch Train Time: 1m 5s
+1.0
+User 33
+step 1000, running loss: 4.963558547854424, running_corrects: 306, example_count: 1000, acc: 30.599999999999998
+step 2000, running loss: 4.935083137720823, running_corrects: 594, example_count: 2000, acc: 29.7
+step 3000, running loss: 4.806704836308956, running_corrects: 913, example_count: 3000, acc: 30.433333333333334
+step 4000, running loss: 4.724782128825784, running_corrects: 1226, example_count: 4000, acc: 30.65
+Local Epoch: 1 Train Loss: 4.7288 Acc: 30.521 (1241/4066)
+Epoch Train Time: 1m 7s
+1.0
+User 38
+step 1000, running loss: 5.009154739975929, running_corrects: 287, example_count: 1000, acc: 28.7
+step 2000, running loss: 5.001571907818318, running_corrects: 562, example_count: 2000, acc: 28.1
+step 3000, running loss: 4.903445642024279, running_corrects: 857, example_count: 3000, acc: 28.566666666666666
+Local Epoch: 1 Train Loss: 4.8964 Acc: 28.827 (1145/3972)
+Epoch Train Time: 1m 5s
+1.0
+User 67
+step 1000, running loss: 4.565800316631794, running_corrects: 281, example_count: 1000, acc: 28.1
+step 2000, running loss: 4.587092230558396, running_corrects: 580, example_count: 2000, acc: 28.999999999999996
+step 3000, running loss: 4.598121019482613, running_corrects: 889, example_count: 3000, acc: 29.633333333333333
+Local Epoch: 1 Train Loss: 4.5144 Acc: 29.977 (1173/3913)
+Epoch Train Time: 1m 5s
+1.0
+User 43
+step 1000, running loss: 5.628286227405071, running_corrects: 265, example_count: 1000, acc: 26.5
+step 2000, running loss: 5.516444937497377, running_corrects: 559, example_count: 2000, acc: 27.950000000000003
+step 3000, running loss: 5.417951706508795, running_corrects: 823, example_count: 3000, acc: 27.43333333333333
+Local Epoch: 1 Train Loss: 5.4432 Acc: 27.626 (1060/3837)
+Epoch Train Time: 1m 3s
+1.0
+User 47
+step 1000, running loss: 5.84496741271019, running_corrects: 292, example_count: 1000, acc: 29.2
+step 2000, running loss: 5.604192659199238, running_corrects: 567, example_count: 2000, acc: 28.349999999999998
+step 3000, running loss: 5.508597436070442, running_corrects: 867, example_count: 3000, acc: 28.9
+Local Epoch: 1 Train Loss: 5.4335 Acc: 29.020 (1110/3825)
+Epoch Train Time: 1m 3s
+1.0
+User 78
+step 1000, running loss: 4.601740571677685, running_corrects: 300, example_count: 1000, acc: 30.0
+step 2000, running loss: 4.706149643033743, running_corrects: 590, example_count: 2000, acc: 29.5
+step 3000, running loss: 4.557324833850066, running_corrects: 899, example_count: 3000, acc: 29.96666666666667
+Local Epoch: 1 Train Loss: 4.5590 Acc: 30.062 (1173/3902)
+Epoch Train Time: 1m 5s
+1.0
+Validation Loss: 4.8732 Acc: 34.279 (10284/30001)
+Epoch Validation Time: 4m 56s
+Num_bad_epochs: 7, unconstrainedBadEpochs: 7, bestMetric: 0.6633112229592346, currentThreshold: 0.6500449985000499
+Epoch 16/99 - Task: vqa
+----------
+User 41
+step 1000, running loss: 5.4014656414389615, running_corrects: 286, example_count: 1000, acc: 28.599999999999998
+step 2000, running loss: 5.161441508799792, running_corrects: 593, example_count: 2000, acc: 29.65
+step 3000, running loss: 4.956981055577596, running_corrects: 923, example_count: 3000, acc: 30.766666666666666
+step 4000, running loss: 4.930185259521007, running_corrects: 1240, example_count: 4000, acc: 31.0
+Local Epoch: 1 Train Loss: 4.9338 Acc: 31.007 (1262/4070)
+Epoch Train Time: 1m 7s
+1.0
+User 56
+step 1000, running loss: 5.793820228219032, running_corrects: 277, example_count: 1000, acc: 27.700000000000003
+step 2000, running loss: 5.8087072804570195, running_corrects: 546, example_count: 2000, acc: 27.3
+step 3000, running loss: 5.795029022415479, running_corrects: 815, example_count: 3000, acc: 27.166666666666668
+Local Epoch: 1 Train Loss: 5.7600 Acc: 27.063 (1043/3854)
+Epoch Train Time: 1m 4s
+1.0
+User 73
+step 1000, running loss: 4.541071362555027, running_corrects: 312, example_count: 1000, acc: 31.2
+step 2000, running loss: 4.613802429914474, running_corrects: 657, example_count: 2000, acc: 32.85
+step 3000, running loss: 4.592136119286219, running_corrects: 952, example_count: 3000, acc: 31.733333333333334
+Local Epoch: 1 Train Loss: 4.5643 Acc: 31.000 (1209/3900)
+Epoch Train Time: 1m 5s
+1.0
+User 9
+step 1000, running loss: 2.8999111638069155, running_corrects: 416, example_count: 1000, acc: 41.6
+step 2000, running loss: 2.948454936027527, running_corrects: 854, example_count: 2000, acc: 42.699999999999996
+step 3000, running loss: 2.8983764220873516, running_corrects: 1286, example_count: 3000, acc: 42.86666666666667
+step 4000, running loss: 2.9398583708405495, running_corrects: 1673, example_count: 4000, acc: 41.825
+Local Epoch: 1 Train Loss: 2.9391 Acc: 41.886 (1701/4061)
+Epoch Train Time: 1m 6s
+1.0
+User 71
+step 1000, running loss: 4.615982436418533, running_corrects: 307, example_count: 1000, acc: 30.7
+step 2000, running loss: 4.765300749897957, running_corrects: 597, example_count: 2000, acc: 29.849999999999998
+step 3000, running loss: 4.785264804045359, running_corrects: 903, example_count: 3000, acc: 30.099999999999998
+Local Epoch: 1 Train Loss: 4.7851 Acc: 29.780 (1162/3902)
+Epoch Train Time: 1m 9s
+1.0
+User 43
+step 1000, running loss: 5.474636429905892, running_corrects: 303, example_count: 1000, acc: 30.3
+
