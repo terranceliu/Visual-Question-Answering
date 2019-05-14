@@ -195,8 +195,6 @@ class CIFAR100Dataset(torch.utils.data.Dataset):
         return self.dataloader[self.indices[idx]]
 
 
-
-
 class Dictionary(object):
     def __init__(self, dictionary=None):
         if dictionary is None:

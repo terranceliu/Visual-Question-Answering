@@ -202,7 +202,6 @@ def main(config):
                                **config['optim']['params'])
 
     best_acc = 0
-    # Pdb().set_trace()
     startEpoch = 0
     if 'reload' in config['model']:
         pathForTrainedModel = os.path.join(config['save_dir'],

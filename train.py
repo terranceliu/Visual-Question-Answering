@@ -9,6 +9,7 @@ import json
 import numpy as np
 import copy
 import torch.optim as optim
+from collections import defaultdict
 
 def train(model, dataloader, criterion, optimizer, use_gpu=False, local_ep=1):
     model.train()  # Set model to training mode
@@ -45,6 +46,9 @@ def train(model, dataloader, criterion, optimizer, use_gpu=False, local_ep=1):
                 print('step {}, running loss: {}, running_corrects: {}, example_count: {}, acc: {}'.format(
                     step, running_loss / example_count, running_corrects, example_count, (float(running_corrects) / example_count) * 100))
 
+            # if step > 3:
+            #     break
+
         loss = running_loss / example_count
         acc = float(running_corrects) / example_count * 100 # (running_corrects / len(dataloader.dataset)) * 100
         print('Local Epoch: {} Train Loss: {:.4f} Acc: {:2.3f} ({}/{})'.format(epoch+1, loss, acc, running_corrects, example_count))
@@ -78,7 +82,7 @@ def validate(model, dataloader, criterion, use_gpu=False):
         example_count += answers.size(0)
 
         step += 1
-        if step > 30000:
+        if step > 300:
             break
 
     loss = running_loss / example_count
@@ -91,7 +95,6 @@ def validate(model, dataloader, criterion, use_gpu=False):
 
 def train_cifar(model, dataloader, criterion, optimizer, use_gpu=False, local_ep=1):
     model.train()  # Set model to training mode
-    grads = []
 
     for epoch in range(local_ep):
         running_loss = 0.0
@@ -124,16 +127,11 @@ def train_cifar(model, dataloader, criterion, optimizer, use_gpu=False, local_ep
                 print('step {}, running loss: {}, running_corrects: {}, example_count: {}, acc: {}'.format(
                     step, running_loss / example_count, running_corrects, example_count, (float(running_corrects) / example_count) * 100))
 
-            for grad in [param.grad for param in model.parameters()]:
-                if grad is not None:
-                    grads.append(grad.view(-1))
-
         loss = running_loss / example_count
         acc = float(running_corrects) / example_count * 100 # (running_corrects / len(dataloader.dataset)) * 100
-        grads = torch.cat(grads).norm().item()
         print('Local Epoch: {} Train Loss: {:.4f} Acc: {:2.3f} ({}/{})'.format(epoch+1, loss, acc, running_corrects, example_count))
 
-    return loss, acc, grads
+    return loss, acc
 
 
 def validate_cifar(model, dataloader, criterion, use_gpu=False):
@@ -185,7 +183,6 @@ def get_batch(source, i, seq_len=35):
 def train_lm(model, train_data, criterion, optimizer, ntokens, batch_size=1, seq_len=35, clip=0.25, local_ep=1):
     # Turn on training mode which enables dropout.
     model.train()
-    grads = []
 
     for epoch in range(local_ep):
         running_loss = 0.0
@@ -222,18 +219,12 @@ def train_lm(model, train_data, criterion, optimizer, ntokens, batch_size=1, seq
                 print('step {}, running loss: {}, running_corrects: {}, example_count: {}, acc: {}'.format(
                     step, running_loss / example_count, running_corrects, example_count, (float(running_corrects) / example_count) * 100))
 
-
-            for grad in [param.grad for param in model.parameters()]:
-                if grad is not None:
-                    grads.append(grad.view(-1))
-
         loss = running_loss / example_count
         acc = float(running_corrects) / example_count * 100  # (running_corrects / len(dataloader.dataset)) * 100
-        grads = torch.cat(grads).norm().item()
         print('Local Epoch: {} Train Loss: {:.4f} Acc: {:2.3f} ({}/{})'.format(epoch + 1, loss, acc, running_corrects,
                                                                                example_count))
 
-    return loss, acc, grads
+    return loss, acc
 
 
 def validate_lm(model, val_data, criterion, ntokens, batch_size=1, seq_len=35):
@@ -293,37 +284,32 @@ def train_model(model, data_loaders, data_loaders_cifar, data_loaders_lm, criter
 
         idxs_users = np.random.choice(range(num_users), m, replace=False)
         grads_local = []
+        square_avgs = []
 
         for user in idxs_users:
             print('User {}'.format(user))
             model_local = copy.deepcopy(model)
 
-            if config['optim']['class'] == 'sgd':
-                optimizer_local = optim.SGD(filter(lambda p: p.requires_grad, model_local.parameters()),
-                                      **config['optim']['params'])
-            elif config['optim']['class'] == 'rmsprop':
-                optimizer_local = optim.RMSprop(filter(lambda p: p.requires_grad, model_local.parameters()),
-                                          **config['optim']['params'])
-            else:
-                optimizer_local = optim.Adam(filter(lambda p: p.requires_grad, model_local.parameters()),
-                                       **config['optim']['params'])
+            assert len(optimizer.param_groups) == 1
+            optimizer_local = copy.deepcopy(optimizer)
+            optimizer_local.param_groups[0]['params'] = list(model_local.parameters())
 
-            # we mainly just care about copying over the reduced lr from optimizer to optimizer_local
-            # for i in range(len(optimizer.param_groups)):
-            #     for param in optimizer.param_groups[i].keys():
-            #         if param == 'params':
-            #             continue
-            #         optimizer_local.param_groups[i][param] = optimizer.param_groups[i][param]
-            #         # if param == 'lr' and task == 'cifar100':
-            #         #     optimizer_local.param_groups[i][param] *= 10.0
-            # print('lr: {} {}'.format(len(optimizer_local.param_groups), optimizer_local.param_groups[0]['lr']))
+            # if config['optim']['class'] == 'sgd':
+            #     optimizer_local = optim.SGD(filter(lambda p: p.requires_grad, model_local.parameters()),
+            #                           **config['optim']['params'])
+            # elif config['optim']['class'] == 'rmsprop':
+            #     optimizer_local = optim.RMSprop(filter(lambda p: p.requires_grad, model_local.parameters()),
+            #                               **config['optim']['params'])
+            # else:
+            #     optimizer_local = optim.Adam(filter(lambda p: p.requires_grad, model_local.parameters()),
+            #                            **config['optim']['params'])
 
             train_begin = time.time()
             if task == 'cifar100':
-                train_loss, train_acc, grads = train_cifar(model_local, data_loaders_cifar['train'][user], criterion, optimizer_local,
+                train_loss, train_acc = train_cifar(model_local, data_loaders_cifar['train'][user], criterion, optimizer_local,
                                                     use_gpu, local_ep=local_ep)
             elif task == 'lm':
-                train_loss, train_acc, grads = train_lm(model_local, data_loaders_lm['train'][user], criterion, optimizer_local, ntokens,
+                train_loss, train_acc = train_lm(model_local, data_loaders_lm['train'][user], criterion, optimizer_local, ntokens,
                                                 batch_size=config['data_lm']['val']['batch_size'], local_ep=local_ep)
             else: # vqa
                 train_loss, train_acc = train(model_local, data_loaders[('train', user)], criterion, optimizer_local,
@@ -354,11 +340,42 @@ def train_model(model, data_loaders, data_loaders_cifar, data_loaders_lm, criter
                 for k in w_glob.keys():
                     w_glob[k] += w_curr[k] * grads
 
+            if config['optim']['class'] == 'rmsprop':
+                if len(square_avgs) == 0:
+                    for p in optimizer_local.param_groups[0]['params']:
+                        if p.grad is None:
+                            continue
+                        square_avgs.append(optimizer_local.state[p]['square_avg'] * grads)
+                else:
+                    i = 0
+                    for p in optimizer_local.param_groups[0]['params']:
+                        if p.grad is None:
+                            continue
+                        square_avgs[i] += optimizer_local.state[p]['square_avg'] * grads
+                        i += 1
+
         for k in w_glob.keys():
             w_glob[k] = torch.div(w_glob[k], sum(grads_local))
 
+        for i in range(len(square_avgs)):
+            square_avgs[i] = torch.div(square_avgs[i], sum(grads_local))
+
         # copy weight to net_glob
         model.load_state_dict(w_glob)
+        optimizer.param_groups[0]['params'] = list(model.parameters())
+
+        if config['optim']['class'] == 'rmsprop':
+            optimizer.state = defaultdict(dict)
+            i = 0
+            for p in optimizer.param_groups[0]['params']:
+                if p.grad is None:
+                    continue
+                optimizer.state[p]['square_avgs'] = square_avgs[i]
+                optimizer.state[p]['step'] = (epoch + 1) * config['data']['train']['batch_size']
+                i += 1
+
+        # import pdb
+        # pdb.set_trace()
 
         if task=='cifar100':
             validation_begin = time.time()
