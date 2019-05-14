@@ -37,9 +37,10 @@ def train(model, dataloader, criterion, optimizer, use_gpu=False):
         running_corrects += torch.sum((preds == answers).data)
         example_count += answers.size(0)
         step += 1
-        if step % 500 == 0:
-            print('step {}, running loss: {}, running_corrects: {}, example_count: {}, acc: {}'.format(
-                step, running_loss / example_count, running_corrects, example_count, (float(running_corrects) / example_count) * 100))
+        if step % 5 == 0:
+            print('step {}, lr: {}, running loss: {}, running_corrects: {}, example_count: {}, acc: {}'.format(
+                step, optimizer.param_groups[0]['lr'], running_loss / example_count, running_corrects, example_count,
+                (float(running_corrects) / example_count) * 100))
 
         decay_rate = 0.3 ** (1 / (50000 * 500/100))
         optimizer.param_groups[0]['lr'] = optimizer.param_groups[0]['lr'] * decay_rate #0.99997592083
