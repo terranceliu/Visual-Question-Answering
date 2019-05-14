@@ -37,7 +37,7 @@ def train(model, dataloader, criterion, optimizer, use_gpu=False):
         running_corrects += torch.sum((preds == answers).data)
         example_count += answers.size(0)
         step += 1
-        if step % 5 == 0:
+        if step % 500 == 0:
             print('step {}, lr: {}, running loss: {}, running_corrects: {}, example_count: {}, acc: {}'.format(
                 step, optimizer.param_groups[0]['lr'], running_loss / example_count, running_corrects, example_count,
                 (float(running_corrects) / example_count) * 100))
