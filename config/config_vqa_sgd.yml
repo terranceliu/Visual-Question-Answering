@@ -6,10 +6,10 @@ use_gpu: True
 debug: False
 seed: 123213
 
-multitask: True # verify pretrained_vgg
-num_users: 1
+multitask: False # verify pretrained_vgg
+num_users: 50
 frac: 0.1
-local_ep: 1
+local_ep: 2
 use_grad_norm: True
 
 data:
@@ -89,5 +89,5 @@ optim:
         # beta: 0.995     # beta used for adam
         # eps: 0.00001       # epsilon that goes into denominator in rmsprop
 #        weight_decay: 0.0005
-    n_epochs: 100
+    n_epochs: 200
     pretrain: 20

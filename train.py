@@ -49,6 +49,10 @@ def train(model, dataloader, criterion, optimizer, use_gpu=False, local_ep=1):
             # if step > 3:
             #     break
 
+            batch_size = 100
+            decay_rate = 0.3 ** (1 / (50000 * 500 / batch_size))
+            optimizer.param_groups[0]['lr'] = optimizer.param_groups[0]['lr'] * decay_rate  # 0.99997592083
+
         loss = running_loss / example_count
         acc = float(running_corrects) / example_count * 100 # (running_corrects / len(dataloader.dataset)) * 100
         print('Local Epoch: {} Train Loss: {:.4f} Acc: {:2.3f} ({}/{})'.format(epoch+1, loss, acc, running_corrects, example_count))
@@ -284,9 +288,8 @@ def train_model(model, data_loaders, data_loaders_cifar, data_loaders_lm, criter
         else:
             task_ix = -1
         task = tasks[task_ix]
-        task = 'cifar100'
 
-        print('Epoch {}/{} - Task: {}'.format(epoch, num_epochs - 1, task))
+        print('Epoch {}/{} - Task: {}, lr: {}'.format(epoch, num_epochs - 1, task, optimizer.param_groups[0]['lr']))
         print('-' * 10)
 
         idxs_users = np.random.choice(range(num_users), m, replace=False)
@@ -380,12 +383,11 @@ def train_model(model, data_loaders, data_loaders_cifar, data_loaders_lm, criter
                 optimizer.state[p]['step'] = (epoch + 1) * config['data']['train']['batch_size']
                 i += 1
 
-        # import pdb
-        # pdb.set_trace()
+            optimizer.param_groups[0]['lr'] = optimizer_local.param_groups[0]['lr']
 
         if task=='cifar100':
             validation_begin = time.time()
-            val_loss, val_acc = validate_cifar(model_local, data_loaders_cifar['val'][user], criterion, use_gpu)
+            val_loss, val_acc = validate_cifar(model, data_loaders_cifar['val'][user], criterion, use_gpu)
 
             validation_time = time.time() - validation_begin
             print('Epoch Validation Time: {:.0f}m {:.0f}s'.format(validation_time // 60, validation_time % 60))
