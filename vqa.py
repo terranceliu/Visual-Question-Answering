@@ -65,14 +65,15 @@ class ImageEmbedding(nn.Module):
     def __init__(self, image_channel_type='I', output_size=1024, mode='train',
                  pretrained_vgg=True, extract_features=False, features_dir=None):
         super(ImageEmbedding, self).__init__()
-        self.extractor = models.resnet50(pretrained=pretrained_vgg)
+        self.extractor = models.resnet18(pretrained=pretrained_vgg)
         # freeze feature extractor (VGGNet) parameters
         for param in self.extractor.parameters():
-            param.requires_grad = not pretrained_vgg
+            param.requires_grad = True #not pretrained_vgg
 
         extactor_fc_layers = list(self.extractor.children())[:-1]
         if image_channel_type.lower() == 'normi':
             extactor_fc_layers.append(Normalize(p=2))
+        # self.extractor.classifier = nn.Sequential(*extactor_fc_layers)
         self.extractor.classifier = nn.Sequential(*extactor_fc_layers)
 
         self.fflayer = nn.Sequential(
@@ -142,7 +143,6 @@ class QuesEmbedding(nn.Module):
 
 
 class VQAModel(nn.Module):
-
     def __init__(self, vocab_size=10000, word_emb_size=300, emb_size=1024, output_size=1000, output_size_lm=1000,
                  image_channel_type='I', ques_channel_type='lstm', use_mutan=True, pretrained_vgg=True, mode='train',
                  extract_img_features=True, features_dir=None):
@@ -180,6 +180,18 @@ class VQAModel(nn.Module):
 
         # lm
         self.mlp_lm = nn.Sequential(nn.Linear(emb_size, output_size_lm))
+
+        # self.w_keys =['mlp.0.weight', 'mlp.0.bias', 'mlp.3.weight', 'mlp.3.bias', 'mlp_cifar.0.weight',
+        #               'image_channel.fflayer.0.weight', 'image_channel.fflayer.0.bias', 'ques_channel.lstm.weight_ih_l0',
+        #               'ques_channel.lstm.weight_hh_l0', 'ques_channel.lstm.bias_ih_l0', 'ques_channel.lstm.bias_hh_l0',
+        #               'ques_channel.lstm.weight_ih_l1', 'ques_channel.lstm.weight_hh_l1', 'ques_channel.lstm.bias_ih_l1',
+        #               'ques_channel.lstm.bias_hh_l1', 'ques_channel.fflayer.0.weight', 'ques_channel.fflayer.0.bias',
+        #               ]
+
+        self.w_keys =['mlp.0.weight', 'mlp.0.bias', 'mlp.3.weight', 'mlp.3.bias',
+                      'image_channel.fflayer.0.weight', 'image_channel.fflayer.0.bias',
+                      'ques_channel.fflayer.0.weight', 'ques_channel.fflayer.0.bias',
+                      ]
 
     def forward(self, images, questions, image_ids, task='vqa'):
         if task == 'vqa':

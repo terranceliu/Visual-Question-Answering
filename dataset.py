@@ -20,13 +20,10 @@ class VQADataset(torch.utils.data.Dataset):
                 self.load_vocab(data_dir)
             VQADataset.data[phase] = pickle.load(open(os.path.join(data_dir, qafile), 'rb'))
 
-        if phase == 'train':
-            chunk_size = len(VQADataset.data[phase]) / num_users
-            start_ix, end_ix = chunk_size * user, chunk_size * (user + 1)
-            start_ix, end_ix = int(start_ix), int(end_ix)
-            self.examples = VQADataset.data[phase][start_ix: end_ix]
-        else:
-            self.examples = VQADataset.data[phase]
+        chunk_size = len(VQADataset.data[phase]) / num_users
+        start_ix, end_ix = chunk_size * user, chunk_size * (user + 1)
+        start_ix, end_ix = int(start_ix), int(end_ix)
+        self.examples = VQADataset.data[phase][start_ix: end_ix]
 
         # Pdb().set_trace()
         self.transforms = transforms.Compose([

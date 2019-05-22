@@ -13,7 +13,7 @@ import pdb
 
 from preprocess import preprocess
 from dataset import VQADataset, VQABatchSampler, CIFAR100Dataset, Corpus
-from train import train_model, test_model
+from train import train_model, train_model_lg, test_model
 # from vqa_mutan_bilstm import VQAModel as VQAModel
 from vqa import VQAModel
 from san import SANModel
@@ -231,8 +231,14 @@ def main(config):
             print('lr_scheduler.StepLR')
             exp_lr_scheduler = lr_scheduler.StepLR(optimizer, step_size=7, gamma=0.1)
 
-        print("begin training, multitask: {}, num_users: {}, frac: {}, local_ep: {}". format(config['multitask'], num_users, frac, local_ep))
-        model = train_model(model, dataloaders, dataloaders_cifar, dataloaders_lm, criterion, optimizer, exp_lr_scheduler, config, save_dir,
+        print("begin training, local_globaL: {}, multitask: {}, num_users: {}, frac: {}, local_ep: {}". format(
+            config['local_global'], config['multitask'], num_users, frac, local_ep))
+        if config['local_global']:
+            model = train_model_lg(model, dataloaders, dataloaders_cifar, dataloaders_lm, criterion, optimizer, exp_lr_scheduler, config, save_dir,
+                            num_epochs=config['optim']['n_epochs'], use_gpu=config['use_gpu'], best_accuracy=best_acc,
+                            start_epoch=startEpoch, num_users=num_users, frac=frac, local_ep=local_ep)
+        else:
+            model = train_model(model, dataloaders, dataloaders_cifar, dataloaders_lm, criterion, optimizer, exp_lr_scheduler, config, save_dir,
                             num_epochs=config['optim']['n_epochs'], use_gpu=config['use_gpu'], best_accuracy=best_acc,
                             start_epoch=startEpoch, num_users=num_users, frac=frac, local_ep=local_ep)
 

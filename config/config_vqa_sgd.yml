@@ -9,8 +9,11 @@ seed: 123213
 multitask: False # verify pretrained_vgg
 num_users: 50
 frac: 0.1
-local_ep: 2
+local_ep: 1
 use_grad_norm: True
+local_global: False
+load_fed: False
+load_fed_path: ''
 
 data:
     preprocess: False   # True/False - whether to preprocess vqa data files
@@ -67,13 +70,13 @@ model:
     reload: 'checkpoints.pth.tar'
 
 optim:
-    class: rmsprop      # sgd/rmsprop/adam
+    class: sgd      # sgd/rmsprop/adam
     scheduler: 'CustomReduceLROnPlateau'
     scheduler_params:
         maxPatienceToStopTraining: 40
         base_class_params:
             mode: 'min'
-            factor: 0.75
+            factor: 0.5
             patience: 10
             verbose: True 
             threshold: 0.02 
@@ -83,11 +86,11 @@ optim:
             eps: 0.000001
 
     params: 
-#        momentum: 0.9
-        lr: 0.0003     # learning rate
+        momentum: 0.9
+        lr: 0.01     # learning rate
         # alpha: 0.99     # alpha for adagrad/rmsprop/momentum/adam
         # beta: 0.995     # beta used for adam
         # eps: 0.00001       # epsilon that goes into denominator in rmsprop
-#        weight_decay: 0.0005
-    n_epochs: 200
+        weight_decay: 0.0005
+    n_epochs: 1000
     pretrain: 20
