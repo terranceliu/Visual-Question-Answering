@@ -635,8 +635,8 @@ def train_model_lg(model, data_loaders, data_loaders_cifar, data_loaders_lm, cri
 
             optimizer.param_groups[0]['lr'] = optimizer_local.param_groups[0]['lr']
 
-        if (epoch + 1) <= 1 / frac:
-            continue
+        # if (epoch + 1) <= 1 / frac:
+        #     continue
 
         # if (epoch + 1) % 3 != 0:
         #     continue

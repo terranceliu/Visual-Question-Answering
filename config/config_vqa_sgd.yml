@@ -11,9 +11,9 @@ num_users: 50
 frac: 0.1
 local_ep: 1
 use_grad_norm: True
-local_global: False
-load_fed: False
-load_fed_path: ''
+local_global: True
+load_fed: True
+load_fed_path: 'best_fed_models/fed_epoch31_acc38'
 
 data:
     preprocess: False   # True/False - whether to preprocess vqa data files
@@ -63,7 +63,7 @@ model:
     params:
         word_emb_size: 300
         emb_size: 1024
-        image_channel_type: 'normi'     # I/normI
+        image_channel_type: 'i'     # I/normI
         ques_channel_type: 'deeplstm'   # lstm/deeplstm
         use_mutan: False             # True/False - to use mutan fusion on question and image embeddings or not
         pretrained_vgg: True # verify multitask is correct
