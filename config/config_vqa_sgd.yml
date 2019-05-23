@@ -1,7 +1,7 @@
 prefix: vqa_sgd
 verbose: True
 mode: 'train'
-save_dir: '/home/tliu/Dev/CMU/research/multimodal/Visual-Question-Answering/vqa_sgd'
+save_dir: ''
 use_gpu: True
 debug: False
 seed: 123213
@@ -17,7 +17,7 @@ load_fed_path: 'best_fed_models/fed_epoch31_acc38'
 
 data:
     preprocess: False   # True/False - whether to preprocess vqa data files
-    dir: '/home/tliu/Dev/CMU/research/multimodal/Visual-Question-Answering/vqadata/' # root data directory
+    dir: '' # root data directory
     train:
         ques: 'v2_OpenEnded_mscoco_train2014_questions.json'
         ans: 'v2_mscoco_train2014_annotations.json'
@@ -39,7 +39,7 @@ data:
         pin_memory: True
 
 data_cifar:
-    dir: '/home/tliu/Dev/CMU/research/multimodal/Visual-Question-Answering/cifar100_data'
+    dir: ''
     train:
         batch_size: 32
     val:
@@ -52,7 +52,7 @@ data_cifar:
         pin_memory: True
 
 data_lm:
-    dir: '/home/tliu/Dev/CMU/research/multimodal/Visual-Question-Answering/wikitext-2'
+    dir: ''
     train:
         batch_size: 100
     val:
